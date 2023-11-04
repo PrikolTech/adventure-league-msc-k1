@@ -16,8 +16,26 @@ func NewUserPG(pg *postgres.Postgres) *UserPG {
 	return &UserPG{pg}
 }
 
-func (u *UserPG) Create(ctx context.Context, data entity.User) (*entity.User, error)
-func (u *UserPG) GetByID(ctx context.Context, id uuid.UUID) (*entity.User, error)
+func (u *UserPG) Create(ctx context.Context, data entity.User) (*entity.User, error) {
+	const query = `INSERT INTO "data"(email, password, first_name, last_name, patronymic, phone, telegram) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`
+
+	var user entity.User
+	err := u.Pool.QueryRow(ctx, query, data.Email, data.Password, data.FirstName, data.LastName, data.Patronymic, data.Phone, data.Telegram).Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.Patronymic, &user.Phone, &user.Telegram)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+func (u *UserPG) GetByID(ctx context.Context, id uuid.UUID) (*entity.User, error) {
+	const query = `SELECT * FROM "data" WHERE id = $1`
+
+	var user entity.User
+	err := u.Pool.QueryRow(ctx, query, id).Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.Patronymic, &user.Phone, &user.Telegram)
+
+	return &user, err
+}
 func (u *UserPG) GetByName(ctx context.Context, name string) (*entity.User, error)
 func (u *UserPG) UpdatePassword(ctx context.Context, id uuid.UUID, password []byte) error
 func (u *UserPG) DeleteByID(ctx context.Context, id uuid.UUID) error

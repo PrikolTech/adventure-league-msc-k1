@@ -2,6 +2,7 @@ package http
 
 import (
 	"net/http"
+	"user-service/internal/transport/http/handler"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -24,13 +25,13 @@ func NewServer(logger zerolog.Logger, services Services, opts ServerOptions) *ht
 	})
 
 	mux.Use(middleware.RealIP)
-	mux.Use(LoggerMiddleware(logger))
-	mux.Use(RecovererMiddleware(logger))
+	mux.Use(handler.LoggerMiddleware(logger))
+	mux.Use(handler.RecovererMiddleware(logger))
 	mux.Use(c.Handler)
-	mux.Use(ContentTypeMiddleware("application/json"))
+	mux.Use(handler.ContentTypeMiddleware("application/json"))
 
-	mux.NotFound(NotFound)
-	mux.MethodNotAllowed(MethodNotAllowed)
+	mux.NotFound(handler.NotFound)
+	mux.MethodNotAllowed(handler.MethodNotAllowed)
 
 	mux.Mount("/", Router(services))
 
