@@ -3,9 +3,9 @@ package app
 import (
 	"context"
 	"fmt"
-	"user-service/internal/controller/http"
 	"user-service/internal/repo"
 	"user-service/internal/service"
+	"user-service/internal/transport/http"
 	"user-service/pkg/postgres"
 
 	"github.com/rs/zerolog"
