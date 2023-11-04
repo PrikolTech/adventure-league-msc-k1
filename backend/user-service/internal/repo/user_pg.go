@@ -44,18 +44,18 @@ func (u *UserPG) GetByID(ctx context.Context, id uuid.UUID) (*entity.User, error
 	return &user, err
 }
 
-func (u *UserPG) GetByName(ctx context.Context, name string) (*entity.User, error) {
-	const query = `SELECT * FROM "data" WHERE name = $1`
+func (u *UserPG) GetByEmail(ctx context.Context, email string) (*entity.User, error) {
+	const query = `SELECT * FROM "data" WHERE email = $1`
 
 	var user entity.User
 	err := u.Pool.
-		QueryRow(ctx, query, name).
+		QueryRow(ctx, query, email).
 		Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.Patronymic, &user.Phone, &user.Telegram)
 
 	return &user, err
 }
 
-func (u *UserPG) UpdatePassword(ctx context.Context, id uuid.UUID, password []byte) error {
+func (u *UserPG) UpdatePassword(ctx context.Context, id uuid.UUID, password string) error {
 	const query = `UPDATE "data" SET password = $2 WHERE id = $1`
 
 	if _, err := u.Pool.Exec(ctx, query, id, password); err != nil {

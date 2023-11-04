@@ -10,8 +10,8 @@ import (
 type User interface {
 	Create(ctx context.Context, data entity.User) (*entity.User, error)
 	GetByID(ctx context.Context, id uuid.UUID) (*entity.User, error)
-	GetByName(ctx context.Context, name string) (*entity.User, error)
-	UpdatePassword(ctx context.Context, id uuid.UUID, password []byte) error
+	GetByEmail(ctx context.Context, email string) (*entity.User, error)
+	UpdatePassword(ctx context.Context, id uuid.UUID, password string) error
 	DeleteByID(ctx context.Context, id uuid.UUID) error
 }
 

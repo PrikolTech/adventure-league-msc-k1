@@ -1,11 +1,10 @@
 package service
 
 import (
-	"context"
 	"user-service/internal/entity"
 	"user-service/internal/repo"
 
-	uuid "github.com/jackc/pgx-gofrs-uuid"
+	"github.com/gofrs/uuid/v5"
 )
 
 type role struct {
@@ -16,5 +15,5 @@ func NewRole(repo repo.Role) *role {
 	return &role{repo}
 }
 
-func (r *role) GetByUser(ctx context.Context, userID uuid.UUID) ([]entity.Role, error)
-func (r *role) List(ctx context.Context) ([]entity.Role, error)
+func (r *role) GetByUser(userID uuid.UUID) ([]entity.Role, error)
+func (r *role) List() ([]entity.Role, error)
