@@ -18,4 +18,5 @@ type User interface {
 type Role interface {
 	GetByUser(ctx context.Context, userID uuid.UUID) ([]entity.Role, error)
 	List(ctx context.Context) ([]entity.Role, error)
+	CreateUserRole(ctx context.Context, userID uuid.UUID, roleID uuid.UUID) error
 }

@@ -39,3 +39,12 @@ func (r *RolePG) List(ctx context.Context) ([]entity.Role, error) {
 
 	return pgx.CollectRows(rows, pgx.RowToStructByPos[entity.Role])
 }
+
+func (r *RolePG) CreateUserRole(ctx context.Context, userID uuid.UUID, roleID uuid.UUID) error {
+	const query = `INSERT INTO "user_role"
+		(role_id, data_id) 
+		VALUES ($1, $2) RETURNING *`
+
+	_, err := r.Pool.Exec(ctx, query, roleID, userID)
+	return err
+}

@@ -6,6 +6,6 @@ CREATE TABLE IF NOT EXISTS auth.role (
 
 CREATE TABLE IF NOT EXISTS auth.user_role (
     role_id UUID REFERENCES auth.role(id) ON DELETE CASCADE,
-    user_id UUID REFERENCES auth.user(id) ON DELETE CASCADE,
-    PRIMARY KEY (role_id, user_id)
+    data_id UUID REFERENCES auth.data(id) ON DELETE CASCADE,
+    PRIMARY KEY (role_id, data_id)
 );

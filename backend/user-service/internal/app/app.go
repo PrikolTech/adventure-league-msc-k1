@@ -22,7 +22,7 @@ func Run(cfg *Config, logger zerolog.Logger) error {
 	userRepo := repo.NewUserPG(postgres)
 	roleRepo := repo.NewRolePG(postgres)
 
-	userService := service.NewUser(userRepo)
+	userService := service.NewUser(userRepo, roleRepo)
 	roleService := service.NewRole(roleRepo)
 
 	server := http.NewServer(logger, http.Services{userService, roleService}, http.ServerOptions{

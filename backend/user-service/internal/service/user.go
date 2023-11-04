@@ -12,28 +12,34 @@ import (
 )
 
 type user struct {
-	repo repo.User
+	userRepo repo.User
+	roleRepo repo.Role
 }
 
-func NewUser(repo repo.User) *user {
-	return &user{repo}
+func NewUser(userRepo repo.User, roleRepo repo.Role) *user {
+	return &user{userRepo, roleRepo}
 }
 
-func (u *user) Authenticate(email string, password string) (uuid.UUID, error) {
-	user, err := u.repo.GetByEmail(context.Background(), email)
+func (u *user) Authenticate(email string, password string) (uuid.UUID, []entity.Role, error) {
+	user, err := u.userRepo.GetByEmail(context.Background(), email)
 	if err != nil {
-		return uuid.Nil, ErrUserNotExist
+		return uuid.Nil, nil, ErrUserNotExist
 	}
 
 	if err := verifyPassword(*user.Password, password); err != nil {
-		return uuid.Nil, ErrPasswordIncorrect
+		return uuid.Nil, nil, ErrPasswordIncorrect
 	}
 
-	return user.ID, nil
+	roles, err := u.roleRepo.GetByUser(context.Background(), user.ID)
+	if err != nil {
+		return uuid.Nil, nil, err
+	}
+
+	return user.ID, roles, nil
 }
 
 func (u *user) Create(data entity.User) (*entity.User, error) {
-	_, err := u.repo.GetByEmail(context.Background(), *data.Email)
+	_, err := u.userRepo.GetByEmail(context.Background(), *data.Email)
 	if err == nil {
 		return nil, ErrUserExists
 	}
@@ -48,22 +54,28 @@ func (u *user) Create(data entity.User) (*entity.User, error) {
 	}
 
 	data.Password = &password
-	return u.repo.Create(context.Background(), data)
+	return u.userRepo.Create(context.Background(), data)
 }
 
 func (u *user) Get(id uuid.UUID) (*entity.User, error) {
-	user, err := u.repo.GetByID(context.Background(), id)
+	user, err := u.userRepo.GetByID(context.Background(), id)
 	if err != nil {
 		return nil, ErrUserNotExist
 	}
 
+	roles, err := u.roleRepo.GetByUser(context.Background(), user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	user.Roles = roles
 	return user, nil
 }
 
 func (u *user) Update(data entity.User) error {
-	user, err := u.repo.GetByID(context.Background(), data.ID)
+	user, err := u.Get(data.ID)
 	if err != nil {
-		return ErrUserNotExist
+		return err
 	}
 
 	if data.Password != nil {
@@ -72,7 +84,7 @@ func (u *user) Update(data entity.User) error {
 			return err
 		}
 
-		err = u.repo.UpdatePassword(context.Background(), user.ID, password)
+		err = u.userRepo.UpdatePassword(context.Background(), user.ID, password)
 		if err != nil {
 			return err
 		}
@@ -88,7 +100,7 @@ func (u *user) Delete(id uuid.UUID) error {
 		return err
 	}
 
-	return u.repo.DeleteByID(context.Background(), user.ID)
+	return u.userRepo.DeleteByID(context.Background(), user.ID)
 }
 
 const (

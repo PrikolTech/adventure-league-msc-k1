@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"user-service/internal/entity"
 	"user-service/internal/repo"
 
@@ -15,5 +16,10 @@ func NewRole(repo repo.Role) *role {
 	return &role{repo}
 }
 
-func (r *role) GetByUser(userID uuid.UUID) ([]entity.Role, error)
-func (r *role) List() ([]entity.Role, error)
+func (r *role) GetByUser(userID uuid.UUID) ([]entity.Role, error) {
+	return r.repo.GetByUser(context.Background(), userID)
+}
+
+func (r *role) List() ([]entity.Role, error) {
+	return r.repo.List(context.Background())
+}
