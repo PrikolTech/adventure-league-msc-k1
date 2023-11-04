@@ -10,10 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_04_182439) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_05_004043) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
+
+  create_table "advantages", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.string "name"
+    t.uuid "course_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id"], name: "index_advantages_on_course_id"
+  end
+
+  create_table "content_types", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "contents", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.string "url"
+    t.uuid "content_type_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["content_type_id"], name: "index_contents_on_content_type_id"
+  end
 
   create_table "course_types", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.string "name"
@@ -22,14 +44,46 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_04_182439) do
   end
 
   create_table "courses", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.text "description"
     t.float "price"
     t.uuid "course_type_id", null: false
+    t.uuid "period_id", null: false
+    t.uuid "education_form_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["course_type_id"], name: "index_courses_on_course_type_id"
+    t.index ["education_form_id"], name: "index_courses_on_education_form_id"
+    t.index ["period_id"], name: "index_courses_on_period_id"
   end
 
+  create_table "education_forms", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "lectures", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "start"
+    t.uuid "course_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id"], name: "index_lectures_on_course_id"
+  end
+
+  create_table "periods", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.date "start"
+    t.date "end"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "advantages", "courses"
+  add_foreign_key "contents", "content_types"
   add_foreign_key "courses", "course_types"
+  add_foreign_key "courses", "education_forms"
+  add_foreign_key "courses", "periods"
+  add_foreign_key "lectures", "courses"
 end

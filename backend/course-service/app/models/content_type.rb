@@ -1,0 +1,2 @@
+class ContentType < ApplicationRecord
+end
