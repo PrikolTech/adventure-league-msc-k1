@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"fmt"
 	"user-service/internal/entity"
 	"user-service/pkg/postgres"
 
@@ -21,6 +22,7 @@ func (u *UserPG) Create(ctx context.Context, data entity.User) (*entity.User, er
 			(email, password, first_name, last_name, patronymic, phone, telegram) 
 			VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`
 
+	fmt.Println(data.Password, len(*data.Password))
 	var user entity.User
 	err := u.Pool.
 		QueryRow(ctx, query, data.Email, data.Password, data.FirstName, data.LastName, data.Patronymic, data.Phone, data.Telegram).

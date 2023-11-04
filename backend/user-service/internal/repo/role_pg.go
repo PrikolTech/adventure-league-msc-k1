@@ -19,7 +19,7 @@ func NewRolePG(pg *postgres.Postgres) *RolePG {
 
 func (r *RolePG) GetByUser(ctx context.Context, userID uuid.UUID) ([]entity.Role, error) {
 	const query = `SELECT id, title, description FROM 
-		(SELECT * FROM user_role WHERE user_id = $1) AS "user_role" JOIN "role" ON "user_role".role_id = role.id`
+		(SELECT * FROM user_role WHERE data_id = $1) AS "user_role" JOIN "role" ON "user_role".role_id = role.id`
 
 	rows, err := r.Pool.Query(ctx, query, userID)
 	if err != nil {

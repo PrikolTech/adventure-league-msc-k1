@@ -39,5 +39,5 @@ func InternalServerError(w http.ResponseWriter) {
 }
 
 func DecodingError(w http.ResponseWriter) {
-	ErrorJSON(w, "body decoding error", http.StatusBadRequest)
+	ErrorJSON(w, "body/parameters decoding error", http.StatusBadRequest)
 }

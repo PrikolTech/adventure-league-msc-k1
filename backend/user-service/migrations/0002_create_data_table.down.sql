@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS user.data;
+DROP TABLE IF EXISTS "user".data;
