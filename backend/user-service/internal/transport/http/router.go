@@ -16,16 +16,19 @@ func Router(services Services) *chi.Mux {
 	mux := chi.NewMux()
 
 	user := handler.NewUser(services.User)
+	role := handler.NewRole(services.Role)
 
 	mux.Route("/", func(r chi.Router) {
 		r.Route("/user", func(r chi.Router) {
-			r.Get("/", user.Get)
+			r.Get("/{id}", user.Get)
 			r.Post("/", user.Create)
 			r.Patch("/", user.Update)
 			r.Delete("/", user.Delete)
 			r.Post("/authenticate", user.Authenticate)
 		})
 		r.Route("/role", func(r chi.Router) {
+			r.Get("/", role.List)
+			r.Get("/{userID}", role.Get)
 		})
 	})
 
