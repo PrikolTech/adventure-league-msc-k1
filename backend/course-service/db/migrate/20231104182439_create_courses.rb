@@ -1,6 +1,6 @@
 class CreateCourses < ActiveRecord::Migration[7.1]
   def change
-    create_table :courses do |t|
+    create_table :courses, id: :uuid, default: "uuid_generate_v4()" do |t|
       t.string :name
       t.text :description
       t.float :price

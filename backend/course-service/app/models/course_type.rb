@@ -3,11 +3,11 @@ class CourseType < ApplicationRecord
 
   # after_create :add_default_checklist
 
-  # DEFAULT_TYPES = [
-  #   'Базовый',
-  #   'Продвинутый',
-  #   'Сложный'
-  # ]
+  DEFAULT_TYPES = [
+    'Базовый',
+    'Продвинутый',
+    'Сложный'
+  ]
 
   # def add_default_checklist
   #   DEFAULT_TYPES.each do |type| # Define way to get default values

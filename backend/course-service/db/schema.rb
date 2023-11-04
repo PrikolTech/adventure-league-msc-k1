@@ -13,14 +13,15 @@
 ActiveRecord::Schema[7.1].define(version: 2023_11_04_182439) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "uuid-ossp"
 
-  create_table "course_types", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "course_types", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "courses", force: :cascade do |t|
+  create_table "courses", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.float "price"
