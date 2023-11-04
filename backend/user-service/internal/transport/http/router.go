@@ -22,8 +22,8 @@ func Router(services Services) *chi.Mux {
 		r.Route("/user", func(r chi.Router) {
 			r.Get("/{id}", user.Get)
 			r.Post("/", user.Create)
-			r.Patch("/", user.Update)
-			r.Delete("/", user.Delete)
+			r.Patch("/{id}", user.Update)
+			r.Delete("/{id}", user.Delete)
 			r.Post("/authenticate", user.Authenticate)
 		})
 		r.Route("/role", func(r chi.Router) {
