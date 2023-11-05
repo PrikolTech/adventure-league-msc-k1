@@ -109,7 +109,7 @@ export default {
                         :styles="['swiper__slide-btn btn btn_grey btn_arrow']"
                         :type="'button'"
                       >
-                      Подробнее
+                        Подробнее
                       </the-button>
                     </div>
                 </div>
