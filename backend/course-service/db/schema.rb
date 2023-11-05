@@ -21,9 +21,11 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_05_004043) do
   create_table "contents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "url"
     t.uuid "content_type_id", null: false
+    t.uuid "lecture_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["content_type_id"], name: "index_contents_on_content_type_id"
+    t.index ["lecture_id"], name: "index_contents_on_lecture_id"
   end
 
   create_table "course_types", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -65,6 +67,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_05_004043) do
   end
 
   add_foreign_key "contents", "content_types"
+  add_foreign_key "contents", "lectures"
   add_foreign_key "courses", "course_types"
   add_foreign_key "courses", "education_forms"
   add_foreign_key "courses", "periods"
