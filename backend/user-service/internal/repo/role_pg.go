@@ -17,9 +17,53 @@ func NewRolePG(pg *postgres.Postgres) *RolePG {
 	return &RolePG{pg}
 }
 
+func (r *RolePG) Create(ctx context.Context, data entity.Role) (*entity.Role, error) {
+	const query = `INSERT INTO "role"
+		(title, description)
+		VALUES ($1, $2) RETURNING *`
+
+	var role entity.Role
+	err := r.Pool.
+		QueryRow(ctx, query, data.Title, data.Description).
+		Scan(&role.ID, &role.Title, &role.Description)
+
+	return &role, err
+}
+
+func (r *RolePG) CreateUserRole(ctx context.Context, userID uuid.UUID, roleID uuid.UUID) error {
+	const query = `INSERT INTO "data_role"
+		(role_id, data_id) 
+		VALUES ($1, $2) RETURNING *`
+
+	_, err := r.Pool.Exec(ctx, query, roleID, userID)
+	return err
+}
+
+func (r *RolePG) GetByID(ctx context.Context, id uuid.UUID) (*entity.Role, error) {
+	const query = `SELECT * FROM "role" WHERE id = $1`
+
+	var role entity.Role
+	err := r.Pool.
+		QueryRow(ctx, query, id).
+		Scan(&role.ID, &role.Title, &role.Description)
+
+	return &role, err
+}
+
+func (r *RolePG) GetByTitle(ctx context.Context, title string) (*entity.Role, error) {
+	const query = `SELECT * FROM "role" WHERE title = $1`
+
+	var role entity.Role
+	err := r.Pool.
+		QueryRow(ctx, query, title).
+		Scan(&role.ID, &role.Title, &role.Description)
+
+	return &role, err
+}
+
 func (r *RolePG) GetByUser(ctx context.Context, userID uuid.UUID) ([]entity.Role, error) {
 	const query = `SELECT id, title, description FROM 
-		(SELECT * FROM user_role WHERE data_id = $1) AS "user_role" JOIN "role" ON "user_role".role_id = role.id`
+		(SELECT * FROM "data_role" WHERE data_id = $1) AS "data_role" JOIN "role" ON "data_role".role_id = role.id`
 
 	rows, err := r.Pool.Query(ctx, query, userID)
 	if err != nil {
@@ -40,11 +84,12 @@ func (r *RolePG) List(ctx context.Context) ([]entity.Role, error) {
 	return pgx.CollectRows(rows, pgx.RowToStructByPos[entity.Role])
 }
 
-func (r *RolePG) CreateUserRole(ctx context.Context, userID uuid.UUID, roleID uuid.UUID) error {
-	const query = `INSERT INTO "user_role"
-		(role_id, data_id) 
-		VALUES ($1, $2) RETURNING *`
+func (r *RolePG) DeleteByID(ctx context.Context, id uuid.UUID) error {
+	const query = `DELETE FROM "role" WHERE id = $1`
 
-	_, err := r.Pool.Exec(ctx, query, roleID, userID)
-	return err
+	if _, err := r.Pool.Exec(ctx, query, id); err != nil {
+		return err
+	}
+
+	return nil
 }

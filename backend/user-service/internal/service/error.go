@@ -9,4 +9,5 @@ var (
 	ErrEmailInvalid      = errors.New("email is invalid")
 	ErrPasswordInvalid   = errors.New("password is invalid")
 	ErrPasswordIncorrect = errors.New("password is incorrect")
+	ErrRoleExists        = errors.New("role already exists")
 )

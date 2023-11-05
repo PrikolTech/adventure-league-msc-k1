@@ -15,6 +15,8 @@ type User interface {
 }
 
 type Role interface {
+	Create(data entity.Role) (*entity.Role, error)
 	GetByUser(userID uuid.UUID) ([]entity.Role, error)
 	List() ([]entity.Role, error)
+	Delete(id uuid.UUID) error
 }

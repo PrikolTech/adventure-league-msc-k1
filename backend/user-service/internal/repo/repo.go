@@ -16,7 +16,11 @@ type User interface {
 }
 
 type Role interface {
+	Create(ctx context.Context, data entity.Role) (*entity.Role, error)
+	CreateUserRole(ctx context.Context, userID uuid.UUID, roleID uuid.UUID) error
+	GetByID(ctx context.Context, id uuid.UUID) (*entity.Role, error)
+	GetByTitle(ctx context.Context, title string) (*entity.Role, error)
 	GetByUser(ctx context.Context, userID uuid.UUID) ([]entity.Role, error)
 	List(ctx context.Context) ([]entity.Role, error)
-	CreateUserRole(ctx context.Context, userID uuid.UUID, roleID uuid.UUID) error
+	DeleteByID(ctx context.Context, id uuid.UUID) error
 }

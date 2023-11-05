@@ -27,8 +27,7 @@ func Router(services Services) *chi.Mux {
 			r.Post("/authenticate", user.Authenticate)
 		})
 		r.Route("/role", func(r chi.Router) {
-			r.Get("/", role.List)
-			r.Get("/{userID}", role.Get)
+			r.Get("/", role.Get)
 		})
 	})
 
