@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"user-service/internal/entity"
 	"user-service/internal/repo"
 
@@ -30,15 +31,11 @@ func (r *role) Create(data entity.Role) (*entity.Role, error) {
 }
 
 func (r *role) Append(userID uuid.UUID, roleID uuid.UUID) error {
-	if userID == uuid.Nil {
-		return &entity.RequiredError{"user_id"}
+	err := r.repo.CreateUserRole(context.Background(), userID, roleID)
+	if err != nil {
+		return errors.New("invalid user/role id")
 	}
-
-	if roleID == uuid.Nil {
-		return &entity.RequiredError{"role_id"}
-	}
-
-	return r.repo.CreateUserRole(context.Background(), userID, roleID)
+	return nil
 }
 
 func (r *role) Remove(userID uuid.UUID, roleID uuid.UUID) error {

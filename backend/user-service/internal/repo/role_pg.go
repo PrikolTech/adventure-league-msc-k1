@@ -33,7 +33,7 @@ func (r *RolePG) Create(ctx context.Context, data entity.Role) (*entity.Role, er
 func (r *RolePG) CreateUserRole(ctx context.Context, userID uuid.UUID, roleID uuid.UUID) error {
 	const query = `INSERT INTO "data_role"
 		(role_id, data_id) 
-		VALUES ($1, $2) RETURNING *`
+		VALUES ($1, $2)`
 
 	_, err := r.Pool.Exec(ctx, query, roleID, userID)
 	return err
