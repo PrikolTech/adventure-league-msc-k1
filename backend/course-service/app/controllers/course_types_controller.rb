@@ -1,6 +1,5 @@
-class CoursesController < ApplicationController
+class CourseTypesController < ApplicationController
   def index
-    CourseType.create(name: 'Hello')
     @courses = CourseType.all
     render json: @courses
   end
