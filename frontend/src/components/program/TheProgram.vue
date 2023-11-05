@@ -154,6 +154,10 @@ let programs = ref([
             &.active {
                 border: 1px solid var(--var-blue) !important;
                 color: var(--var-blue) !important;
+                &:hover {
+                    background: var(--var-blue);
+                    color: #fff !important;
+                }
             }
         }
     }

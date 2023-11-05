@@ -44,31 +44,49 @@ const props = defineProps({
   padding: 10px 16px;
   border-radius: var(--rounded-xl, 12px);
   position: relative;
+  transition: .2s;
   & .icon-arrow {
     display: none;
     transition: .2s;
   }
   &_arrow {
     & .icon-arrow {
+        & path {
+          transition: .2s;
+        }
         display: block;
     }
   }
   &_red-border {
     color: var(--primary-1-default, #FF4B5F);
     border: 1px solid #FF4B5F;
+    &:hover {
+      color: var(--primary-1-default, #e43f52);
+      border: 1px solid #e43f52;
+      background: rgba(0,0,0,0.01);
+    }
   }
   &_red {
     background: #FF4B5F;
     color: #fff;
+    &:hover {
+      background: #e43f52;
+    }
   }
   &_grey {
     color: var(--var-grey-dark-font);
     border: 1px solid var(--gray-400, #9CA3AF);
+    &:hover {
+      background: rgba(0,0,0,0.05);
+    }
   }
   &_grey-lite {
     border-radius: var(--rounded-xl, 12px);
     border: 1px solid var(--gray-300, #D1D5DB);
     color: var(--gray-800, #1F2A37);
+    &:hover {
+      background: rgba(0,0,0,0.05);
+    }
   }
   &_arrow {
     gap: 5px;
@@ -85,16 +103,36 @@ const props = defineProps({
     &_red-border {
       color: var(--primary-1-default, #FF4B5F);
       border: 1px solid #FF4B5F;
+      &:hover {
+        color: var(--primary-1-default, #e43f52);
+        border: 1px solid #e43f52;
+        background: rgba(0,0,0,0.01);
+      }
     }
     &_red {
       background: #FF4B5F;
       color: #fff;
+      &:hover {
+        background: #e43f52;
+      }
     }
     &_grey {
       border: 1px solid var(--gray-100, #F3F4F6);
+      &:hover {
+        background: rgba(0,0,0,0.1);
+        border: 1px solid var(--gray-100, #89909e);
+        color: #89909e;
+      }
     }
     &_arrow {
       gap: 5px;
+      &:hover {
+        & svg {
+          & path {
+            fill: #89909e;
+          }
+        }
+      }
     }
   }
 }
