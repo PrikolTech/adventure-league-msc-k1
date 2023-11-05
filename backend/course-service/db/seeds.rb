@@ -1,4 +1,4 @@
-EDUCATION_FORMS = ['Очная', 'Дистанционная']
+EDUCATION_FORMS = ['Онлайн', 'Очно']
 
 EDUCATION_FORMS.each do |form|
   EducationForm.find_or_create_by!(name: form)
