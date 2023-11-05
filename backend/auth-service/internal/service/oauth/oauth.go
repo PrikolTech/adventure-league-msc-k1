@@ -6,8 +6,8 @@ type OAuth struct {
 	Server *Server
 }
 
-func New(user net.User, key []byte) (*OAuth, error) {
-	manager, err := NewManager(key)
+func New(user net.User, opts ManagerOptions) (*OAuth, error) {
+	manager, err := NewManager(opts)
 	if err != nil {
 		return nil, err
 	}

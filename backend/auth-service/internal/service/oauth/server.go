@@ -65,9 +65,9 @@ func (s *Server) responseTokenHandler(w http.ResponseWriter, data map[string]int
 }
 
 func (s *Server) passwordAuthorizationHandler(ctx context.Context, clientID, username, password string) (userID string, err error) {
-	resp, err := s.webapi.Authenticate(username, password)
+	id, err := s.webapi.Authenticate(username, password)
 	if err == nil {
-		userID = resp.ID
+		userID = id
 	}
 	return
 }

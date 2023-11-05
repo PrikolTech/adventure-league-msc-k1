@@ -8,16 +8,22 @@ import (
 	"github.com/go-oauth2/oauth2/v4/store"
 )
 
-func NewManager(key []byte) (*manage.Manager, error) {
-	generator, err := NewJWTAccessGenerate(key)
+type ManagerOptions struct {
+	ClientID     string
+	ClientDomain string
+	Key          []byte
+}
+
+func NewManager(opts ManagerOptions) (*manage.Manager, error) {
+	generator, err := NewJWTAccessGenerate(opts.Key)
 	if err != nil {
 		return nil, err
 	}
 
 	clientStore := store.NewClientStore()
-	clientStore.Set("000000", &models.Client{
-		ID:     "000000",
-		Domain: "http://localhost",
+	clientStore.Set(opts.ClientID, &models.Client{
+		ID:     opts.ClientID,
+		Domain: opts.ClientDomain,
 		Public: true,
 	})
 

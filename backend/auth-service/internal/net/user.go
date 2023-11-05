@@ -30,7 +30,7 @@ type AuthenticateResponse struct {
 	Roles []Role
 }
 
-func (u *user) Authenticate(email string, password string) (*AuthenticateResponse, error) {
+func (u *user) Authenticate(email string, password string) (string, error) {
 	reqData := new(bytes.Buffer)
 	e := json.NewEncoder(reqData)
 	e.Encode(AuthenticateRequest{email, password})
@@ -38,14 +38,14 @@ func (u *user) Authenticate(email string, password string) (*AuthenticateRespons
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodPost, u.url+"/user/authenticate", reqData)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	defer resp.Body.Close()
@@ -54,5 +54,5 @@ func (u *user) Authenticate(email string, password string) (*AuthenticateRespons
 	d := json.NewDecoder(resp.Body)
 	err = d.Decode(respData)
 
-	return respData, err
+	return respData.ID, err
 }

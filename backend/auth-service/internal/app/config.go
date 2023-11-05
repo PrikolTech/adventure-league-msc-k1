@@ -7,6 +7,7 @@ type (
 		HTTP    ConfigHTTP
 		UserAPI ConfigUserAPI
 		Key     ConfigKey
+		Client  ClientConfig
 	}
 
 	ConfigHTTP struct {
@@ -21,6 +22,11 @@ type (
 
 	ConfigKey struct {
 		Path string `env:"KEY_PATH" env-required:""`
+	}
+
+	ClientConfig struct {
+		ID     string `env:"CLIENT_ID" env-required:""`
+		Domain string `env:"CLIENT_DOMAIN" env-required:""`
 	}
 )
 

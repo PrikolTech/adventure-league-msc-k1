@@ -18,7 +18,12 @@ func Run(cfg *Config, logger *zerolog.Logger) error {
 
 	user := net.NewUser(cfg.UserAPI.URL)
 
-	service, err := oauth.New(user, key)
+	service, err := oauth.New(user, oauth.ManagerOptions{
+		ClientID:     cfg.Client.ID,
+		ClientDomain: cfg.Client.Domain,
+		Key:          key,
+	})
+
 	if err != nil {
 		return err
 	}
