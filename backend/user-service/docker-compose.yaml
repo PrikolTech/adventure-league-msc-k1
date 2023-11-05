@@ -6,7 +6,7 @@ services:
       db:
         condition: service_healthy
     ports:
-      - 3000:3000
+      - 3002:3002
     env_file:
       - ./configs/docker.dev.env
     environment:
