@@ -1,4 +1,4 @@
-package main
+package oauth
 
 import (
 	"context"
@@ -11,10 +11,6 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 )
-
-type JWTAccessClaims struct {
-	generates.JWTAccessClaims
-}
 
 func NewJWTAccessGenerate(key []byte) (*JWTAccessGenerate, error) {
 	signedKey, err := jwt.ParseECPrivateKeyFromPEM(key)
@@ -30,13 +26,11 @@ type JWTAccessGenerate struct {
 }
 
 func (a *JWTAccessGenerate) Token(ctx context.Context, data *oauth2.GenerateBasic, isGenRefresh bool) (string, string, error) {
-	claims := &JWTAccessClaims{
-		generates.JWTAccessClaims{
-			jwt.StandardClaims{
-				Audience:  data.Client.GetID(),
-				Subject:   data.UserID,
-				ExpiresAt: data.TokenInfo.GetAccessCreateAt().Add(data.TokenInfo.GetAccessExpiresIn()).Unix(),
-			},
+	claims := &generates.JWTAccessClaims{
+		jwt.StandardClaims{
+			Audience:  data.Client.GetID(),
+			Subject:   data.UserID,
+			ExpiresAt: data.TokenInfo.GetAccessCreateAt().Add(data.TokenInfo.GetAccessExpiresIn()).Unix(),
 		},
 	}
 
