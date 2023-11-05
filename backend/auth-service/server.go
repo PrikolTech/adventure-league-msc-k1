@@ -11,6 +11,7 @@ func NewServer(manager oauth2.Manager) *server.Server {
 	srv.SetAllowGetAccessRequest(true)
 
 	srv.SetClientInfoHandler(server.ClientFormHandler)
+	srv.SetInternalErrorHandler(InternalErrorHandler)
 	srv.SetResponseTokenHandler(ResponseTokenHandler)
 
 	srv.SetPasswordAuthorizationHandler(PasswordAuthorizationHandler)

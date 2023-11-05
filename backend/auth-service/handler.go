@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
+	"github.com/go-oauth2/oauth2/v4/errors"
 	"github.com/go-oauth2/oauth2/v4/server"
 )
 
@@ -14,18 +16,46 @@ type TokenHandler struct {
 }
 
 func (h TokenHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	data := r.FormValue("refresh_token") // important to parse multipart form
-	if cookie, err := r.Cookie("refresh_token"); err != http.ErrNoCookie {
-		data = cookie.Value
-	} else if data != "" {
-		data = ""
-	}
-	r.Form.Set("refresh_token", data)
+	if r.Method == http.MethodPost {
+		data := r.FormValue("refresh_token") // important to parse multipart form
+		if cookie, err := r.Cookie("refresh_token"); err != http.ErrNoCookie {
+			data = cookie.Value
+		} else if data != "" {
+			data = ""
+		}
+		r.Form.Set("refresh_token", data)
 
-	err := h.srv.HandleTokenRequest(w, r)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		err := h.srv.HandleTokenRequest(w, r)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
 	}
+
+	if r.Method == http.MethodDelete {
+		cookie, err := r.Cookie("refresh_token")
+		if err != nil {
+			http.Error(w, "cookie is empty", http.StatusBadRequest)
+			return
+		}
+
+		err = h.srv.Manager.RemoveRefreshToken(context.Background(), cookie.Value)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		cookie = &http.Cookie{
+			Name:    "refresh_token",
+			Expires: time.Unix(0, 0),
+		}
+
+		http.SetCookie(w, cookie)
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
+	w.WriteHeader(http.StatusMethodNotAllowed)
 }
 
 func ResponseTokenHandler(w http.ResponseWriter, data map[string]interface{}, header http.Header, statusCode ...int) error {
@@ -64,4 +94,9 @@ func PasswordAuthorizationHandler(ctx context.Context, clientID, username, passw
 		return "id", nil
 	}
 	return "", nil
+}
+
+func InternalErrorHandler(err error) (re *errors.Response) {
+	log.Println("Internal Error:", err.Error())
+	return
 }

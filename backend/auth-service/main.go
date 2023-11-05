@@ -3,33 +3,27 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
-	"github.com/go-oauth2/oauth2/v4/generates"
-	"github.com/go-oauth2/oauth2/v4/manage"
-	"github.com/go-oauth2/oauth2/v4/models"
-	"github.com/go-oauth2/oauth2/v4/store"
-	"github.com/golang-jwt/jwt"
 	"github.com/rs/cors"
 )
 
 func main() {
-	clientStore := store.NewClientStore()
-	clientStore.Set("000000", &models.Client{
-		ID:     "000000",
-		Domain: "http://localhost",
-		Public: true,
-	})
+	key, err := os.ReadFile("key/ecdsa")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	manager := manage.NewDefaultManager()
-	manager.MustTokenStorage(store.NewMemoryTokenStore())
-	manager.MapClientStorage(clientStore)
-	manager.MapAccessGenerate(generates.NewJWTAccessGenerate("", []byte("00000000"), jwt.SigningMethodHS512))
+	manager, err := NewManager(key)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	srv := NewServer(manager)
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
-		AllowedMethods:   []string{http.MethodHead, http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete},
+		AllowedMethods:   []string{http.MethodHead, http.MethodGet, http.MethodPost, http.MethodDelete},
 		AllowedHeaders:   []string{"*"},
 		AllowCredentials: true,
 	})
