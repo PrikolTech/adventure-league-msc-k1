@@ -104,7 +104,7 @@ let popupData = ref([
                         Подать заявку
                     </the-button>
                     <the-button
-                        :styles="['swiper__slide-btn btn btn_grey']"
+                        :styles="['btn btn_grey']"
                         :type="'button'"
                         @click="popupStore.enableScroll(namePopup)"
                     >
@@ -170,6 +170,9 @@ let popupData = ref([
         justify-content: space-between;
         gap: 20px;
         margin-bottom: 45px;
+        @media (max-width: 539px) {
+            margin-bottom: 15px;
+        }
     }
 
     &__content-title {
@@ -177,6 +180,9 @@ let popupData = ref([
 
     &__header-line {
         flex: 1;
+        @media (max-width: 539px) {
+            display: none;
+        }
     }
 
     &__list {
@@ -193,8 +199,18 @@ let popupData = ref([
     &__btns {
         display: flex;
         justify-content: center;
-        gap: 30px;
+        column-gap: 30px;
+        row-gap: 10px;
         margin-top: 50px;
+        flex-wrap: wrap;
+        @media (max-width: 539px) {
+            column-gap: 15px;
+        }
+        & .btn {
+            @media (max-width: 539px) {
+                white-space: nowrap;
+            }
+        }
     }
 
     &__agree {
@@ -208,6 +224,9 @@ let popupData = ref([
     width: 100%;
     &:not(:last-child) {
         margin-bottom: 30px;
+        @media (max-width: 539px) {
+            margin-bottom: 20px;
+        }
     }
     & p {
         color: var(--gray-800, #1F2A37);
@@ -216,6 +235,9 @@ let popupData = ref([
         font-style: normal;
         font-weight: 500;
         line-height: 150%;
+        @media (max-width: 539px) {
+            font-size: 14px;
+        }
     }
 
 }
@@ -235,6 +257,9 @@ let popupData = ref([
         width: 100%;
         background: rgba(255,255,255,0);
         padding: 10px 30px;
+        @media (max-width: 539px) {
+            padding: 10px 15px;
+        }
     }
     & textarea {
         height: 180px;
@@ -258,6 +283,14 @@ let popupData = ref([
             color: #fff;
             &::placeholder {
                 color: var(--gray-500, #6B7280);
+            }
+        }
+    }
+
+    & .popup__close {
+        & svg {
+            & path {
+                fill: #fff;
             }
         }
     }

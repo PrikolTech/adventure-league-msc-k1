@@ -67,14 +67,14 @@ onBeforeUnmount(() => {
                 </div>
                 <div class="program__item-btns">
                     <the-button
-                        :styles="['swiper__slide-btn btn btn_red']"
+                        :styles="['btn btn_red']"
                         :type="'button'"
                         @click="popupStore.disableScroll('mainForm')"
                     >
                         Записаться
                     </the-button>
                     <the-button
-                        :styles="['swiper__slide-btn btn btn_grey']"
+                        :styles="['btn btn_grey']"
                         :type="'button'"
                     >
                         Подробнее
@@ -97,6 +97,18 @@ onBeforeUnmount(() => {
         justify-content: space-between;
         border-radius: var(--rounded-3xl, 24px);
         overflow: hidden;
+        @media (max-width: 1309px) {
+            flex: 0 0 calc(33.33% - 27px);
+        }
+        @media (max-width: 1023px) {
+            flex: 0 0 calc(50% - 20px);
+        }
+        @media (max-width: 899px) {
+            flex: 0 0 calc(50% - 10px);
+        }
+        @media (max-width: 767px) {
+            flex: 0 0 100%;
+        }
     }
 
     &__item-pic {
@@ -144,6 +156,11 @@ onBeforeUnmount(() => {
     }
 
     &__item-text {
+        // -webkit-line-clamp: 7; /* Число отображаемых строк */
+        // display: -webkit-box; /* Включаем флексбоксы */
+        // -webkit-box-orient: vertical; /* Вертикальная ориентация */
+        // overflow: hidden; /* Обрезаем всё за пределами блока */
+        
         z-index: 2;
         position: relative;
         border-radius: 20px;
@@ -159,7 +176,6 @@ onBeforeUnmount(() => {
     }
 
     &__item-title {
-        // background: var(--gray-100, #F3F4F6);
         color: var(--var-grey-lite-font);
         font-family: Inter;
         font-size: 18px;
@@ -170,7 +186,6 @@ onBeforeUnmount(() => {
         border-radius: 24px 24px 0 0;
     }
     &__item-description {
-        // background: var(--gray-100, #F3F4F6);
         color: var(--var-grey-lite-font);
         font-family: Roboto;
         font-size: 14px;
@@ -184,9 +199,8 @@ onBeforeUnmount(() => {
     }
 
     &__item-btns {
-        // background: var(--gray-100, #F3F4F6);
         display: flex;
-        justify-content: space-between;
+        gap: 15px;
         padding: 15px 20px 25px 20px;
     }
 

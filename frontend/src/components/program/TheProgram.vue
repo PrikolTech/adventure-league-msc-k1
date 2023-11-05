@@ -15,7 +15,7 @@ let currentFilterProgram = ref('all')
 let programs = ref([
     {
         title: 'Финансовая грамотность',
-        description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности.',
+        description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности. Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности. Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности. ',
         date: '19 декабря',
         type: 'Онлайн, очно',
         number: '1'
@@ -121,6 +121,15 @@ let programs = ref([
         gap: 40px;
         align-items: center;
         margin-bottom: 66px;
+        @media (max-width: 1023px) {
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        @media (max-width: 539px) {
+            gap: 10px;
+            margin-bottom: 15px;
+        }
     }
 
     &__title {
@@ -130,10 +139,18 @@ let programs = ref([
         display: flex;
         gap: 18px;
         align-items: center;
+        @media (max-width: 1023px) {
+            flex: 0 0 100%;
+            width: 100%;
+            overflow: auto;
+        }
     }
 
     &__filter-item {
         & button {
+            @media (max-width: 1023px) {
+                white-space: nowrap;
+            }
             &.active {
                 border: 1px solid var(--var-blue) !important;
                 color: var(--var-blue) !important;
@@ -143,6 +160,9 @@ let programs = ref([
 
     &__line {
         flex: 1;
+        @media (max-width: 1023px) {
+            display: none;
+        }
     }
 
     &__list {
@@ -150,6 +170,13 @@ let programs = ref([
         flex-wrap: wrap;
         gap: 40px;
         margin-bottom: 60px;
+        @media (max-width: 899px) {
+            margin-bottom: 40px;
+            gap: 20px;
+        }
+        @media (max-width: 539px) {
+            margin-bottom: 25px;
+        }
     }
 
 
@@ -158,10 +185,16 @@ let programs = ref([
         gap: 47px;
         align-items: center;
         justify-content: space-between;
+        @media (max-width: 539px) {
+            justify-content: center;
+        }
     }
 
     &__footer-line {
         flex: 1;
+        @media (max-width: 539px) {
+            display: none;
+        }
     }
 }
 

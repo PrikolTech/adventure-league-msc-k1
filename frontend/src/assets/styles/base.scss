@@ -35,7 +35,7 @@ html, body {
 body {
 }
 input, button, textarea {
-  color: var(--gray-900, #111928);
+  color: var(--var-grey-lite-font);
   font-family: Inter;
   font-size: 18px;
   font-style: normal;
@@ -62,7 +62,7 @@ a, a:visited {
 
 }
 a {
-  color: var(--gray-900, #111928);
+  color: var(--var-grey-lite-font);
   font-family: Inter;
   font-size: 18px;
   font-style: normal;
@@ -98,7 +98,7 @@ html {
   --width__nav-item: 0px;
 }
 body {
-  color: var(--gray-900, #111928);
+  color: var(--var-grey-lite-font);
   font-family: Inter;
   font-size: 18px;
   font-style: normal;
@@ -108,14 +108,13 @@ body {
 }
 
 .wrapper {
+  position: relative;
   min-height: 100vh;
-  // position: relative;
-  // min-height: 100%;
-  // display: flex;
-  // flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 main {
-  // flex: 1 1 auto;
+  flex: 1 1 auto;
 }
 .container {
   max-width: 1310px;
@@ -126,7 +125,7 @@ main {
 
 
 input {
-  color: var(--gray-900, #111928);
+  color: var(--var-grey-lite-font);
   font-family: Roboto;
   font-size: 14px;
   font-style: normal;
@@ -161,6 +160,9 @@ input {
   font-style: normal;
   font-weight: 600;
   line-height: 150%; /* 45px */
+  @media (max-width: 539px) {
+    font-size: 20px;
+  }
 }
 
 

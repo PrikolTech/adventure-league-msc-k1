@@ -58,9 +58,11 @@ import TheButton from '@/components/layouts/TheButton.vue';
     max-width: 390px;
     &__header {
         display: flex;
-        gap: 38px;
         align-items: center;
         margin-bottom: 40px;
+        @media (max-width: 539px) {
+            margin-bottom: 10px;
+        }
     }
 
     &__header-line {
@@ -68,6 +70,7 @@ import TheButton from '@/components/layouts/TheButton.vue';
     }
 
     &__title {
+        color: var(--var-grey-lite-font);
     }
 
     &__form {
@@ -78,6 +81,10 @@ import TheButton from '@/components/layouts/TheButton.vue';
 
     &__btn {
         margin-top: 30px;
+        @media (max-width: 539px) {
+            width: 100%;
+            margin-top: 20px;
+        }
         & .btn {
             width: 100%;
         }

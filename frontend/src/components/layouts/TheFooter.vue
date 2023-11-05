@@ -52,6 +52,15 @@ import LogoIcon from '@/components/icons/LogoIcon.vue';
 <style lang="scss" scoped>
 .footer-w {
     margin-top: 64px;
+    @media (max-width: 1023px) {
+        margin-top: 50px;
+    }
+    @media (max-width: 767px) {
+        margin-top: 35px;
+    }
+    @media (max-width: 539px) {
+        margin-top: 20px;
+    }
 }
 .footer {
     display: flex;
@@ -60,14 +69,39 @@ import LogoIcon from '@/components/icons/LogoIcon.vue';
     gap: 53px;
     padding-top: 45px;
     padding-bottom: 65px;
+    @media (max-width: 1023px) {
+        padding-top: 30px;
+        padding-bottom: 40px;
+    }
+    @media (max-width: 767px) {
+        padding-top: 25px;
+        padding-bottom: 30px;
+    }
+    @media (max-width: 539px) {
+        flex-wrap: wrap;
+        gap: 15px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
     &__line {
         flex: 1;
+        @media (max-width: 539px) {
+            display: none;
+        }
+    }
+
+    &__logo {
+        display: flex;
+        justify-content: center;
     }
 
     &__links {
         display: flex;
         gap: 16px;
         align-items: center;
+        @media (max-width: 539px) {
+            flex: 0 0 100%;
+        }
         & p {
             color: var(--var-text);
             font-family: Roboto;

@@ -21,6 +21,7 @@ const toggleTheme = () => {
 <style lang="scss" scoped>
 .switcher {
     position: relative;
+    width: fit-content;
     & .icon {
         position: absolute;
         top: 50%;
