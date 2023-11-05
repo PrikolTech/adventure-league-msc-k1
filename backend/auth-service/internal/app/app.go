@@ -6,9 +6,11 @@ import (
 	"auth-service/internal/transport/http"
 	"fmt"
 	"os"
+
+	"github.com/rs/zerolog"
 )
 
-func Run(cfg *Config) error {
+func Run(cfg *Config, logger *zerolog.Logger) error {
 	key, err := os.ReadFile(cfg.Key.Path)
 	if err != nil {
 		return err
@@ -26,5 +28,6 @@ func Run(cfg *Config) error {
 		Origins: cfg.HTTP.Origins,
 	})
 
-	return server.ListenAndServe()
+	logger.Info().Msg("server created with address " + server.Addr)
+	return fmt.Errorf("server down: %w", server.ListenAndServe())
 }

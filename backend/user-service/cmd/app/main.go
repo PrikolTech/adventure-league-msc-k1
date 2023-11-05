@@ -14,5 +14,5 @@ func main() {
 		logger.Fatal().Msg(err.Error())
 	}
 
-	logger.Fatal().Msgf("%s", app.Run(cfg, logger))
+	logger.Fatal().Msgf("%s", app.Run(cfg, &logger))
 }

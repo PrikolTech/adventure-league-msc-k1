@@ -2,14 +2,17 @@ package main
 
 import (
 	"auth-service/internal/app"
-	"log"
+
+	"github.com/rs/zerolog"
 )
 
 func main() {
+	logger := zerolog.New(zerolog.NewConsoleWriter()).With().Timestamp().Logger()
+
 	cfg, err := app.NewConfig()
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal().Msg(err.Error())
 	}
 
-	log.Fatal(app.Run(cfg))
+	logger.Fatal().Msgf("%s", app.Run(cfg, &logger))
 }
