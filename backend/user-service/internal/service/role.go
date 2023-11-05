@@ -29,6 +29,26 @@ func (r *role) Create(data entity.Role) (*entity.Role, error) {
 	return r.repo.Create(context.Background(), data)
 }
 
+func (r *role) Append(userID uuid.UUID, roleID uuid.UUID) error {
+	if userID == uuid.Nil {
+		return &entity.RequiredError{"user_id"}
+	}
+
+	if roleID == uuid.Nil {
+		return &entity.RequiredError{"role_id"}
+	}
+
+	return r.repo.CreateUserRole(context.Background(), userID, roleID)
+}
+
+func (r *role) Remove(userID uuid.UUID, roleID uuid.UUID) error {
+	return r.repo.DeleteUserRole(context.Background(), userID, roleID)
+}
+
+func (r *role) RemoveAll(userID uuid.UUID) error {
+	return r.repo.DeleteUserRoles(context.Background(), userID)
+}
+
 func (r *role) GetByUser(userID uuid.UUID) ([]entity.Role, error) {
 	return r.repo.GetByUser(context.Background(), userID)
 }

@@ -39,6 +39,20 @@ func (r *RolePG) CreateUserRole(ctx context.Context, userID uuid.UUID, roleID uu
 	return err
 }
 
+func (r *RolePG) DeleteUserRole(ctx context.Context, userID uuid.UUID, roleID uuid.UUID) error {
+	const query = `DELETE FROM "data_role" WHERE data_id = $1 AND role_id = $2`
+
+	_, err := r.Pool.Exec(ctx, query, userID, roleID)
+	return err
+}
+
+func (r *RolePG) DeleteUserRoles(ctx context.Context, userID uuid.UUID) error {
+	const query = `DELETE FROM "data_role" WHERE data_id = $1`
+
+	_, err := r.Pool.Exec(ctx, query, userID)
+	return err
+}
+
 func (r *RolePG) GetByID(ctx context.Context, id uuid.UUID) (*entity.Role, error) {
 	const query = `SELECT * FROM "role" WHERE id = $1`
 

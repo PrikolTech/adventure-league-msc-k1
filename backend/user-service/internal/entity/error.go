@@ -3,9 +3,9 @@ package entity
 import "fmt"
 
 type RequiredError struct {
-	field string
+	Field string
 }
 
 func (e *RequiredError) Error() string {
-	return fmt.Sprintf("%s is required", e.field)
+	return fmt.Sprintf("%s is required", e.Field)
 }
