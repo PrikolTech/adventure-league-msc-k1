@@ -54,7 +54,7 @@ func (w *loggerWriter) WriteHeader(statusCode int) {
 	w.ResponseWriter.WriteHeader(statusCode)
 }
 
-func LoggerMiddleware(logger zerolog.Logger) Middleware {
+func LoggerMiddleware(logger *zerolog.Logger) Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			writer := &loggerWriter{w, 200, 0}
@@ -65,7 +65,7 @@ func LoggerMiddleware(logger zerolog.Logger) Middleware {
 	}
 }
 
-func RecovererMiddleware(logger zerolog.Logger) Middleware {
+func RecovererMiddleware(logger *zerolog.Logger) Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			defer func() {

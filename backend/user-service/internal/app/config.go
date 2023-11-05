@@ -14,7 +14,7 @@ type (
 
 	ConfigHTTP struct {
 		Host    string   `env:"HTTP_HOST" env-default:"0.0.0.0" `
-		Port    string   `env:"HTTP_PORT" env-default:"3000"`
+		Port    string   `env:"HTTP_PORT" env-default:"3002"`
 		Origins []string `env:"HTTP_ORIGINS" env-required:""`
 	}
 )

@@ -11,7 +11,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func Run(cfg *Config, logger zerolog.Logger) error {
+func Run(cfg *Config, logger *zerolog.Logger) error {
 	postgres, err := postgres.New(context.Background(), cfg.Postgres.URI)
 	if err != nil {
 		return err

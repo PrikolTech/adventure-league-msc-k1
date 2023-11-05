@@ -15,7 +15,7 @@ type ServerOptions struct {
 	Origins []string
 }
 
-func NewServer(logger zerolog.Logger, services Services, opts ServerOptions) *http.Server {
+func NewServer(logger *zerolog.Logger, services Services, opts ServerOptions) *http.Server {
 	mux := chi.NewMux()
 	c := cors.New(cors.Options{
 		AllowedOrigins:   opts.Origins,

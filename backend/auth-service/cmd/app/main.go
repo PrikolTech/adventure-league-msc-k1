@@ -1,7 +1,7 @@
 package main
 
 import (
-	"user-service/internal/app"
+	"auth-service/internal/app"
 
 	"github.com/rs/zerolog"
 )
