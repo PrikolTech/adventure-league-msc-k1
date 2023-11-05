@@ -39,6 +39,10 @@ func (u *user) Authenticate(email string, password string) (uuid.UUID, []entity.
 }
 
 func (u *user) Create(data entity.User) (*entity.User, error) {
+	if err := data.Validate(); err != nil {
+		return nil, err
+	}
+
 	_, err := u.userRepo.GetByEmail(context.Background(), *data.Email)
 	if err == nil {
 		return nil, ErrUserExists
@@ -54,7 +58,13 @@ func (u *user) Create(data entity.User) (*entity.User, error) {
 	}
 
 	data.Password = &password
-	return u.userRepo.Create(context.Background(), data)
+	user, err := u.userRepo.Create(context.Background(), data)
+	if err != nil {
+		return nil, err
+	}
+
+	user.Roles = make([]entity.Role, 0)
+	return user, nil
 }
 
 func (u *user) Get(id uuid.UUID) (*entity.User, error) {

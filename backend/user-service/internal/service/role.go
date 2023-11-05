@@ -17,6 +17,10 @@ func NewRole(repo repo.Role) *role {
 }
 
 func (r *role) Create(data entity.Role) (*entity.Role, error) {
+	if err := data.Validate(); err != nil {
+		return nil, err
+	}
+
 	_, err := r.repo.GetByTitle(context.Background(), *data.Title)
 	if err == nil {
 		return nil, ErrRoleExists

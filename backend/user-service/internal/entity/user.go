@@ -16,3 +16,23 @@ type User struct {
 	Telegram   *string `json:"telegram"`
 	Roles      []Role  `json:"roles"`
 }
+
+func (e *User) Validate() error {
+	if e.Email == nil {
+		return &RequiredError{"email"}
+	}
+
+	if e.Password == nil {
+		return &RequiredError{"password"}
+	}
+
+	if e.FirstName == nil {
+		return &RequiredError{"first_name"}
+	}
+
+	if e.LastName == nil {
+		return &RequiredError{"last_name"}
+	}
+
+	return nil
+}

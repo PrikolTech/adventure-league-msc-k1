@@ -28,6 +28,8 @@ func Router(services Services) *chi.Mux {
 		})
 		r.Route("/role", func(r chi.Router) {
 			r.Get("/", role.Get)
+			r.Post("/", role.Create)
+			r.Delete("/{id}", role.Delete)
 		})
 	})
 

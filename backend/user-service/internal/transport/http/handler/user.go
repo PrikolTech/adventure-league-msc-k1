@@ -19,13 +19,13 @@ func NewUser(service service.User) *User {
 }
 
 type AuthenticateRequest struct {
-	Email    string `json:"email,omitempty"`
-	Password string `json:"password,omitempty"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type AuthenticateResponse struct {
-	ID    uuid.UUID     `json:"id,omitempty"`
-	Roles []entity.Role `json:"roles,omitempty"`
+	ID    uuid.UUID     `json:"id"`
+	Roles []entity.Role `json:"roles"`
 }
 
 func (h *User) Authenticate(w http.ResponseWriter, r *http.Request) {
