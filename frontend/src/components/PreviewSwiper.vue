@@ -154,11 +154,13 @@ export default {
 
 }
 .swiper {
-  
+  & .swiper-pagination  {
+    bottom: 30px;
+  }
   &__slide {
     border-radius: 40px;
     background: var(--var-preview-swiper);
-    padding: 30px 0px 30px 100px;
+    padding: 30px 0px 90px 100px;
     display: flex;
     gap: 20px;
     align-items: center;

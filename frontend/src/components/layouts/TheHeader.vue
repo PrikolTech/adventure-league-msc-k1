@@ -41,6 +41,7 @@ import TheButton from './TheButton.vue';
     top: 0;
     z-index: 10;
     background: var(--var-body);
+    transition: .2s;
 }
 .header {
     display: flex;

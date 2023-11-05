@@ -1,0 +1,188 @@
+  [1m[35m (0.3ms)[0m  [1m[35mDROP DATABASE IF EXISTS "course_development"[0m
+  [1m[35m (0.3ms)[0m  [1m[35mDROP DATABASE IF EXISTS "course_test"[0m
+  [1m[35m (0.3ms)[0m  [1m[35mDROP DATABASE IF EXISTS "course_development"[0m
+  [1m[35m (0.3ms)[0m  [1m[35mDROP DATABASE IF EXISTS "course_test"[0m
+  [1m[35m (2671.3ms)[0m  [1m[35mCREATE DATABASE "course_development" ENCODING = 'unicode'[0m
+  [1m[35m (2479.2ms)[0m  [1m[35mCREATE DATABASE "course_test" ENCODING = 'unicode'[0m
+  [1m[35m (45.8ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY)[0m
+  [1m[35m (21.1ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.5ms)[0m  [1m[34mSELECT pg_try_advisory_lock(6226021540332802950)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (2.6ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (2.8ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::InternalMetadata Create (4.0ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'development', '2023-11-05 15:48:19.419842', '2023-11-05 15:48:19.419846') RETURNING "key"[0m
+Migrating to CreateCourseTypes (20231104161044)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (37.0ms)[0m  [1m[35mCREATE TABLE "course_types" ("id" uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY, "name" character varying)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (1.9ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20231104161044') RETURNING "version"[0m
+  [1m[36mTRANSACTION (3.5ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreatePeriods (20231104213730)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (17.5ms)[0m  [1m[35mCREATE TABLE "periods" ("id" uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY, "starts_at" date, "ends_at" date)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.5ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20231104213730') RETURNING "version"[0m
+  [1m[36mTRANSACTION (3.3ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateEducationForms (20231105004038)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (27.3ms)[0m  [1m[35mCREATE TABLE "education_forms" ("id" uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY, "name" character varying)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20231105004038') RETURNING "version"[0m
+  [1m[36mTRANSACTION (4.4ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateCourses (20231105004039)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (35.4ms)[0m  [1m[35mCREATE TABLE "courses" ("id" uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY, "name" character varying NOT NULL, "description" text, "advantages" text, "price" float, "course_type_id" uuid NOT NULL, "period_id" uuid NOT NULL, "education_form_id" uuid NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_051656b790"
+FOREIGN KEY ("course_type_id")
+  REFERENCES "course_types" ("id")
+, CONSTRAINT "fk_rails_b68a61e1e8"
+FOREIGN KEY ("period_id")
+  REFERENCES "periods" ("id")
+, CONSTRAINT "fk_rails_0d45011bbd"
+FOREIGN KEY ("education_form_id")
+  REFERENCES "education_forms" ("id")
+)[0m
+  [1m[35m (9.0ms)[0m  [1m[35mCREATE INDEX "index_courses_on_course_type_id" ON "courses" ("course_type_id")[0m
+  [1m[35m (8.0ms)[0m  [1m[35mCREATE INDEX "index_courses_on_period_id" ON "courses" ("period_id")[0m
+  [1m[35m (9.8ms)[0m  [1m[35mCREATE INDEX "index_courses_on_education_form_id" ON "courses" ("education_form_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20231105004039') RETURNING "version"[0m
+  [1m[36mTRANSACTION (2.9ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateLectures (20231105004041)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (27.9ms)[0m  [1m[35mCREATE TABLE "lectures" ("id" uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY, "name" character varying, "description" text, "starts_at" timestamp(6), "course_id" uuid NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_bbbf25c9a6"
+FOREIGN KEY ("course_id")
+  REFERENCES "courses" ("id")
+)[0m
+  [1m[35m (8.6ms)[0m  [1m[35mCREATE INDEX "index_lectures_on_course_id" ON "lectures" ("course_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20231105004041') RETURNING "version"[0m
+  [1m[36mTRANSACTION (3.6ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateContentTypes (20231105004042)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (23.9ms)[0m  [1m[35mCREATE TABLE "content_types" ("id" uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY, "name" character varying)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20231105004042') RETURNING "version"[0m
+  [1m[36mTRANSACTION (2.7ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateContents (20231105004043)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (40.3ms)[0m  [1m[35mCREATE TABLE "contents" ("id" uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY, "url" character varying, "content_type_id" uuid NOT NULL, "lecture_id" uuid NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_3790116d5c"
+FOREIGN KEY ("content_type_id")
+  REFERENCES "content_types" ("id")
+, CONSTRAINT "fk_rails_76d8645b99"
+FOREIGN KEY ("lecture_id")
+  REFERENCES "lectures" ("id")
+)[0m
+  [1m[35m (8.2ms)[0m  [1m[35mCREATE INDEX "index_contents_on_content_type_id" ON "contents" ("content_type_id")[0m
+  [1m[35m (7.9ms)[0m  [1m[35mCREATE INDEX "index_contents_on_lecture_id" ON "contents" ("lecture_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.5ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20231105004043') RETURNING "version"[0m
+  [1m[36mTRANSACTION (3.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT pg_advisory_unlock(6226021540332802950)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mEducationForm Load (3.3ms)[0m  [1m[34mSELECT "education_forms".* FROM "education_forms" WHERE "education_forms"."name" = $1 LIMIT $2[0m  [["name", "Очная"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mEducationForm Create (2.2ms)[0m  [1m[32mINSERT INTO "education_forms" ("name") VALUES ($1) RETURNING "id"[0m  [["name", "Очная"]]
+  [1m[36mTRANSACTION (3.2ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mEducationForm Load (0.3ms)[0m  [1m[34mSELECT "education_forms".* FROM "education_forms" WHERE "education_forms"."name" = $1 LIMIT $2[0m  [["name", "Дистанционная"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mEducationForm Create (2.2ms)[0m  [1m[32mINSERT INTO "education_forms" ("name") VALUES ($1) RETURNING "id"[0m  [["name", "Дистанционная"]]
+  [1m[36mTRANSACTION (3.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mContentType Load (3.6ms)[0m  [1m[34mSELECT "content_types".* FROM "content_types" WHERE "content_types"."name" = $1 LIMIT $2[0m  [["name", "video"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mContentType Create (1.8ms)[0m  [1m[32mINSERT INTO "content_types" ("name") VALUES ($1) RETURNING "id"[0m  [["name", "video"]]
+  [1m[36mTRANSACTION (3.6ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mContentType Load (0.4ms)[0m  [1m[34mSELECT "content_types".* FROM "content_types" WHERE "content_types"."name" = $1 LIMIT $2[0m  [["name", "file"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mContentType Create (6.1ms)[0m  [1m[32mINSERT INTO "content_types" ("name") VALUES ($1) RETURNING "id"[0m  [["name", "file"]]
+  [1m[36mTRANSACTION (3.2ms)[0m  [1m[35mCOMMIT[0m
+Started GET "/api/education_form" for 172.18.0.1 at 2023-11-05 15:48:52 +0000
+  [1m[36mActiveRecord::SchemaMigration Load (2.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  
+ActionController::RoutingError (No route matches [GET] "/api/education_form"):
+  
+Started GET "/api/education_forms" for 172.18.0.1 at 2023-11-05 15:48:56 +0000
+Processing by EducationFormsController#index as HTML
+  [1m[36mEducationForm Load (4.1ms)[0m  [1m[34mSELECT "education_forms".* FROM "education_forms"[0m
+  ↳ app/controllers/education_forms_controller.rb:4:in `index'
+Completed 200 OK in 163ms (Views: 11.0ms | ActiveRecord: 35.0ms | Allocations: 14143)
+
+
+Started GET "/api/courses/create" for 172.18.0.1 at 2023-11-05 15:50:16 +0000
+Processing by CoursesController#show as */*
+  Parameters: {"id"=>"create"}
+  [1m[36mCourse Load (8.1ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 LIMIT $2[0m  [["id", nil], ["LIMIT", 1]]
+  ↳ app/controllers/courses_controller.rb:12:in `show'
+Completed 404 Not Found in 50ms (ActiveRecord: 10.6ms | Allocations: 4784)
+
+
+  
+ActiveRecord::RecordNotFound (Couldn't find Course with 'id'=create):
+  
+app/controllers/courses_controller.rb:12:in `show'
+Started POST "/api/courses/create" for 172.18.0.1 at 2023-11-05 15:51:25 +0000
+Processing by CoursesController#create as */*
+  Parameters: {"name"=>"Test Course", "description"=>"Some description", "period"=>{"starts_at"=>"10.05.2023", "ends_at"=>"15.05.2023"}, "course_type"=>"Базовый", "education_form"=>"Очная", "course"=>{"name"=>"Test Course", "description"=>"Some description"}}
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/courses_controller.rb:21:in `create'
+  [1m[36mPeriod Create (7.9ms)[0m  [1m[32mINSERT INTO "periods" ("starts_at", "ends_at") VALUES ($1, $2) RETURNING "id"[0m  [["starts_at", "2023-05-10"], ["ends_at", "2023-05-15"]]
+  ↳ app/controllers/courses_controller.rb:21:in `create'
+  [1m[36mTRANSACTION (8.7ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/courses_controller.rb:21:in `create'
+  [1m[36mCourseType Load (2.9ms)[0m  [1m[34mSELECT "course_types".* FROM "course_types" WHERE "course_types"."name" = $1 LIMIT $2[0m  [["name", "Базовый"], ["LIMIT", 1]]
+  ↳ app/controllers/courses_controller.rb:27:in `create'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/courses_controller.rb:27:in `create'
+  [1m[36mCourseType Create (1.7ms)[0m  [1m[32mINSERT INTO "course_types" ("name") VALUES ($1) RETURNING "id"[0m  [["name", "Базовый"]]
+  ↳ app/controllers/courses_controller.rb:27:in `create'
+  [1m[36mTRANSACTION (3.0ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/courses_controller.rb:27:in `create'
+  [1m[36mEducationForm Load (0.3ms)[0m  [1m[34mSELECT "education_forms".* FROM "education_forms" WHERE "education_forms"."name" = $1 LIMIT $2[0m  [["name", "Очная"], ["LIMIT", 1]]
+  ↳ app/controllers/courses_controller.rb:32:in `create'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/courses_controller.rb:35:in `create'
+  [1m[36mCourseType Load (0.4ms)[0m  [1m[34mSELECT "course_types".* FROM "course_types" WHERE "course_types"."id" = $1 LIMIT $2[0m  [["id", "73b70ba1-869f-4e1a-9f9f-b19c1f79879c"], ["LIMIT", 1]]
+  ↳ app/controllers/courses_controller.rb:35:in `create'
+  [1m[36mPeriod Load (0.3ms)[0m  [1m[34mSELECT "periods".* FROM "periods" WHERE "periods"."id" = $1 LIMIT $2[0m  [["id", "38cb0f6f-38c8-4215-b068-784b8e344015"], ["LIMIT", 1]]
+  ↳ app/controllers/courses_controller.rb:35:in `create'
+  [1m[36mEducationForm Load (0.3ms)[0m  [1m[34mSELECT "education_forms".* FROM "education_forms" WHERE "education_forms"."id" = $1 LIMIT $2[0m  [["id", "b6347f7c-085d-4d6d-b48f-819b9c4eefb2"], ["LIMIT", 1]]
+  ↳ app/controllers/courses_controller.rb:35:in `create'
+  [1m[36mCourse Create (3.5ms)[0m  [1m[32mINSERT INTO "courses" ("name", "description", "advantages", "price", "course_type_id", "period_id", "education_form_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING "id"[0m  [["name", "Test Course"], ["description", "Some description"], ["advantages", nil], ["price", nil], ["course_type_id", "73b70ba1-869f-4e1a-9f9f-b19c1f79879c"], ["period_id", "38cb0f6f-38c8-4215-b068-784b8e344015"], ["education_form_id", "b6347f7c-085d-4d6d-b48f-819b9c4eefb2"], ["created_at", "2023-11-05 15:51:25.342339"], ["updated_at", "2023-11-05 15:51:25.342339"]]
+  ↳ app/controllers/courses_controller.rb:35:in `create'
+  [1m[36mTRANSACTION (2.9ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/courses_controller.rb:35:in `create'
+Completed 200 OK in 139ms (Views: 0.6ms | ActiveRecord: 39.0ms | Allocations: 25465)
+
+
+Started POST "/api/courses/96cabdf5-b922-4210-8746-743e6e816936/lectures/create/" for 172.18.0.1 at 2023-11-05 15:52:42 +0000
+Processing by LecturesController#create as */*
+  Parameters: {"name"=>"Test Lecture", "description"=>"Test description", "starts_at"=>"2012-04-23T18:25:43.511Z", "contents"=>[{"type"=>"video", "url"=>"video_url"}, {"type"=>"file", "url"=>"file_url"}], "course_id"=>"96cabdf5-b922-4210-8746-743e6e816936", "lecture"=>{"name"=>"Test Lecture", "description"=>"Test description", "starts_at"=>"2012-04-23T18:25:43.511Z"}}
+  [1m[36mCourse Load (0.6ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 LIMIT $2[0m  [["id", "96cabdf5-b922-4210-8746-743e6e816936"], ["LIMIT", 1]]
+  ↳ app/controllers/lectures_controller.rb:19:in `create'
+  [1m[36mCACHE Course Load (0.0ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 LIMIT $2[0m  [["id", "96cabdf5-b922-4210-8746-743e6e816936"], ["LIMIT", 1]]
+  ↳ app/controllers/lectures_controller.rb:22:in `create'
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/lectures_controller.rb:22:in `create'
+  [1m[36mLecture Create (8.0ms)[0m  [1m[32mINSERT INTO "lectures" ("name", "description", "starts_at", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["name", "Test Lecture"], ["description", "Test description"], ["starts_at", "2012-04-23 18:25:43.511000"], ["course_id", "96cabdf5-b922-4210-8746-743e6e816936"], ["created_at", "2023-11-05 15:52:43.009759"], ["updated_at", "2023-11-05 15:52:43.009759"]]
+  ↳ app/controllers/lectures_controller.rb:22:in `create'
+  [1m[36mTRANSACTION (3.4ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/lectures_controller.rb:22:in `create'
+  [1m[36mContentType Load (2.0ms)[0m  [1m[34mSELECT "content_types".* FROM "content_types" WHERE "content_types"."name" = $1 LIMIT $2[0m  [["name", "video"], ["LIMIT", 1]]
+  ↳ app/controllers/lectures_controller.rb:30:in `block in create'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/lectures_controller.rb:31:in `block in create'
+  [1m[36mContentType Load (0.4ms)[0m  [1m[34mSELECT "content_types".* FROM "content_types" WHERE "content_types"."id" = $1 LIMIT $2[0m  [["id", "5b2f434a-d4d8-4d85-bac8-cb6010fdb7f0"], ["LIMIT", 1]]
+  ↳ app/controllers/lectures_controller.rb:31:in `block in create'
+  [1m[36mLecture Load (0.3ms)[0m  [1m[34mSELECT "lectures".* FROM "lectures" WHERE "lectures"."id" = $1 LIMIT $2[0m  [["id", "72eaf175-8cd3-491e-a94f-749d8b23bf46"], ["LIMIT", 1]]
+  ↳ app/controllers/lectures_controller.rb:31:in `block in create'
+  [1m[36mContent Create (7.8ms)[0m  [1m[32mINSERT INTO "contents" ("url", "content_type_id", "lecture_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["url", "video_url"], ["content_type_id", "5b2f434a-d4d8-4d85-bac8-cb6010fdb7f0"], ["lecture_id", "72eaf175-8cd3-491e-a94f-749d8b23bf46"], ["created_at", "2023-11-05 15:52:43.091941"], ["updated_at", "2023-11-05 15:52:43.091941"]]
+  ↳ app/controllers/lectures_controller.rb:31:in `block in create'
+  [1m[36mTRANSACTION (4.2ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/lectures_controller.rb:31:in `block in create'
+  [1m[36mContentType Load (0.4ms)[0m  [1m[34mSELECT "content_types".* FROM "content_types" WHERE "content_types"."name" = $1 LIMIT $2[0m  [["name", "file"], ["LIMIT", 1]]
+  ↳ app/controllers/lectures_controller.rb:30:in `block in create'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/lectures_controller.rb:31:in `block in create'
+  [1m[36mContentType Load (0.3ms)[0m  [1m[34mSELECT "content_types".* FROM "content_types" WHERE "content_types"."id" = $1 LIMIT $2[0m  [["id", "7c1df85d-1a9e-4118-bf58-8ea6bef60218"], ["LIMIT", 1]]
+  ↳ app/controllers/lectures_controller.rb:31:in `block in create'
+  [1m[36mLecture Load (0.4ms)[0m  [1m[34mSELECT "lectures".* FROM "lectures" WHERE "lectures"."id" = $1 LIMIT $2[0m  [["id", "72eaf175-8cd3-491e-a94f-749d8b23bf46"], ["LIMIT", 1]]
+  ↳ app/controllers/lectures_controller.rb:31:in `block in create'
+  [1m[36mContent Create (0.5ms)[0m  [1m[32mINSERT INTO "contents" ("url", "content_type_id", "lecture_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["url", "file_url"], ["content_type_id", "7c1df85d-1a9e-4118-bf58-8ea6bef60218"], ["lecture_id", "72eaf175-8cd3-491e-a94f-749d8b23bf46"], ["created_at", "2023-11-05 15:52:43.125013"], ["updated_at", "2023-11-05 15:52:43.125013"]]
+  ↳ app/controllers/lectures_controller.rb:31:in `block in create'
+  [1m[36mTRANSACTION (3.1ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/lectures_controller.rb:31:in `block in create'
+Completed 200 OK in 137ms (Views: 0.4ms | ActiveRecord: 38.6ms | Allocations: 21203)
+
+

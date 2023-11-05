@@ -1,7 +1,9 @@
 <script setup>
 import TheButton from '@/components/layouts/TheButton.vue';
-import { ref } from 'vue';
+import { usePopups } from '@/stores/popups';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 
+const popupStore = usePopups()
 
 const props = defineProps({
     program: {
@@ -9,8 +11,27 @@ const props = defineProps({
         required: true
     },
 })
+
+let hiddenBlock = ref(null)
+let hiddenBlockHeight = ref(0)
 let showHiddenText = ref(false)
+
+const updateHiddenBlockHeight = () => {
+    if (hiddenBlock.value) {
+        hiddenBlockHeight.value = hiddenBlock.value.offsetHeight;
+    }
+}
+
+onMounted(() => {
+    updateHiddenBlockHeight();
+    window.addEventListener('resize', updateHiddenBlockHeight);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('resize', updateHiddenBlockHeight);
+});
 </script>
+
 
 <template>
     <div class="program__item"
@@ -31,31 +52,35 @@ let showHiddenText = ref(false)
                 {{ props.program.type }}
             </div>
         </div>
-        <div class="program__item-text" :class="{active: showHiddenText}">
+        <div class="program__item-text"
+            :class="{active: showHiddenText}"
+            :style="{bottom: showHiddenText ? '0px' : `-${hiddenBlockHeight}px`}"
+        >
+
             <div class="program__item-title">
                 {{ props.program.title }}
             </div>
-            <transition name="fadeHeight">
-                <div class="hidden" v-if="showHiddenText">
-                    <div class="program__item-description">
-                        {{ props.program.description }}
-                    </div>
-                    <div class="program__item-btns">
-                        <the-button
-                            :styles="['swiper__slide-btn btn btn_red']"
-                            :type="'button'"
-                        >
-                            Записаться
-                        </the-button>
-                        <the-button
-                            :styles="['swiper__slide-btn btn btn_grey']"
-                            :type="'button'"
-                        >
-                            Подробнее
-                        </the-button>
-                    </div>
+            <div class="hidden" ref="hiddenBlock"
+            >
+                <div class="program__item-description">
+                    {{ props.program.description }}
                 </div>
-            </transition>
+                <div class="program__item-btns">
+                    <the-button
+                        :styles="['swiper__slide-btn btn btn_red']"
+                        :type="'button'"
+                        @click="popupStore.disableScroll('mainForm')"
+                    >
+                        Записаться
+                    </the-button>
+                    <the-button
+                        :styles="['swiper__slide-btn btn btn_grey']"
+                        :type="'button'"
+                    >
+                        Подробнее
+                    </the-button>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -68,10 +93,10 @@ let showHiddenText = ref(false)
         display: flex;
         flex-direction: column;
         position: relative;
-        overflow: hidden;
         min-height: 400px;
         justify-content: space-between;
         border-radius: var(--rounded-3xl, 24px);
+        overflow: hidden;
     }
 
     &__item-pic {
@@ -98,6 +123,7 @@ let showHiddenText = ref(false)
         display: flex;
         gap: 8px;
         padding: 20px 20px 20px 20px;
+        flex-wrap: wrap;
     }
 
     &__item-header-btn {
@@ -125,9 +151,8 @@ let showHiddenText = ref(false)
         position: absolute;
         left: 0;
         width: 100%;
-        bottom: 0px;
         background: linear-gradient(to bottom,  rgba(243,244,246,1) 52%,rgba(243,244,246,1) 60%,rgba(243,244,246,1) 63%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-        transition: .2s;
+        transition: .5s;
         &.active {
             background: linear-gradient(to bottom,  rgba(243,244,246,0.7) 52%,rgba(243,244,246,0.92) 60%,rgba(243,244,246,1) 63%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
         }
