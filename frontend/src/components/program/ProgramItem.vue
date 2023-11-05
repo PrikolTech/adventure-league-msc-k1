@@ -30,6 +30,8 @@ onMounted(() => {
 onBeforeUnmount(() => {
     window.removeEventListener('resize', updateHiddenBlockHeight);
 });
+
+
 </script>
 
 
@@ -54,7 +56,8 @@ onBeforeUnmount(() => {
         </div>
         <div class="program__item-text"
             :class="{active: showHiddenText}"
-            :style="{bottom: showHiddenText ? '0px' : `-${hiddenBlockHeight}px`}"
+            :style="{bottom: showHiddenText ? '0px' : `-212px`}"
+            @resize="handleResize"
         >
 
             <div class="program__item-title">
@@ -123,6 +126,16 @@ onBeforeUnmount(() => {
         top: 0;
         border-radius: var(--rounded-3xl, 24px);
         width: 100%;
+        &::after {
+            content: "";
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            background: rgba(0, 0, 0, 0.1);
+            position: absolute;
+            opacity: 0;
+        }
         & img {
             height: 100%;
             width: 100%;
@@ -160,7 +173,6 @@ onBeforeUnmount(() => {
         // display: -webkit-box; /* Включаем флексбоксы */
         // -webkit-box-orient: vertical; /* Вертикальная ориентация */
         // overflow: hidden; /* Обрезаем всё за пределами блока */
-        
         z-index: 2;
         position: relative;
         border-radius: 20px;
@@ -184,6 +196,13 @@ onBeforeUnmount(() => {
         line-height: 150%; /* 27px */
         padding: 30px 20px 30px 20px;
         border-radius: 24px 24px 0 0;
+        max-height: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -webkit-line-clamp: 2; /* Число отображаемых строк */
+        display: -webkit-box; /* Включаем флексбоксы */
+        -webkit-box-orient: vertical; /* Вертикальная ориентация */
+        overflow: hidden; /* Обрезаем всё за пределами блока */
     }
     &__item-description {
         color: var(--var-grey-lite-font);
@@ -195,7 +214,8 @@ onBeforeUnmount(() => {
         padding-top: 15px;
         padding-bottom: 30px;
         padding: 0px 20px 0px 20px;
-
+        height: 126px;
+        overflow: auto;
     }
 
     &__item-btns {
@@ -227,6 +247,12 @@ onBeforeUnmount(() => {
         background: linear-gradient(to bottom,  rgba(55,65,81,1) 52%,rgba(55,65,81,1) 60%,rgba(55,65,81,1) 63%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
         &.active {
             background: linear-gradient(to bottom,  rgba(55,65,81,0.9) 52%,rgba(55,65,81,0.97) 60%,rgba(55,65,81,1) 63%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        }
+    }
+
+    & .program__item-pic {
+        &::after {
+            opacity: 1;
         }
     }
 }
