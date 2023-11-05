@@ -1,8 +1,9 @@
 <script setup>
-import LogoIcon from '../icons/LogoIcon.vue';
-import SearchIcon from '../icons/SearchIcon.vue';
-import closeIcon from '../icons/CloseIcon.vue'
+import LogoIcon from '@/components/icons/LogoIcon.vue';
+import SearchIcon from '@/components/icons/SearchIcon.vue';
+import closeIcon from '@/components/icons/CloseIcon.vue'
 import switcherTheme from '@/components/layouts/SwitcherTheme.vue'
+import TheButton from './TheButton.vue';
 </script>
 
 <template>
@@ -36,7 +37,13 @@ import switcherTheme from '@/components/layouts/SwitcherTheme.vue'
                     <switcher-theme/>
                 </div>
                 <div class="header__auth">
-                    <router-link class="btn btn_red-border" to="login">Войти</router-link>
+                    <the-button
+                        :styles="['btn_red-border']"
+                        :type="'link'"
+                        :link="'login'"
+                    >
+                        Войти
+                    </the-button>
                 </div>
             </div>
         </div>
@@ -45,6 +52,10 @@ import switcherTheme from '@/components/layouts/SwitcherTheme.vue'
 
 <style lang="scss" scoped>
 .header-w {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--var-body);
 }
 .header {
     display: flex;
@@ -65,7 +76,7 @@ import switcherTheme from '@/components/layouts/SwitcherTheme.vue'
     }
 
     &__nav-item {
-        color: var(--gray-500, #6B7280);
+        color: var(--var-grey);
         font-family: Roboto;
         font-size: 14px;
         font-style: normal;
@@ -73,6 +84,7 @@ import switcherTheme from '@/components/layouts/SwitcherTheme.vue'
         line-height: 150%; /* 21px */
         position: relative;
         padding-bottom: 4px;
+        transition: .2s;
         &::after {
             content: "";
             position: absolute;
@@ -81,13 +93,13 @@ import switcherTheme from '@/components/layouts/SwitcherTheme.vue'
             display: block;
             width: calc(100% - 8px);
             height: 1px;
-            background: #003791;
+            background: var(--var-blue);
             border-radius: 50px;
             opacity: 0;
             transition: .2s;
         }
         &.router-link-active {
-            color: var(--primary-2-default, #003791);
+            color: var(--var-blue);
             &::after {
                 opacity: 1;
             }
@@ -143,6 +155,23 @@ import switcherTheme from '@/components/layouts/SwitcherTheme.vue'
             display: block;
             width: 1.5px;
             border-radius: 20px;
+        }
+    }
+}
+
+[dark=true] {
+    & .header__nav-item {
+        &.router-link-active {
+            color: #fff;
+            &::after {
+                opacity: 1;
+                background: #fff;
+            }
+        }
+    }
+    & .header__auth {
+        &::after {
+            background: #4B5563;
         }
     }
 }

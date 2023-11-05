@@ -1,17 +1,37 @@
 <script>
+import TheButton from '@/components/layouts/TheButton.vue';
+// import Swiper core and required modules
+import { Navigation, Pagination} from 'swiper/modules';
 
-  import { Swiper, SwiperSlide } from 'swiper/vue';
+// Import Swiper Vue.js components
+import { Swiper, SwiperSlide } from 'swiper/vue';
 
-  import 'swiper/css';
-  import 'swiper/css/navigation';
-  import 'swiper/css/pagination';
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
-  export default {
-    components: {
-      Swiper,
-      SwiperSlide,
-    },
-  };
+// Import Swiper styles
+export default {
+  components: {
+    Swiper,
+    SwiperSlide,
+    TheButton
+  },
+  setup() {
+    const onSwiper = (swiper) => {
+      console.log(swiper);
+    };
+    const onSlideChange = () => {
+      console.log('slide change');
+    };
+    return {
+      onSwiper,
+      onSlideChange,
+      modules: [Navigation, Pagination],
+    };
+  },
+};
 </script>
 
 <template>
@@ -38,19 +58,24 @@
                         </div>
                     </div>
                     <h2 class="swiper__slide-title">
-                    Гармония в Команде: Искусство Эффективного Общения
+                      Гармония в Команде: Искусство Эффективного Общения
                     </h2>
                     <p class="swiper__slide-desc">
-                    Научим навыкам эффективного общения и улучшению взаимодействия в команде для достижения общих целей
+                      Научим навыкам эффективного общения и улучшению взаимодействия в команде для достижения общих целей
                     </p>
                     <div class="swiper__slide-btns">
-                    <button class="swiper__slide-btn btn btn_red">
+                      <the-button
+                        :styles="['swiper__slide-btn btn btn_red']"
+                        :type="'button'"
+                      >
                         Записаться
-                    </button>
-                    <button class="swiper__slide-btn btn btn_grey btn_arrow">
-                        Подробнее
-                        <img src="@/assets/images/icons/arrow-grey.svg">
-                    </button>
+                      </the-button>
+                      <the-button
+                        :styles="['swiper__slide-btn btn btn_grey btn_arrow']"
+                        :type="'button'"
+                      >
+                      Подробнее
+                      </the-button>
                     </div>
                 </div>
                 <div class="swiper__slide-pic">
@@ -61,10 +86,10 @@
                 <div class="swiper__slide-text">
                     <div class="swiper__slide-date">
                         <div class="swiper__slide-date-item">
-                        20 ноября
+                          20 ноября
                         </div>
                         <div class="swiper__slide-date-item">
-                        Онлайн, очно
+                          Онлайн, очно
                         </div>
                     </div>
                     <h2 class="swiper__slide-title">
@@ -74,13 +99,18 @@
                     Научим навыкам эффективного общения и улучшению взаимодействия в команде для достижения общих целей
                     </p>
                     <div class="swiper__slide-btns">
-                    <button class="swiper__slide-btn btn btn_red">
+                      <the-button
+                        :styles="['swiper__slide-btn btn btn_red']"
+                        :type="'button'"
+                      >
                         Записаться
-                    </button>
-                    <button class="swiper__slide-btn btn btn_grey btn_arrow">
-                        Подробнее
-                        <img src="@/assets/images/icons/arrow-grey.svg">
-                    </button>
+                      </the-button>
+                      <the-button
+                        :styles="['swiper__slide-btn btn btn_grey btn_arrow']"
+                        :type="'button'"
+                      >
+                      Подробнее
+                      </the-button>
                     </div>
                 </div>
                 <div class="swiper__slide-pic">
@@ -93,6 +123,7 @@
 
 <style lang="scss">
 .preview__swiper {
+    margin-bottom: 80px;
     border-radius: 40px;
     & .swiper-pagination-bullet {
         background: #fff;
@@ -126,18 +157,19 @@
   
   &__slide {
     border-radius: 40px;
-    background: #CDD9E5;
+    background: var(--var-preview-swiper);
     padding: 30px 0px 30px 100px;
     display: flex;
     gap: 20px;
     align-items: center;
     height: auto;
+    transition: .2s;
   }
 
   &__slide-text {
     flex: 0 0 59%;
     & h2 {
-      color: var(--gray-900, #111928);
+      color: var( --var-grey-lite-font);
       font-family: Montserrat;
       font-size: 40px;
       font-style: normal;
@@ -146,7 +178,7 @@
       margin-bottom: 30px;
     }
     & p {
-      color: var(--gray-900, #111928);
+      color: var( --var-grey-lite-font);
       font-family: Inter;
       font-size: 20px;
       font-style: normal;
@@ -163,7 +195,7 @@
   }
 
   &__slide-date-item {
-    color: var(--gray-900, #111928);
+    color: var( --var-grey-lite-font);
     font-family: Roboto;
     font-size: 16px;
     font-style: normal;
@@ -174,8 +206,9 @@
     text-align: center;
     padding: 10px 10px;
     border-radius: var(--rounded-xl, 12px);
-    background: #FFF;
+    background: var(--var-grey-lite);
     backdrop-filter: blur(2px);
+    transition: .2s;
   }
 
   &__slide-title {
@@ -193,6 +226,7 @@
   }
 
   &__slide-pic {
+    flex: 1;
     & img {
       width: 100%;
     }

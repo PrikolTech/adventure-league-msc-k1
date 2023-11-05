@@ -54,6 +54,7 @@ const toggleTheme = () => {
         display: block;
         border-radius: 100px;
         position: relative;
+        transition: .2s;
     }
 
     & label:after {
@@ -81,8 +82,11 @@ const toggleTheme = () => {
     }
 }
 
-.dark {
+[dark=true] {
     & .switcher {
+        & label {
+            background: var(--main-beerus, #444);
+        }
         & .sun {
             opacity: 0;
         }
