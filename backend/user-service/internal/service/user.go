@@ -82,26 +82,42 @@ func (u *user) Get(id uuid.UUID) (*entity.User, error) {
 	return user, nil
 }
 
-func (u *user) Update(data entity.User) error {
+func (u *user) Update(data entity.User) (*entity.User, error) {
 	user, err := u.Get(data.ID)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
+	// password
 	if data.Password != nil {
 		password, err := hashPassword(*data.Password)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
-		err = u.userRepo.UpdatePassword(context.Background(), user.ID, password)
+		user, err = u.userRepo.UpdatePassword(context.Background(), user.ID, password)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
 
-	//
-	return nil
+	// contact info
+	if data.Phone != nil || data.Telegram != nil {
+		if data.Phone == nil {
+			data.Phone = user.Phone
+		}
+
+		if data.Telegram == nil {
+			data.Telegram = user.Telegram
+		}
+
+		user, err = u.userRepo.UpdateContact(context.Background(), data)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return user, nil
 }
 
 func (u *user) Delete(id uuid.UUID) error {

@@ -51,14 +51,24 @@ func (u *UserPG) GetByEmail(ctx context.Context, email string) (*entity.User, er
 	return &user, err
 }
 
-func (u *UserPG) UpdatePassword(ctx context.Context, id uuid.UUID, password string) error {
-	const query = `UPDATE "data" SET password = $2 WHERE id = $1`
+func (u *UserPG) UpdatePassword(ctx context.Context, id uuid.UUID, password string) (*entity.User, error) {
+	const query = `UPDATE "data" SET password = $2 WHERE id = $1 RETURNING *`
 
-	if _, err := u.Pool.Exec(ctx, query, id, password); err != nil {
-		return err
-	}
+	var user entity.User
+	err := u.Pool.QueryRow(ctx, query, id, password).
+		Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.Patronymic, &user.Phone, &user.Telegram)
 
-	return nil
+	return &user, err
+}
+
+func (u *UserPG) UpdateContact(ctx context.Context, data entity.User) (*entity.User, error) {
+	const query = `UPDATE "data" SET phone = $2, telegram = $3 WHERE id = $1 RETURNING *`
+
+	var user entity.User
+	err := u.Pool.QueryRow(ctx, query, data.ID, data.Phone, data.Telegram).
+		Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.Patronymic, &user.Phone, &user.Telegram)
+
+	return &user, err
 }
 
 func (u *UserPG) DeleteByID(ctx context.Context, id uuid.UUID) error {

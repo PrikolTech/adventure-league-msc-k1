@@ -14,7 +14,7 @@ type User struct {
 	Patronymic *string `json:"patronymic"`
 	Phone      *string `json:"phone"`
 	Telegram   *string `json:"telegram"`
-	Roles      []Role  `json:"roles"`
+	Roles      []Role  `json:"roles,omitempty"`
 }
 
 func (e *User) Validate() error {

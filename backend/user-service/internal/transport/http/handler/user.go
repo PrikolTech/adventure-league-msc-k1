@@ -110,13 +110,16 @@ func (h *User) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data.ID = id
-	err = h.service.Update(data)
+	user, err := h.service.Update(data)
 	if err != nil {
 		ErrorJSON(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	e := json.NewEncoder(w)
+	e.Encode(user)
 }
 
 func (h *User) Delete(w http.ResponseWriter, r *http.Request) {
