@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 // import Cookies from 'js-cookie';
 
 export const useUser = defineStore('user', () => {
+    const theme = ref(JSON.parse(localStorage.getItem('theme')))
     const user = ref({})
     // const router = useRouter()
 
@@ -84,5 +85,5 @@ export const useUser = defineStore('user', () => {
         // }
     }
 
-    return { user, logOut, getUserInfo, putUser, clearUserInfo }
+    return { user, logOut, getUserInfo, putUser, clearUserInfo, theme }
 })
