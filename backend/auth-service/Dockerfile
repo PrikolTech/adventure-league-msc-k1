@@ -10,5 +10,6 @@ RUN go build -v -o ./service ./cmd/app
 
 FROM alpine:3.18.4
 WORKDIR /service
+COPY --from=build /build/key ./key
 COPY --from=build /build/service ./
 CMD ["./service"]

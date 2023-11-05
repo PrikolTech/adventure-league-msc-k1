@@ -1,7 +1,7 @@
 package oauth
 
 import (
-	"auth-service/internal/webapi"
+	"auth-service/internal/net"
 	"context"
 	"encoding/json"
 	"log"
@@ -15,10 +15,10 @@ import (
 
 type Server struct {
 	*server.Server
-	webapi webapi.User
+	webapi net.User
 }
 
-func NewServer(manager oauth2.Manager, webapi webapi.User) *Server {
+func NewServer(manager oauth2.Manager, webapi net.User) *Server {
 	srv := &Server{server.NewServer(server.NewConfig(), manager), webapi}
 
 	srv.SetAllowedGrantType(oauth2.PasswordCredentials, oauth2.Refreshing)

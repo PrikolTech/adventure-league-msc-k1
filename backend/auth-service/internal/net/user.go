@@ -1,4 +1,4 @@
-package webapi
+package net
 
 import (
 	"bytes"
@@ -7,10 +7,11 @@ import (
 )
 
 type user struct {
+	url string
 }
 
-func NewUser() *user {
-	return &user{}
+func NewUser(url string) *user {
+	return &user{url}
 }
 
 type Role struct {
@@ -35,7 +36,7 @@ func (u *user) Authenticate(email string, password string) (*AuthenticateRespons
 	e.Encode(AuthenticateRequest{email, password})
 
 	client := &http.Client{}
-	req, err := http.NewRequest(http.MethodPost, "http://localhost:3000/user/authenticate", reqData)
+	req, err := http.NewRequest(http.MethodPost, u.url+"/user/authenticate", reqData)
 	if err != nil {
 		return nil, err
 	}

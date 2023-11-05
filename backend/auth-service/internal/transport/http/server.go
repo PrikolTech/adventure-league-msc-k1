@@ -7,10 +7,15 @@ import (
 	"github.com/rs/cors"
 )
 
-func NewServer(service *oauth.OAuth) *http.Server {
+type ServerOptions struct {
+	Addr    string
+	Origins []string
+}
+
+func NewServer(service *oauth.OAuth, opts ServerOptions) *http.Server {
 	mux := http.NewServeMux()
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
+		AllowedOrigins:   opts.Origins,
 		AllowedMethods:   []string{http.MethodHead, http.MethodGet, http.MethodPost, http.MethodDelete},
 		AllowedHeaders:   []string{"*"},
 		AllowCredentials: true,
@@ -19,7 +24,7 @@ func NewServer(service *oauth.OAuth) *http.Server {
 	mux.Handle("/token", TokenHandler{service.Server})
 
 	return &http.Server{
-		Addr:    "localhost:9096",
+		Addr:    opts.Addr,
 		Handler: c.Handler(mux),
 	}
 }

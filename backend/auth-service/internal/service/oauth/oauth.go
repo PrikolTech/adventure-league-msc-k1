@@ -1,12 +1,12 @@
 package oauth
 
-import "auth-service/internal/webapi"
+import "auth-service/internal/net"
 
 type OAuth struct {
 	Server *Server
 }
 
-func New(user webapi.User, key []byte) (*OAuth, error) {
+func New(user net.User, key []byte) (*OAuth, error) {
 	manager, err := NewManager(key)
 	if err != nil {
 		return nil, err

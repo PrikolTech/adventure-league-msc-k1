@@ -1,16 +1,8 @@
 services:
-  db:
-    container_name: user-db
-    image: postgres:alpine
+  server:
+    container_name: auth-server
+    build: .
     ports:
-      - 5431:5432
-    environment:
-      POSTGRES_PASSWORD: test
-    volumes:
-      - ./migrations:/docker-entrypoint-initdb.d
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -U postgres -d postgres"]
-      interval: 5s
-      timeout: 30s
-      retries: 10
-      start_period: 30s
+      - 3001:3001
+    env_file:
+      - ./configs/docker.dev.env
