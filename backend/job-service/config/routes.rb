@@ -5,8 +5,10 @@ Rails.application.routes.draw do
     resources :jobs do
       resources :tests do
         resources :questions do
-          resources :answers, except: :show
+          resources :answers
         end
+
+        resources :test_solutions, except: :update
       end
     end
   end
