@@ -82,8 +82,15 @@ import TheButton from '@/components/layouts/TheButton.vue';
         display: flex;
         gap: 50px;
         flex-wrap: wrap;
+        @media (max-width: 767px) {
+            gap: 20px;
+            margin-bottom: 20px;
+        }
         & .field {
             flex: 0 0 calc(50% - 25px);
+            @media (max-width: 767px) {
+                flex: 0 0 100%;
+            }
             &:not(:last-child) {
                 margin-bottom: 0px;
             }
@@ -94,6 +101,9 @@ import TheButton from '@/components/layouts/TheButton.vue';
         display: flex;
         gap: 30px;
         margin-bottom: 50px;
+        @media (max-width: 767px) {
+            margin-bottom: 25px;
+        }
     }
 
     &__settings-footer {

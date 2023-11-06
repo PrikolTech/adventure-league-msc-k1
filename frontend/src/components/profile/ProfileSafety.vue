@@ -3,9 +3,9 @@
 
 <template>
     <main>
-        <div class="profile__tasks">
+        <a>
             ProfileSafety
-        </div>
+        </a>
     </main>
 </template>
 

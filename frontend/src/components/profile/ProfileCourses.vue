@@ -4,9 +4,9 @@
 
 <template>
     <main>
-        <div class="profile__courses">
+        <a>
             курсы
-        </div>
+        </a>
     </main>
 </template>
 

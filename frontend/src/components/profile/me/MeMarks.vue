@@ -65,8 +65,17 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
+        @media (max-width: 767px) {
+            padding: 15px;
+            gap: 10px;
+        }
+        @media (max-width: 539px) {
+        }
         &:not(:last-child) {
             margin-bottom: 30px;
+            @media (max-width: 767px) {
+                margin-bottom: 15px;
+            }
         }
     }
 
@@ -111,6 +120,9 @@
         align-items: center;
         justify-content: space-between;
         gap: 10px;
+        @media (max-width: 767px) {
+            font-size: 15px;
+        }
         & span {
             color: var(--unnamed, #7C8092);
             font-family: Roboto;
@@ -118,6 +130,9 @@
             font-style: normal;
             font-weight: 400;
             line-height: 150%; /* 21px */
+            @media (max-width: 767px) {
+                font-size: 13px;
+            }
         }
     }
 

@@ -19,7 +19,7 @@ import TheButton from '@/components/layouts/TheButton.vue';
                     <the-button
                         :styles="['btn_grey']"
                         :type="'link'"
-                        :link="'settings'"
+                        :link="'/profile/settings'"
                         style="gap: 10px;"
                     >
                         Редактировать
@@ -56,6 +56,9 @@ import TheButton from '@/components/layouts/TheButton.vue';
                     </div>
                 </div>
             </div>
+            <div class="profile__events-subtitle title">
+                    События
+                </div>
             <div class="profile__events">
                 <div class="profile__events-calendar">
 
@@ -89,11 +92,20 @@ import TheButton from '@/components/layouts/TheButton.vue';
     &__me-body {
         display: flex;
         gap: 50px;
+        justify-content: space-between;
+        @media (max-width: 767px) {
+            flex-wrap: wrap;
+            gap: 20px;
+        }
     }
 
     &__me-content {
         max-width: 560px;
         flex: 1;
+        @media (max-width: 767px) {
+            max-width: none;
+            flex: 0 0 100%;
+        }
     }
 
     &__me-header {
@@ -110,6 +122,9 @@ import TheButton from '@/components/layouts/TheButton.vue';
             font-style: normal;
             font-weight: 500;
             line-height: 150%; /* 30px */
+            @media (max-width: 767px) {
+                font-size: 16px;
+            }
         }
     }
 
@@ -119,6 +134,15 @@ import TheButton from '@/components/layouts/TheButton.vue';
         gap: 12px;
         flex-wrap: wrap;
         margin-bottom: 60px;
+        @media (max-width: 1023px) {
+            margin-bottom: 40px;
+        }
+        @media (max-width: 767px) {
+            margin-bottom: 30px;
+        }
+        @media (max-width: 539px) {
+            margin-bottom: 20px;
+        }
         & p {
             color: var(--gray-900, #111928);
             font-family: Roboto;
@@ -134,6 +158,10 @@ import TheButton from '@/components/layouts/TheButton.vue';
         background: var(--gray-100, #F3F4F6);
         padding: 8px 10px;
         transition: .2s;
+        @media (max-width: 767px) {
+            font-size: 14px;
+            padding: 4px 6px;
+        }
     }
 
     &__me-tabs {
@@ -146,6 +174,15 @@ import TheButton from '@/components/layouts/TheButton.vue';
         gap: 32px;
         width: fit-content;
         position: relative;
+        @media (max-width: 1023px) {
+            margin-bottom: 30px;
+        }
+        @media (max-width: 767px) {
+            margin-bottom: 20px;
+        }
+        @media (max-width: 539px) {
+            margin-bottom: 10px;
+        }
         &::after {
             content: "";
             width: 100%;
@@ -191,6 +228,20 @@ import TheButton from '@/components/layouts/TheButton.vue';
         padding: 30px;
         flex: 0 0 360px;
         height: fit-content;
+        max-height: 500px;
+        overflow: auto;
+        @media (max-width: 767px) {
+            max-width: none;
+            flex: 0 0 100%;
+            padding: 20px;
+        }
+    }
+
+    &__events-subtitle {
+        display: none;
+        @media (max-width: 767px) {
+            display: block;
+        }
     }
 
     &__events-calendar {
@@ -201,8 +252,7 @@ import TheButton from '@/components/layouts/TheButton.vue';
         display: flex;
         flex-direction: column;
         gap: 15px;
-        max-height: 500px;
-        overflow: auto;
+
         border-radius: 12px;
     }
 

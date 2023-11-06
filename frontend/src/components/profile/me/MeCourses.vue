@@ -3,9 +3,9 @@
 </script>
 
 <template>
-    <div>
+    <a>
         мои курсы
-    </div>
+    </a>
 </template>
 
 <style lang="scss" scoped>

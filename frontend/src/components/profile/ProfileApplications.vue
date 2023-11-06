@@ -3,9 +3,9 @@
 
 <template>
     <main>
-        <div class="profile__tasks">
+        <a>
             ProfileApplications
-        </div>
+        </a>
     </main>
 </template>
 

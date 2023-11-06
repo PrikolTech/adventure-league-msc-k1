@@ -80,6 +80,12 @@
         padding: 30px 20px;
         height: fit-content;
         transition: .2s;
+        @media (max-width: 1023px) {
+            flex: 0 0 100%;
+        }
+        @media (max-width: 539px) {
+            padding: 15px 10px;
+        }
     }
 
     &__nav-block {
@@ -87,6 +93,10 @@
             margin-bottom: 25px;
             border-bottom: 1px solid var(--var-line);
             padding-bottom: 25px;
+            @media (max-width: 539px) {
+                margin-bottom: 15px;
+                padding-bottom: 15px;
+            }
         }
         & a {
             display: flex;
@@ -94,6 +104,9 @@
             gap: 8px;
             border-radius: var(--rounded-lg, 8px);
             padding: 10px 20px;
+            @media (max-width: 539px) {
+                padding: 5px 10px;
+            }
             &.router-link-active {
                 background: var(--blue-50, #EBF5FF);
                 & svg {
@@ -120,6 +133,9 @@
                 font-style: normal;
                 font-weight: 500;
                 line-height: 150%; /* 21px */
+                @media (max-width: 539px) {
+                    font-size: 13px;
+                }
             }
         }
 

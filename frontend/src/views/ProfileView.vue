@@ -17,8 +17,18 @@ import ProfileNav from '@/components/profile/ProfileNav.vue';
     padding-top: 5px;
     display: flex;
     gap: 70px;
+    @media (max-width: 1023px) {
+        flex-wrap: wrap;
+        gap: 40px;
+    }
+    @media (max-width: 767px) {
+        gap: 15px;
+    }
     &__block {
         flex: 1;
+        @media (max-width: 1023px) {
+            flex: 0 0 100%;
+        }
     }
 }
 .profile {
@@ -28,6 +38,9 @@ import ProfileNav from '@/components/profile/ProfileNav.vue';
         gap: 50px;
         align-items: center;
         margin-bottom: 50px;
+        @media (max-width: 1023px) {
+            margin-bottom: 20px;
+        }
     }
 
     &__title {
