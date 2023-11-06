@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       end
 
       resources :homeworks do
+        resources :homework_solutions
       end
     end
   end

@@ -1,6 +1,6 @@
 class Api::HomeworksController < ApplicationController
   def index
-    @homeworks = Homework.all
+    @homeworks = Homework.where(job_id: params[:job_id])
     render json: @homeworks
   end
   
@@ -19,7 +19,7 @@ class Api::HomeworksController < ApplicationController
 
       redirect_to @homework.path
     else
-      render json: {message: 'not created'}, status: 400
+      render json: {message: 'not created', status: 400}
     end
   end
 
@@ -29,7 +29,7 @@ class Api::HomeworksController < ApplicationController
     if @homework.update(homework_params)
       redirect_to @homework.path
     else
-      render json: {message: 'not updated'}, status: 400
+      render json: {message: 'not updated', status: 400}
     end
   end
 
