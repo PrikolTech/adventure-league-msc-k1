@@ -1,6 +1,6 @@
 default: &default
   adapter: postgresql
-  database: course_development
+  database: job_development
   encoding: unicode
   host: db
   username: postgres

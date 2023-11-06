@@ -4,7 +4,9 @@ Rails.application.routes.draw do
   namespace :api do
     resources :jobs do
       resources :tests do
-        resources :questions
+        resources :questions do
+          resources :answers, except: :show
+        end
       end
     end
   end
