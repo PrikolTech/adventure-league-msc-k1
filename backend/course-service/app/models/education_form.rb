@@ -1,0 +1,2 @@
+class EducationForm < ApplicationRecord
+end
