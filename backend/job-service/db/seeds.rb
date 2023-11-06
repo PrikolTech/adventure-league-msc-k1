@@ -64,3 +64,16 @@ answers_seed.each do |answer|
 end
 
 puts '== Answers seeding complete'
+
+homeworks_seed = load_seed('homeworks')
+
+homeworks_seed.each do |homework|
+  Homework.create(
+    id: homework['id'],
+    job_id: homework['job_id'],
+    name: homework['name'],
+    description: homework['description']
+  )
+end
+
+puts '== Answers seeding complete'
