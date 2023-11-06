@@ -3,6 +3,6 @@ class SolutionAnswer < ApplicationRecord
   belongs_to :answer
 
   def question
-    anwer.question
+    answer.question
   end
 end

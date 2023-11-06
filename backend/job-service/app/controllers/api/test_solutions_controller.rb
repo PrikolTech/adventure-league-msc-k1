@@ -9,20 +9,22 @@ class Api::TestSolutionsController < ApplicationController
 
   def show
     @solution = TestSolution.find(params[:id])
+    puts "RESULT IS #{@solution.check_correctness}"
 
-    render json: @solution, include: :solution_anwers
+    render json: @solution, include: :solution_answers, include: :test_result
   end
 
   def create
     @solution = TestSolution.new(test_solution_params)
-    
-    params[:solution_answers].each do |answer|
-      create_answer answer
-    end
 
     if @solution
-      @solution.test = params[:test_id]
-      @solution.score = @solution.check_correctness
+      @solution.test_id = params[:test_id]
+      @solution.save
+      params[:answers].each do |answer|
+        create_answer answer
+      end
+
+      @solution.test_result.create(@solution.check_correctness)
       @solution.save
 
       redirect_to @solution.path

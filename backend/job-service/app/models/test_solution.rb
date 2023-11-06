@@ -1,9 +1,10 @@
 class TestSolution < ApplicationRecord
   belongs_to :test
   has_many :solution_answers
+  has_one :test_result
 
   def path
-    "#{test.path}/#{id}"
+    "#{test.path}/test_solutions/#{id}"
   end
 
   def check_correctness
@@ -15,9 +16,11 @@ class TestSolution < ApplicationRecord
       answers_questions[q_id] = answers_questions.fetch(q_id, []).push(solution_answer.answer)
     end
     
+    puts "ANSWER QUESTIONS #{answers_questions}"
     t_score = 0
     test.questions.each do |question|
-      t_score += answers_questions[question.id].sort == question.answers.to_a.sort
+      puts "QUESTION #{question} WITH #{question.correct_answers}"
+      t_score += 1 if answers_questions[question.id].sort == question.correct_answers.sort
     end
     
     t_score
