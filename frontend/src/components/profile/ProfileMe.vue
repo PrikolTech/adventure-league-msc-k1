@@ -4,14 +4,14 @@ import TheButton from '@/components/layouts/TheButton.vue';
 
 <template>
     <div class="profile__me profile__block">
-        <div class="profile__block-header">
-            <div class="profile__title title">
-                Профиль
-            </div>
-            <div class="profile__header-line line"></div>
-        </div>
         <div class="profile__me-body">
             <div class="profile__me-content">
+                <div class="profile__block-header">
+                    <div class="profile__title title">
+                        Профиль
+                    </div>
+                    <div class="profile__header-line line"></div>
+                </div>
                 <div class="profile__me-header">
                     <p>
                         Радкевич Наталья Владимировна
@@ -228,7 +228,7 @@ import TheButton from '@/components/layouts/TheButton.vue';
         padding: 30px;
         flex: 0 0 360px;
         height: fit-content;
-        max-height: 500px;
+        max-height: 700px;
         overflow: auto;
         @media (max-width: 767px) {
             max-width: none;

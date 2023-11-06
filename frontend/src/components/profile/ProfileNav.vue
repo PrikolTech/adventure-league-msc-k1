@@ -75,16 +75,15 @@
     &__nav {
         border-radius: 20px;
         background: var(--white, #FFF);
-        box-shadow: 0px 1px 7px 0px rgba(0, 0, 0, 0.10);
         width: fit-content;
-        padding: 30px 20px;
+        padding: 0px 20px;
         height: fit-content;
         transition: .2s;
         @media (max-width: 1023px) {
             flex: 0 0 100%;
+            padding: 0px;
         }
         @media (max-width: 539px) {
-            padding: 15px 10px;
         }
     }
 
@@ -144,7 +143,7 @@
 
 [dark=true] {
     & .profile__nav {
-        background: var(--gray-800, #1F2A37);
+        background: var(--var-body);
     }
 
     & .profile__nav-block {
