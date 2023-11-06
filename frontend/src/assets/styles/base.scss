@@ -302,10 +302,30 @@ input {
   border-color: #1e40af;
 }
 
+.comment {
+  resize: none;
+  border-radius: var(--rounded-xl, 12px);
+  border: 1px solid var(--backgrounds-day-gray-background-for-dies, #E1E1E9);
+  background: var(--elements-day-text-icons-on-substrates, #FFF);
+  padding: 12px;
+  width: 100%;
+  font-family: Roboto;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 167%; /* 26.72px */
+}
+
 [dark=true] {
   & .b-contain {
       & span {
           color: var(--white, #FFF);
       }
   }
+  & .comment {
+    border: 1px solid var(--gray-700, #374151);
+    background: var(--gray-700, #374151);
+    color: var(--gray-200, #E5E7EB);
+  }
 }
+

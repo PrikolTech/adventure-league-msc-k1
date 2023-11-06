@@ -4,9 +4,8 @@ import { defineStore } from "pinia";
 
 export const useUser = defineStore('user', () => {
     const theme = ref(JSON.parse(localStorage.getItem('theme')))
-    const user = ref({
-        id: true
-    })
+    // const user = ref(null)
+    const user = ref({})
     // const router = useRouter()
 
     async function logOut() {

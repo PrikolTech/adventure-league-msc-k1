@@ -1,10 +1,16 @@
 <script setup>
 import LogoIcon from '@/components/icons/LogoIcon.vue';
 import switcherTheme from '@/components/layouts/SwitcherTheme.vue'
-import { ref } from 'vue';
 import TheButton from './TheButton.vue';
+import { ref } from 'vue';
+
+import { useUser } from '@/stores/user'
+
+const userStore = useUser()
 
 let headerMobileIsActive = ref(false)
+
+console.log(userStore.user)
 </script>
 
 <template>
@@ -29,12 +35,18 @@ let headerMobileIsActive = ref(false)
                         :styles="['btn_red-border']"
                         :type="'link'"
                         :link="'login'"
+                        v-if="!userStore.user"
                     >
                         Войти
                     </the-button>
+                    <router-link class="header__me" to="/profile/me"
+                        v-else
+                    >
+                        РН
+                    </router-link>
                 </div>
             </div>
-            <div class="header__menu ">
+            <div class="header__menu">
                 <div class="nav-icon toggle-menu"
                     :class="{open: headerMobileIsActive}"
                     @click="headerMobileIsActive = !headerMobileIsActive"
@@ -49,6 +61,12 @@ let headerMobileIsActive = ref(false)
             :class="{active: headerMobileIsActive}"
         >
             <div class="header-m__content">
+                <router-link class=" logo" to="/">
+                    <logo-icon/>
+                </router-link>
+                <router-link class="header__me" to="/profile/me">
+                    РН
+                </router-link>
                 <nav class="header-m__nav">
                     <router-link class="header-m__nav-item" to="/">
                         Обучение
@@ -93,6 +111,26 @@ let headerMobileIsActive = ref(false)
 </template>
 
 <style lang="scss" scoped>
+
+.header__me {
+    border-radius: 100%;
+    background: var(--gray-100, #F3F4F6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-width: 32px;
+    min-height: 32px;
+    color: var(--gray-900, #111928);
+    font-family: Inter;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 12px; /* 100% */
+    transition: .2s;
+    width: fit-content;
+}
+
 .header-w {
     position: sticky;
     top: 0;
@@ -205,7 +243,7 @@ let headerMobileIsActive = ref(false)
             position: absolute;
             left: 0;
             top: 5px;
-            height: 34px;
+            height: calc(100% - 10px);
             background: #D1D5DB;
             display: block;
             width: 1.5px;
@@ -275,8 +313,8 @@ let headerMobileIsActive = ref(false)
 
 .header-m {
       background: #F3F4F6;
-      max-width: 290px;
-      width: 63%;
+    //   max-width: 290px;
+      width: 100%;
       position: fixed;
       top: 0;
       left: 0;
@@ -289,6 +327,22 @@ let headerMobileIsActive = ref(false)
       &.active {
             left: 0;
       }
+
+      & .logo {
+        margin-bottom: 25px;
+      }
+
+      & .header__me {
+        background: #c8d1f5;
+        margin-bottom: 25px;
+      }
+
+      & .btn {
+        width: 100%;
+
+        max-width: 400px;
+      }
+
       &__content {
             display: flex;
             flex-direction: column;
@@ -381,6 +435,18 @@ let headerMobileIsActive = ref(false)
             & path {
                 stroke: #fff;
             }
+        }
+    }
+
+    & .header__me {
+        background: #374151;
+        color: #F9FAFB;
+    }
+
+    & .header-m {
+        & .header__me {
+            background: #809dcb;
+            color: #F9FAFB;
         }
     }
 }

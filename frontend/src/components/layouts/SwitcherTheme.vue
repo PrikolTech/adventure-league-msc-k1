@@ -86,7 +86,7 @@ const toggleTheme = () => {
 [dark=true] {
     & .switcher {
         & label {
-            background: var(--main-beerus, #444);
+            background: var(--main-beerus, #374151);
         }
         & .sun {
             opacity: 0;
