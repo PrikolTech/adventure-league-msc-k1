@@ -4,8 +4,7 @@ class CreateHomeworks < ActiveRecord::Migration[7.1]
       t.references :job, type: :uuid, null: false, foreign_key: true
       t.string :name
       t.string :description, null: true
-      t.string :text
-      t.string :file_url
+      t.string :text, null: true
 
       t.timestamps
     end

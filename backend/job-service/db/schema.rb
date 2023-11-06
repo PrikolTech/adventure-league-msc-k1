@@ -24,12 +24,20 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_06_093012) do
   end
 
   create_table "homework_results", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "user_id"
-    t.uuid "homework_id", null: false
+    t.uuid "homework_solution_id", null: false
     t.integer "score"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["homework_id"], name: "index_homework_results_on_homework_id"
+    t.index ["homework_solution_id"], name: "index_homework_results_on_homework_solution_id"
+  end
+
+  create_table "homework_solutions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "homework_id", null: false
+    t.uuid "user_id"
+    t.string "file_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["homework_id"], name: "index_homework_solutions_on_homework_id"
   end
 
   create_table "homeworks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -37,7 +45,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_06_093012) do
     t.string "name"
     t.string "description"
     t.string "text"
-    t.string "file_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["job_id"], name: "index_homeworks_on_job_id"
@@ -46,6 +53,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_06_093012) do
   create_table "jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "lecture_id"
     t.string "name"
+    t.text "description"
     t.datetime "deadline"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -71,7 +79,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_06_093012) do
 
   create_table "test_results", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "test_solution_id", null: false
-    t.uuid "user_id"
     t.integer "score"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -95,7 +102,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_06_093012) do
   end
 
   add_foreign_key "answers", "questions"
-  add_foreign_key "homework_results", "homeworks"
+  add_foreign_key "homework_results", "homework_solutions"
+  add_foreign_key "homework_solutions", "homeworks"
   add_foreign_key "homeworks", "jobs"
   add_foreign_key "questions", "tests"
   add_foreign_key "solution_answers", "answers"
