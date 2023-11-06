@@ -20,6 +20,8 @@ const props = defineProps({
     },
 })
 
+let photoNumber = ref(getRandomNumberInRange(0,3))
+
 let hiddenBlock = ref(null)
 let hiddenBlockHeight = ref(0)
 let showHiddenText = ref(false)
@@ -29,6 +31,11 @@ const updateHiddenBlockHeight = () => {
         hiddenBlockHeight.value = hiddenBlock.value.offsetHeight;
     }
 }
+
+function getRandomNumberInRange(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 
 onMounted(() => {
     updateHiddenBlockHeight();
@@ -50,10 +57,10 @@ onBeforeUnmount(() => {
         @mouseleave="showHiddenText = false"
     >
         <div class="program__item-pic">
-            <img src="@/assets/images/program-finance.png" v-if="props.program.number === '1'">
-            <img src="@/assets/images/program-disain.png" v-if="props.program.number === '2'">
-            <img src="@/assets/images/card-steps.png" v-if="props.program.number === '3'">
-            <img src="@/assets/images/program-finance.png" v-if="props.program.number === '4'">
+            <img src="@/assets/images/program-finance.png" v-if="photoNumber === 0">
+            <img src="@/assets/images/program-disain.png" v-if="photoNumber === 1">
+            <img src="@/assets/images/card-steps.png" v-if="photoNumber === 2">
+            <img src="@/assets/images/program-finance.png" v-if="photoNumber === 3">
         </div>
         <div class="program__item-header">
             <div class="program__item-header-btn">
