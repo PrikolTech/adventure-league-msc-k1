@@ -1,5 +1,10 @@
 <script setup>
 import TheButton from '@/components/layouts/TheButton.vue';
+// import { ref } from 'vue';
+import { useUser } from '@/stores/user'
+
+const userStore = useUser()
+
 </script>
 
 <template>
@@ -14,7 +19,8 @@ import TheButton from '@/components/layouts/TheButton.vue';
                 </div>
                 <div class="profile__me-header">
                     <p>
-                        Радкевич Наталья Владимировна
+                        <!-- Радкевич Наталья Владимировна -->
+                        {{ userStore.user.first_name + ' ' + userStore.user.last_name }}
                     </p>
                     <the-button
                         :styles="['btn_grey']"

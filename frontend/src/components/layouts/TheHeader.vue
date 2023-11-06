@@ -2,15 +2,16 @@
 import LogoIcon from '@/components/icons/LogoIcon.vue';
 import switcherTheme from '@/components/layouts/SwitcherTheme.vue'
 import TheButton from './TheButton.vue';
-import { ref } from 'vue';
-
+import { computed, ref } from 'vue';
 import { useUser } from '@/stores/user'
 
 const userStore = useUser()
 
 let headerMobileIsActive = ref(false)
 
-console.log(userStore.user)
+const initialsUser = computed(() => {
+    return userStore.user.first_name[0] + userStore.user.last_name[0]
+})
 </script>
 
 <template>
@@ -20,7 +21,7 @@ console.log(userStore.user)
                 <logo-icon/>
             </router-link>
             <nav class="header__nav">
-                <router-link class="header__nav-item" to="/">Обучение</router-link>
+                <router-link class="header__nav-item" to="/">Главная</router-link>
                 <router-link class="header__nav-item" to="about">Об университете</router-link>
                 <router-link class="header__nav-item" to="events">Мероприятия</router-link>
                 <router-link class="header__nav-item" to="blog">Блог</router-link>
@@ -42,7 +43,7 @@ console.log(userStore.user)
                     <router-link class="header__me" to="/profile/me"
                         v-else
                     >
-                        РН
+                        {{ initialsUser }}
                     </router-link>
                 </div>
             </div>
@@ -65,11 +66,11 @@ console.log(userStore.user)
                     <logo-icon/>
                 </router-link>
                 <router-link class="header__me" to="/profile/me">
-                    РН
+                    {{ initialsUser }}
                 </router-link>
                 <nav class="header-m__nav">
                     <router-link class="header-m__nav-item" to="/">
-                        Обучение
+                        Главная
                     </router-link>
                     <router-link class="header-m__nav-item" to="about">
                         Об университете

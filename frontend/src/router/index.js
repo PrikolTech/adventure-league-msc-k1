@@ -24,7 +24,7 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
       meta: {
-        requiresAuth: true
+        requiresAuth: false
       }
     },
     {
@@ -105,7 +105,6 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const userStore = useUser()
-  console.log(userStore.user)
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (userStore.user) {
       next()

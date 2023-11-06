@@ -4,7 +4,7 @@
 
 <template>
     <main class="container notFound" style="display: flex; justify-content: center; align-items: center;">
-        Страница не найдена
+        Страница не существует
     </main>
 </template>
 

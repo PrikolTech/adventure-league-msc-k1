@@ -1,75 +1,178 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import TheButton from '../layouts/TheButton.vue';
 import ProgramItem from './ProgramItem.vue';
 
 let filterProgram = ref([
-  {text: 'Все', value: 'all'},
-  {text: 'Soft skills', value: 'Soft skills'},
-  {text: 'Hard skills', value: 'Hard skills'},
-  {text: 'Digital skills', value: 'Digital skills'},
-  {text: 'Портфольные программы', value: 'Портфольные программы'},
+    //   {text: 'Все', value: 'all'},
+    //   {text: 'Soft skills', value: 'Soft skills'},
+    //   {text: 'Hard skills', value: 'Hard skills'},
+    //   {text: 'Digital skills', value: 'Digital skills'},
+    //   {text: 'Портфольные программы', value: 'Портфольные программы'},
 ])
-let currentFilterProgram = ref('all')
 
+let currentFilterProgram = ref('all')
+let quantityProgramsToShow = ref(7)
 let programs = ref([
     {
         title: 'Финансовая грамотность',
         description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности. Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности. Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности. ',
         date: '19 декабря',
-        type: 'Онлайн, очно',
-        number: '1'
+        format: 'Онлайн, очно',
+        number: '1',
+        type: 'Soft skills'
     },
     {
         title: 'Дизайн система как смысл жизни',
         description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности.',
         date: '19 декабря',
-        type: 'Очно',
-        number: '2'
+        format: 'Очно',
+        number: '2',
+        type: 'Hard skills'
     },
     {
         title: 'Финансовая грамотность',
         description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности.',
         date: '19 декабря',
-        type: 'Онлайн, очно',
-        number: '3'
+        format: 'Онлайн, очно',
+        number: '3',
+        type: 'Digital skills'
     },
     {
         title: 'Лидерский интенсив',
         description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности.',
         date: '19 декабря',
-        type: 'Очно',
-        number: '4'
+        format: 'Очно',
+        number: '4',
+        type: 'Портфольные программы'
     },
     {
         title: 'Финансовая грамотность',
         description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности.',
         date: '19 декабря',
-        type: 'Онлайн, очно',
-        number: '1'
+        format: 'Онлайн, очно',
+        number: '1',
+        type: 'Soft skills'
     },
     {
         title: 'Дизайн система как смысл жизни',
         description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности.',
         date: '19 декабря',
-        type: 'Очно',
-        number: '2'
+        format: 'Очно',
+        number: '2',
+        type: 'Hard skills'
     },
     {
         title: 'Финансовая грамотность',
         description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности.',
         date: '19 декабря',
-        type: 'Онлайн, очно',
-        number: '3'
+        format: 'Онлайн, очно',
+        number: '3',
+        type: 'Digital skills'
     },
     {
         title: 'Лидерский интенсив',
         description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности.',
         date: '19 декабря',
-        type: 'Очно',
-        number: '4'
+        format: 'Очно',
+        number: '4',
+        type: 'Портфольные программы'
+    },
+    {
+        title: 'Финансовая грамотность',
+        description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности. Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности. Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности. ',
+        date: '19 декабря',
+        format: 'Онлайн, очно',
+        number: '1',
+        type: 'Soft skills'
+    },
+    {
+        title: 'Дизайн система как смысл жизни',
+        description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности.',
+        date: '19 декабря',
+        format: 'Очно',
+        number: '2',
+        type: 'Hard skills'
+    },
+    {
+        title: 'Финансовая грамотность',
+        description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности.',
+        date: '19 декабря',
+        format: 'Онлайн, очно',
+        number: '3',
+        type: 'Digital skills'
+    },
+    {
+        title: 'Лидерский интенсив',
+        description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности.',
+        date: '19 декабря',
+        format: 'Очно',
+        number: '4',
+        type: 'Портфольные программы'
+    },
+    {
+        title: 'Финансовая грамотность',
+        description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности.',
+        date: '19 декабря',
+        format: 'Онлайн, очно',
+        number: '1',
+        type: 'Soft skills'
+    },
+    {
+        title: 'Дизайн система как смысл жизни',
+        description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности.',
+        date: '19 декабря',
+        format: 'Очно',
+        number: '2',
+        type: 'Hard skills'
+    },
+    {
+        title: 'Финансовая грамотность',
+        description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности.',
+        date: '19 декабря',
+        format: 'Онлайн, очно',
+        number: '3',
+        type: 'Digital skills'
+    },
+    {
+        title: 'Лидерский интенсив',
+        description: 'Курс по финансовой грамотности обучает управлению личными финансами, включая бюджетирование, инвестирование и планирование будущего для финансовой стабильности.',
+        date: '19 декабря',
+        format: 'Очно',
+        number: '4',
+        type: 'Портфольные программы'
     },
 ])
+
+let filteredPrograms = ref([])
+const getPrograms = async () => {
+
+    const response = programs.value;
+    filteredPrograms.value = [...programs.value];
+
+    filterProgram.value = [
+        { text: 'Все', value: 'all' },
+        ...[...new Set(response.map(program => program.type))].map(type => ({ text: type, value: type }))
+    ];
+
+}
+
+const filterPrograms = (value) => {
+    currentFilterProgram.value = value
+
+    if(value === 'all') {
+        filteredPrograms.value = [...programs.value]
+        return
+    }
+
+    filteredPrograms.value = [...programs.value.filter(el => {
+        return el.type === value;
+    })];
+}
+
+onMounted(() => {
+    getPrograms()
+})
 
 </script>
 
@@ -87,6 +190,7 @@ let programs = ref([
                     <the-button
                         :styles="['btn_grey-lite', {active: currentFilterProgram === item.value}]"
                         :type="'button'"
+                        @click="filterPrograms(item.value)"
                     >
                         {{ item.text }}
                     </the-button>
@@ -95,16 +199,20 @@ let programs = ref([
         </div>
         <div class="program__list">
             <program-item
-                v-for="(program, index) of programs" :key="index"
+                v-for="(program, index) of filteredPrograms" :key="index"
                 :program="program"
                 :number="index"
+                :quantityProgramsToShow="quantityProgramsToShow"
             />
         </div>
-        <div class="program__footer">
+        <div class="program__footer"
+            v-if="(quantityProgramsToShow < filteredPrograms.length - 1)"
+        >
             <div class="program__footer-line line"></div>
             <the-button
                     :styles="['btn_grey']"
                     :type="'button'"
+                    @click="quantityProgramsToShow += 8"
                 >
                 Показать ещё
             </the-button>

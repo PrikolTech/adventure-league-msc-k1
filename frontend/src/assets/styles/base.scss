@@ -320,6 +320,21 @@ input {
   }
 }
 
+.input-w {
+  position: relative;
+  & .eye {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    cursor: pointer;
+    top: 50%;
+    transform: translate(0,-50%);
+    right: 10px;
+  }
+}
+
+
 [dark=true] {
   & .b-contain {
       & span {
@@ -331,5 +346,11 @@ input {
     background: var(--gray-700, #374151);
     color: var(--gray-200, #E5E7EB);
   }
+  // .input-w {
+  //   & .eye {
+  //     & path {
+  //       stroke: #D1D5DB;
+  //     }
+  //   }
+  // }
 }
-

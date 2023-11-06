@@ -10,6 +10,14 @@ const props = defineProps({
         type: Object,
         required: true
     },
+    quantityProgramsToShow: {
+        type: Number,
+        required: true
+    },
+    number: {
+        type: Number,
+        required: true
+    },
 })
 
 let hiddenBlock = ref(null)
@@ -37,6 +45,7 @@ onBeforeUnmount(() => {
 
 <template>
     <div class="program__item"
+        v-if="number <= quantityProgramsToShow"
         @mouseenter="showHiddenText = true"
         @mouseleave="showHiddenText = false"
     >
@@ -51,7 +60,7 @@ onBeforeUnmount(() => {
                 {{ props.program.date }}
             </div>
             <div class="program__item-header-btn">
-                {{ props.program.type }}
+                {{ props.program.format }}
             </div>
         </div>
         <div class="program__item-text"
