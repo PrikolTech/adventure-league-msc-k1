@@ -334,6 +334,9 @@ input {
   }
 }
 
+.text {
+  color: var(--var-grey-lite-font);
+}
 
 [dark=true] {
   & .b-contain {

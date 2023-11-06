@@ -1,6 +1,6 @@
 <script setup>
 import ProfileNav from '@/components/profile/ProfileNav.vue';
-
+import TheEvents from '@/components/TheEvents.vue';
 </script>
 
 <template>
@@ -8,6 +8,7 @@ import ProfileNav from '@/components/profile/ProfileNav.vue';
         <div class="profile container">
             <profile-nav/>
             <RouterView />
+            <the-events/>
         </div>
     </main>
 </template>
@@ -17,6 +18,9 @@ import ProfileNav from '@/components/profile/ProfileNav.vue';
     padding-top: 5px;
     display: flex;
     gap: 70px;
+    @media (max-width: 1199px) {
+        gap: 40px;
+    }
     @media (max-width: 1023px) {
         flex-wrap: wrap;
         gap: 40px;

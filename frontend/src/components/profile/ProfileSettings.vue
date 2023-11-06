@@ -87,10 +87,7 @@ import TheButton from '@/components/layouts/TheButton.vue';
             margin-bottom: 20px;
         }
         & .field {
-            flex: 0 0 calc(50% - 25px);
-            @media (max-width: 767px) {
-                flex: 0 0 100%;
-            }
+            flex: 0 0 100%;
             &:not(:last-child) {
                 margin-bottom: 0px;
             }

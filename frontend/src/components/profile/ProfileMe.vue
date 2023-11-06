@@ -1,9 +1,8 @@
 <script setup>
 import TheButton from '@/components/layouts/TheButton.vue';
-// import { ref } from 'vue';
 import { useUser } from '@/stores/user'
-
 const userStore = useUser()
+
 
 </script>
 
@@ -63,30 +62,7 @@ const userStore = useUser()
                 </div>
             </div>
             <div class="profile__events-subtitle title">
-                    События
-                </div>
-            <div class="profile__events">
-                <div class="profile__events-calendar">
-
-                </div>
-                <div class="profile__events-list">
-                    <div class="profile__events-item"
-                        v-for="(event, index) of [1,2,3]" :key="index"
-                    >
-                        <p class="profile__events-hashtag">
-                            # Урок онлайн
-                        </p>
-                        <p class="profile__events-title">
-                            Стратегия развития анимации в отзывчивой дизайне
-                        </p>
-                        <p class="profile__events-desc">
-                            Курс : Дизайн система как смысл жизни
-                        </p>
-                        <p class="profile__events-time">
-                            20:00 - 22:00
-                        </p>
-                    </div>
-                </div>
+                События
             </div>
         </div>
     </div>
@@ -99,6 +75,7 @@ const userStore = useUser()
         display: flex;
         gap: 50px;
         justify-content: space-between;
+
         @media (max-width: 767px) {
             flex-wrap: wrap;
             gap: 20px;
@@ -106,7 +83,7 @@ const userStore = useUser()
     }
 
     &__me-content {
-        max-width: 560px;
+        // max-width: 560px;
         flex: 1;
         @media (max-width: 767px) {
             max-width: none;
@@ -116,11 +93,11 @@ const userStore = useUser()
 
     &__me-header {
         display: flex;
-        align-items: center;
         column-gap: 50px;
         row-gap: 10px;
         margin-bottom: 27px;
         flex-wrap: wrap;
+        justify-content: space-between;
         & p {
             color: var(--gray-900, #111928);
             font-family: Inter;
@@ -236,6 +213,12 @@ const userStore = useUser()
         height: fit-content;
         max-height: 700px;
         overflow: auto;
+        @media (max-width: 1199px) {
+            flex: 0 0 320px;
+        }
+        @media (max-width: 1023px) {
+            margin: 0 auto;
+        }
         @media (max-width: 767px) {
             max-width: none;
             flex: 0 0 100%;
@@ -251,7 +234,9 @@ const userStore = useUser()
     }
 
     &__events-calendar {
-
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
     }
 
     &__events-list {
