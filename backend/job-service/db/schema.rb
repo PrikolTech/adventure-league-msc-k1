@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_06_092855) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_06_093012) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -70,12 +70,12 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_06_092855) do
   end
 
   create_table "test_results", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "test_id", null: false
+    t.uuid "test_solution_id", null: false
     t.uuid "user_id"
     t.integer "score"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["test_id"], name: "index_test_results_on_test_id"
+    t.index ["test_solution_id"], name: "index_test_results_on_test_solution_id"
   end
 
   create_table "test_solutions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -100,7 +100,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_06_092855) do
   add_foreign_key "questions", "tests"
   add_foreign_key "solution_answers", "answers"
   add_foreign_key "solution_answers", "test_solutions"
-  add_foreign_key "test_results", "tests"
+  add_foreign_key "test_results", "test_solutions"
   add_foreign_key "test_solutions", "tests"
   add_foreign_key "tests", "jobs"
 end

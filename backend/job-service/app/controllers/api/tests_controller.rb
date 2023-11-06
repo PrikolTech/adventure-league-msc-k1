@@ -6,7 +6,7 @@ class Api::TestsController < ApplicationController
 
   def show
     @test = Test.find(params[:id])
-    render json: @test
+    render json: @test, include: :questions
   end
 
   def create
@@ -16,7 +16,7 @@ class Api::TestsController < ApplicationController
       @test.job_id = params[:job_id]
       @test.save
 
-      redirect_to "/api/jobs/#{params[:job_id]}/tests/#{@test.id}"
+      redirect_to @test.path
     else
       render json: {message: 'not created'}, status: 400
     end
@@ -26,7 +26,7 @@ class Api::TestsController < ApplicationController
     @test = Test.find(params[:id])
 
     if @test.update(test_params)
-      redirect_to "/api/jobs/#{params[:job_id]}/tests/#{@test.id}"
+      redirect_to @test.path
     else
       render json: {message: 'not updated'}, status: 400
     end

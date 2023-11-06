@@ -4,9 +4,13 @@ class Api::JobsController < ApplicationController
     render json: @jobs
   end
 
-  def create
-    # deadline = params['deadline'] if params.include? 'deadline'
+  def show
+    @job = Job.find(params[:id])
 
+    render json: @job, include: :tests
+  end
+
+  def create
     @job = Job.create(job_params)
     
     if @job
@@ -14,17 +18,6 @@ class Api::JobsController < ApplicationController
     else
       render json: {message: 'not created'}, status: 400
     end
-  end
-
-  def destroy
-    @job = Job.find(params[:id])
-    @job.destroy
-  end
-
-  def show
-    @job = Job.find(params[:id])
-
-    render json: @job
   end
 
   def update 
@@ -35,6 +28,11 @@ class Api::JobsController < ApplicationController
     else
       render json: {message: 'not updated'}, status: 400
     end
+  end
+
+  def destroy
+    @job = Job.find(params[:id])
+    @job.destroy
   end
 
   private 
