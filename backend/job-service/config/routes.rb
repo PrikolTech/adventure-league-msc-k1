@@ -10,6 +10,9 @@ Rails.application.routes.draw do
 
         resources :test_solutions, except: :update
       end
+
+      resources :homeworks do
+      end
     end
   end
 end
