@@ -7,7 +7,7 @@ class Api::HomeworkSolutionsController < ApplicationController
   def show
     @solution = HomeworkSolution.find(params[:id])
 
-    render json: @solutions, include: :homework_result
+    render json: @solution, include: :homework_result
   end
 
   def create
@@ -34,8 +34,15 @@ class Api::HomeworkSolutionsController < ApplicationController
   end
 
   def delete
-    @homework = Homework.find(params[:id])
-    @homework.delete
+    @solution = HomeworkSolution.find(params[:id])
+    @solution.delete
+  end
+
+  def result
+    @solution = HomeworkSolution.find(params[:homework_solution_id])
+    HomeworkResult.create(score: params[:score], homework_solution_id: @solution.id)
+
+    redirect_to @solution.path
   end
 
   private
