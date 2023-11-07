@@ -1,11 +1,19 @@
 <script setup>
 import { ref } from "vue";
 
+const props = defineProps({
+    job: {
+        type: Object,
+        required: true
+    }
+})
+
 let showHiddenText = ref(false)
 </script>
 
 <template>
-    <div class="me__courses-progress-item complited"
+    <div class="me__courses-progress-item"
+        :class="[{ complited: props.job.completed == 'true' }, { home: props.job.type == 'home' }]"
         @click.stop.prevent=""
         @mouseenter="showHiddenText = true"
         @mouseleave="showHiddenText = false"
@@ -36,6 +44,11 @@ let showHiddenText = ref(false)
     }
     &.complited {
         background:#0E9F6E;
+    }
+    &.home {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
     }
 }
 .hidden-info {

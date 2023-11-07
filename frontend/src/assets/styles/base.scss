@@ -338,7 +338,9 @@ input {
 
 .text {
   color: var(--var-grey-lite-font);
-}
+  @media (max-width: 767px) {
+    font-size: 15px;
+  }}
 
 [dark=true] {
   & .b-contain {

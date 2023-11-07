@@ -1,55 +1,131 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref, watch } from "vue";
+import TheSort from "@/components/layouts/TheSort.vue";
+import TheSwitcher from "@/components/layouts/TheSwitcher.vue";
 
-let comments = ref([
+const sortSelectors = ref(['Все'])
+let filterSelect = ref('Все')
+
+let selectorIsActive = ref(false)
+let onlyExams = ref(false)
+
+let marks = ref([
     {
         title: "Подготовка к старту проекта",
         desc: "Курс : Agile, Scruma",
         date: "25 августа 2023",
         text: "Наталья, отличная работа! Молодец)",
-        format: "# Экзамен",
+        format: "Экзамен",
         mark: '5'
     },
     {
-        title: "Подготовка к старту проекта",
+        title: "Финансовая грамотность",
         desc: "Курс : Agile, Scruma",
         date: "25 августа 2023",
         text: "Наталья, отличная работа! Молодец)",
-        format: "# Экзамен",
+        format: "Урок",
         mark: '4'
     },
     {
-        title: "Подготовка к старту проекта",
+        title: "Дизайн как смысл жизни",
         desc: "Курс : Agile, Scruma",
         date: "25 августа 2023",
         text: "Наталья, отличная работа! Молодец)",
-        format: "# Экзамен",
+        format: "Домашнее задание",
         mark: '3'
     },
     {
-        title: "Подготовка к старту проекта",
+        title: "Управление командой",
         desc: "Курс : Agile, Scruma",
         date: "25 августа 2023",
         text: "Наталья, отличная работа! Молодец)",
-        format: "# Экзамен",
+        format: "Экзамен",
         mark: '2'
     },
+    {
+        title: "Общение в команде",
+        desc: "Курс : Agile, Scruma",
+        date: "25 августа 2023",
+        text: "Наталья, отличная работа! Молодец)",
+        format: "Экзамен",
+        mark: '5'
+    },
 ])
+
+let filteredMarks = ref([])
+
+const getMarks = () => {
+    const response = [...marks.value]
+
+
+    filteredMarks.value = [...response]
+
+    filteredMarks.value.forEach(el => {
+        if(!sortSelectors.value.includes(el.title)) {
+            sortSelectors.value.push(el.title)
+        }
+    });
+}
+
+const filterMarks = (filterValue) => {
+
+    if(filterValue) {
+        filterSelect.value = filterValue
+    }
+
+    filteredMarks.value = [...marks.value.filter(mark => {
+        if(onlyExams.value) {
+            if(filterSelect.value === 'Все') {
+                return mark.format === 'Экзамен'
+            } else {
+                return (mark.format === 'Экзамен' && mark.title === filterSelect.value)
+            }
+        } else {
+            if(filterSelect.value === 'Все') {
+                return true
+            } else {
+                return mark.title === filterSelect.value
+            }
+        }
+    })]
+
+}
+
+watch(onlyExams, () => {
+    filterMarks()
+});
+
+
+onMounted(() => {
+    getMarks()
+})
+
+
 </script>
 
 <template>
     <div class="me__marks">
         <div class="me__marks-header">
-
+            <the-sort
+                :selectors="sortSelectors"
+                v-model="selectorIsActive"
+                @select="(modelValue) => filterMarks(modelValue)"
+            />
+            <the-switcher
+                :name="'onlyExams'"
+                v-model="onlyExams"
+            >
+                Только экзамены
+            </the-switcher>
         </div>
         <div class="me__marks-list">
             <div class="me__marks-item"
-                v-for="(event, index) of comments" :key="index"
+                v-for="(event, index) of filteredMarks" :key="index"
             >
                 <div class="me__marks-item-header">
                     <p>
                         <!-- # Экзамен -->
-                        {{ event.format }}
+                        # {{ event.format }}
                     </p>
                     <span>
                         <!-- 25 августа 2023 -->
@@ -80,6 +156,9 @@ let comments = ref([
                 </div>
             </div>
         </div>
+        <div class="text" v-if="filteredMarks.length === 0">
+            По заданному фильтру ничего не найдено...
+        </div>
     </div>
 </template>
 
@@ -91,7 +170,15 @@ let comments = ref([
     }
 
     &__marks-header {
-
+        margin-bottom: 40px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        @media (max-width: 539px) {
+            margin-bottom: 10px;
+        }
     }
 
     &__marks-list {
@@ -111,8 +198,7 @@ let comments = ref([
             padding: 15px;
             gap: 10px;
         }
-        @media (max-width: 539px) {
-        }
+
         &:not(:last-child) {
             margin-bottom: 30px;
             @media (max-width: 767px) {
@@ -218,7 +304,7 @@ let comments = ref([
                 color: var(--green-500, var(--green-500, #959f0e));
             }
             &.bad {
-                background: #DDF7DA;
+                background: #f7dada;
                 color: var(--green-500, var(--green-500, #9f0e0e));
             }
         }

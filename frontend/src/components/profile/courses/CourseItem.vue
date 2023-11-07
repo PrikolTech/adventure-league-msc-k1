@@ -14,8 +14,6 @@ function getRandomNumberInRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-
-
 </script>
 
 <template>
@@ -40,7 +38,7 @@ function getRandomNumberInRange(min, max) {
             </div>
             <div class="me__courses-progress-list">
                 <course-task
-                    v-for="(task, index) of [1,2,3,4,5,6,7,8,9,10,11,12,13,]" :key="index"
+                    v-for="(job, index) of props.course.jobs" :key="index" :job="job"
                 />
             </div>
             <div class="me__courses-item-content">

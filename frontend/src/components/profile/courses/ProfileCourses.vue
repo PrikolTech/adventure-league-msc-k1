@@ -1,6 +1,14 @@
 <script setup>
-import { onMounted, ref } from "vue";
-import CourseItem from "./CourseItem.vue";
+import { onMounted, ref, watch } from "vue";
+import CourseItem from "@/components/profile/courses/courseitem.vue";
+import TheSort from "@/components/layouts/TheSort.vue";
+import TheSwitcher from "@/components/layouts/TheSwitcher.vue";
+
+const sortSelectors = ref(['Все'])
+let filterSelect = ref('Все')
+
+let selectorIsActive = ref(false)
+let showCompleted = ref(false)
 
 const courses = ref([
     {
@@ -15,6 +23,103 @@ const courses = ref([
             passed: 0,
             total: 3,
         },
+        jobs: [
+            {
+                type: 'lecture',
+                text: 'Урок 1. Знакомство с компонентами.',
+                completed: 'true',
+            },
+            {
+                type: 'home',
+                text: 'ДЗ 1. Считаем свой месячный расход.',
+                completed: 'true',
+            },
+            {
+                type: 'lecture',
+                text: 'Урок 2. Знакомство с компонентами.',
+                completed: 'false',
+            },
+            {
+                type: 'home',
+                text: 'ДЗ 2. Считаем свой месячный расход.',
+                completed: 'true',
+            },
+            {
+                type: 'lecture',
+                text: 'Урок 3. Знакомство с компонентами.',
+                completed: 'false',
+            },
+            {
+                type: 'home',
+                text: 'ДЗ 3. Считаем свой месячный расход.',
+                completed: 'false',
+            },
+            {
+                type: 'lecture',
+                text: 'Урок 4. Знакомство с компонентами.',
+                completed: 'false',
+            },
+            {
+                type: 'home',
+                text: 'ДЗ 4. Считаем свой месячный расход.',
+                completed: 'false',
+            },
+        ]
+    },
+    {
+        title: 'Дизайн система как смысл жизни',
+        date: '06.11.23 - 10.01.24',
+        format: 'Онлайн',
+        lecture: {
+            passed: 3,
+            total: 3,
+        },
+        tasks: {
+            passed: 5,
+            total: 5,
+        },
+        jobs: [
+            {
+                type: 'lecture',
+                text: 'Урок 1. Знакомство с компонентами.',
+                completed: 'true',
+            },
+            {
+                type: 'home',
+                text: 'ДЗ 1. Считаем свой месячный расход.',
+                completed: 'true',
+            },
+            {
+                type: 'lecture',
+                text: 'Урок 2. Знакомство с компонентами.',
+                completed: 'true',
+            },
+            {
+                type: 'home',
+                text: 'ДЗ 2. Считаем свой месячный расход.',
+                completed: 'true',
+            },
+            {
+                type: 'lecture',
+                text: 'Урок 3. Знакомство с компонентами.',
+                completed: 'true',
+            },
+            {
+                type: 'home',
+                text: 'ДЗ 3. Считаем свой месячный расход.',
+                completed: 'true',
+            },
+            {
+                type: 'lecture',
+                text: 'Урок 4. Знакомство с компонентами.',
+                completed: 'true',
+            },
+            {
+                type: 'home',
+                text: 'ДЗ 4. Считаем свой месячный расход.',
+                completed: 'true',
+            },
+        ]
     },
     {
         title: 'Дизайн система как смысл жизни',
@@ -28,9 +133,51 @@ const courses = ref([
             passed: 2,
             total: 3,
         },
+        jobs: [
+            {
+                type: 'lecture',
+                text: 'Урок 1. Знакомство с компонентами.',
+                completed: 'true',
+            },
+            {
+                type: 'home',
+                text: 'ДЗ 1. Считаем свой месячный расход.',
+                completed: 'true',
+            },
+            {
+                type: 'lecture',
+                text: 'Урок 2. Знакомство с компонентами.',
+                completed: 'false',
+            },
+            {
+                type: 'home',
+                text: 'ДЗ 2. Считаем свой месячный расход.',
+                completed: 'true',
+            },
+            {
+                type: 'lecture',
+                text: 'Урок 3. Знакомство с компонентами.',
+                completed: 'false',
+            },
+            {
+                type: 'home',
+                text: 'ДЗ 3. Считаем свой месячный расход.',
+                completed: 'false',
+            },
+            {
+                type: 'lecture',
+                text: 'Урок 4. Знакомство с компонентами.',
+                completed: 'false',
+            },
+            {
+                type: 'home',
+                text: 'ДЗ 4. Считаем свой месячный расход.',
+                completed: 'false',
+            },
+        ]
     },
     {
-        title: 'Дизайн система как смысл жизни',
+        title: 'Управление командой',
         date: '06.11.23 - 10.01.24',
         format: 'Онлайн',
         lecture: {
@@ -41,12 +188,90 @@ const courses = ref([
             passed: 2,
             total: 3,
         },
+        jobs: [
+            {
+                type: 'lecture',
+                text: 'Урок 1. Знакомство с компонентами.',
+                completed: 'true',
+            },
+            {
+                type: 'home',
+                text: 'ДЗ 1. Считаем свой месячный расход.',
+                completed: 'true',
+            },
+            {
+                type: 'lecture',
+                text: 'Урок 2. Знакомство с компонентами.',
+                completed: 'false',
+            },
+            {
+                type: 'home',
+                text: 'ДЗ 2. Считаем свой месячный расход.',
+                completed: 'true',
+            },
+            {
+                type: 'lecture',
+                text: 'Урок 3. Знакомство с компонентами.',
+                completed: 'false',
+            },
+            {
+                type: 'home',
+                text: 'ДЗ 3. Считаем свой месячный расход.',
+                completed: 'false',
+            },
+            {
+                type: 'lecture',
+                text: 'Урок 4. Знакомство с компонентами.',
+                completed: 'false',
+            },
+            {
+                type: 'home',
+                text: 'ДЗ 4. Считаем свой месячный расход.',
+                completed: 'false',
+            },
+        ]
     },
 ])
+let filteredCourses = ref([])
 
 const getCourses = async() => {
-    // const response = [...courses.value]
+    const response = [...courses.value]
+
+    filteredCourses.value = [...response]
+
+    filteredCourses.value.forEach(el => {
+        if(!sortSelectors.value.includes(el.title)) {
+            sortSelectors.value.push(el.title)
+        }
+    });
 }
+
+const filterCourses = (filterValue) => {
+    if(filterValue) {
+        filterSelect.value = filterValue
+    }
+
+    filteredCourses.value = [...courses.value.filter(cource => {
+        if(showCompleted.value) {
+            if(filterSelect.value === 'Все') {
+                return (cource.lecture.passed !== cource.lecture.total && cource.tasks.passed !== cource.tasks.total)
+            } else {
+                return ((cource.lecture.passed !== cource.lecture.total && cource.tasks.passed !== cource.tasks.total) && cource.title === filterSelect.value)
+            }
+        } else {
+            if(filterSelect.value === 'Все') {
+                return true
+            } else {
+                return cource.title === filterSelect.value
+            }
+        }
+    })]
+
+}
+
+watch(showCompleted, () => {
+    filterCourses()
+});
 
 onMounted(() => {
     getCourses()
@@ -63,12 +288,25 @@ onMounted(() => {
                     </div>
                     <div class="profile__header-line line"></div>
                 </div>
+                <div class="profile__courses-filter">
+                    <the-sort
+                        :selectors="sortSelectors"
+                        v-model="selectorIsActive"
+                        @select="(modelValue) => filterCourses(modelValue)"
+                    />
+                    <the-switcher
+                        :name="'showCompleted'"
+                        v-model="showCompleted"
+                    >
+                        Скрыть пройденные
+                    </the-switcher>
+                </div>
                 <div class="profile__courses-header">
                     
                 </div>
                 <div class="profile__courses-list">
                     <course-item
-                        v-for="(course, index) of courses" :key="index" :course="course"
+                        v-for="(course, index) of filteredCourses" :key="index" :course="course"
                     />
                 </div>
             </div>
@@ -77,6 +315,18 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
+
+.profile__courses-filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 40px;
+    @media (max-width: 767px) {
+        margin-bottom: 20px;
+    }
+}
+
 .me__courses-item {
     padding-left: 40%;
     @media (max-width: 767px) {

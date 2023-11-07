@@ -1,9 +1,6 @@
 <script setup>
 import { ref, defineProps, computed } from "vue";
 import VueApexCharts from "vue3-apexcharts";
-import { useUser } from '@/stores/user'
-
-const userStore = useUser()
 
 const props = defineProps({
     course: {
@@ -19,9 +16,11 @@ function getRandomNumberInRange(min, max) {
 }
 
 const progress = computed(() => {
-    console.log(((parseInt(props.course.lecture.passed) + parseInt(props.course.tasks.passed)) / (parseInt(props.course.lecture.total) + parseInt(props.course.tasks.total))) * 100)
     return Math.floor(((parseInt(props.course.lecture.passed) + parseInt(props.course.tasks.passed)) / (parseInt(props.course.lecture.total) + parseInt(props.course.tasks.total))) * 100)
 })
+
+let colorTextInChart = ref('#FF5733')
+
 const chartOptions = ref({
     chart: {
         type: 'radialBar',
@@ -34,8 +33,9 @@ const chartOptions = ref({
                     show: false,
                 },
                 value: {
-                    fontSize: "22px",
+                    fontSize: "20px",
                     offsetY: 8,
+                    color: colorTextInChart
                 },
             },
             hollow: {
@@ -46,7 +46,6 @@ const chartOptions = ref({
     borderRadius: [20], // Устанавливайте здесь радиус скругления (border-radius)
     colors: ['#003791'], // Здесь указывайте свои цвета
 });
-console.log(userStore)
 
 
 </script>

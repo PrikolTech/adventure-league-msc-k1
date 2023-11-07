@@ -3,6 +3,8 @@ import { ref } from "vue";
 
 import MeCourseItem from '@/components/profile/me/MeCourseItem.vue'
 
+
+
 const courses = ref([
     {
         title: 'Финансовая грамотность',
@@ -48,6 +50,9 @@ const courses = ref([
 
 <template>
     <div class="me__courses">
+        <div class="me__courses-header">
+
+        </div>
         <div class="me__courses-list">
             <me-course-item
                 v-for="(course, index) of courses" :key="index" :course="course"
@@ -57,6 +62,8 @@ const courses = ref([
 </template>
 
 <style lang="scss">
+.me__courses-header {
+}
 .me__courses-item-inside {
 }
 .me {

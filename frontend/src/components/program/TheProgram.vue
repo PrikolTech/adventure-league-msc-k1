@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
-import TheButton from '../layouts/TheButton.vue';
-import ProgramItem from './ProgramItem.vue';
+import TheButton from '@/components/layouts/TheButton.vue';
+import ProgramItem from '@/components/program/ProgramItem.vue';
 
 let filterProgram = ref([
     //   {text: 'Все', value: 'all'},
