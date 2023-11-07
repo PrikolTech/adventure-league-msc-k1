@@ -18,13 +18,13 @@ func NewUserPG(pg *postgres.Postgres) *UserPG {
 
 func (u *UserPG) Create(ctx context.Context, data entity.User) (*entity.User, error) {
 	const query = `INSERT INTO "data"
-		(email, password, first_name, last_name, patronymic, phone, telegram) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`
+		(email, password, first_name, last_name, patronymic, birthdate, phone, telegram) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`
 
 	var user entity.User
 	err := u.Pool.
-		QueryRow(ctx, query, data.Email, data.Password, data.FirstName, data.LastName, data.Patronymic, data.Phone, data.Telegram).
-		Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.Patronymic, &user.Phone, &user.Telegram)
+		QueryRow(ctx, query, data.Email, data.Password, data.FirstName, data.LastName, data.Patronymic, data.Birthdate, data.Phone, data.Telegram).
+		Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.Patronymic, &user.Birthdate, &user.Phone, &user.Telegram)
 
 	return &user, err
 }
@@ -35,7 +35,7 @@ func (u *UserPG) GetByID(ctx context.Context, id uuid.UUID) (*entity.User, error
 	var user entity.User
 	err := u.Pool.
 		QueryRow(ctx, query, id).
-		Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.Patronymic, &user.Phone, &user.Telegram)
+		Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.Patronymic, &user.Birthdate, &user.Phone, &user.Telegram)
 
 	return &user, err
 }
@@ -46,7 +46,7 @@ func (u *UserPG) GetByEmail(ctx context.Context, email string) (*entity.User, er
 	var user entity.User
 	err := u.Pool.
 		QueryRow(ctx, query, email).
-		Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.Patronymic, &user.Phone, &user.Telegram)
+		Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.Patronymic, &user.Birthdate, &user.Phone, &user.Telegram)
 
 	return &user, err
 }
@@ -56,7 +56,7 @@ func (u *UserPG) UpdatePassword(ctx context.Context, id uuid.UUID, password stri
 
 	var user entity.User
 	err := u.Pool.QueryRow(ctx, query, id, password).
-		Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.Patronymic, &user.Phone, &user.Telegram)
+		Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.Patronymic, &user.Birthdate, &user.Phone, &user.Telegram)
 
 	return &user, err
 }
@@ -66,7 +66,7 @@ func (u *UserPG) UpdateContact(ctx context.Context, data entity.User) (*entity.U
 
 	var user entity.User
 	err := u.Pool.QueryRow(ctx, query, data.ID, data.Phone, data.Telegram).
-		Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.Patronymic, &user.Phone, &user.Telegram)
+		Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.Patronymic, &user.Birthdate, &user.Phone, &user.Telegram)
 
 	return &user, err
 }
