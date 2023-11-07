@@ -38,6 +38,8 @@ type Registration struct {
 
 	Telegram *string `json:"telegram"`
 	Phone    *string `json:"phone"`
+
+	Status *string `json:"status"`
 }
 
 func (f *Registration) Validate() error {
