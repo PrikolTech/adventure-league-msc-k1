@@ -13,14 +13,7 @@ const props = defineProps({
     }
 })
 
-const date = new Date();
-
-const rules = ref({
-  hours: 0,
-  minutes: 0,
-  seconds: 0,
-  milliseconds: 0,
-});
+const date = (new Date());
 
 const attributes = ref([
   {
@@ -29,11 +22,10 @@ const attributes = ref([
       color: 'blue',
       fillMode: 'outline',
     },
-    dates: [date.value]
   },
   {
     dot: true, 
-    dates: [props.dates]
+    dates: props.dates
   },
 ]);
 
@@ -45,7 +37,6 @@ const attributes = ref([
         v-model="date"
         :is-dark="userStore.theme"
         :attributes="attributes"
-        :rules="rules"
         @dayclick="$emit('datePick', date)"
     />
 </template>

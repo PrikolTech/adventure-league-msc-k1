@@ -1,8 +1,8 @@
 <script setup>
+
 import TheButton from '@/components/layouts/TheButton.vue';
 import { useUser } from '@/stores/user'
 const userStore = useUser()
-
 
 </script>
 
@@ -211,8 +211,6 @@ const userStore = useUser()
         padding: 30px;
         flex: 0 0 360px;
         height: fit-content;
-        max-height: 700px;
-        overflow: auto;
         @media (max-width: 1199px) {
             flex: 0 0 320px;
         }
@@ -243,8 +241,9 @@ const userStore = useUser()
         display: flex;
         flex-direction: column;
         gap: 15px;
-
         border-radius: 12px;
+        max-height: 700px;
+        overflow: auto;
     }
 
     &__events-item {

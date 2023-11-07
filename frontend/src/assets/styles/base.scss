@@ -314,6 +314,8 @@ input {
   font-style: normal;
   font-weight: 400;
   line-height: 167%; /* 26.72px */
+  max-height: 400px;
+  height: auto;
   @media (max-width: 767px) {
     padding: 8px;
     font-size: 14px;

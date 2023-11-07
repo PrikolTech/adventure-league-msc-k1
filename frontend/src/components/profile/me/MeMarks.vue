@@ -1,5 +1,40 @@
 <script setup>
+import { ref } from "vue";
 
+let comments = ref([
+    {
+        title: "Подготовка к старту проекта",
+        desc: "Курс : Agile, Scruma",
+        date: "25 августа 2023",
+        text: "Наталья, отличная работа! Молодец)",
+        format: "# Экзамен",
+        mark: '5'
+    },
+    {
+        title: "Подготовка к старту проекта",
+        desc: "Курс : Agile, Scruma",
+        date: "25 августа 2023",
+        text: "Наталья, отличная работа! Молодец)",
+        format: "# Экзамен",
+        mark: '4'
+    },
+    {
+        title: "Подготовка к старту проекта",
+        desc: "Курс : Agile, Scruma",
+        date: "25 августа 2023",
+        text: "Наталья, отличная работа! Молодец)",
+        format: "# Экзамен",
+        mark: '3'
+    },
+    {
+        title: "Подготовка к старту проекта",
+        desc: "Курс : Agile, Scruma",
+        date: "25 августа 2023",
+        text: "Наталья, отличная работа! Молодец)",
+        format: "# Экзамен",
+        mark: '2'
+    },
+])
 </script>
 
 <template>
@@ -9,25 +44,32 @@
         </div>
         <div class="me__marks-list">
             <div class="me__marks-item"
-                v-for="(mark, index) of [1,2,3]" :key="index"
+                v-for="(event, index) of comments" :key="index"
             >
                 <div class="me__marks-item-header">
                     <p>
-                        # Экзамен
+                        <!-- # Экзамен -->
+                        {{ event.format }}
                     </p>
                     <span>
-                        25 августа 2023
+                        <!-- 25 августа 2023 -->
+                        {{ event.date }}
                     </span>
                 </div>
                 <p class="me__marks-item-title">
-                    Подготовка к старту проекта
+                    <!-- Подготовка к старту проекта -->
+                    {{ event.title }}
                 </p>
                 <p class="me__marks-item-course">
-                    Курс : Agile, Scrum. 
+                    <!-- Курс : Agile, Scrum.  -->
+                    {{ event.desc }}
                 </p>
                 <div class="me__marks-item-score">
-                    <span>
-                        5
+                    <span
+                        :class="[{great: event.mark === '5'},{fine: event.mark === '4'},{satisfactorily: event.mark === '3'},{bad: event.mark === '2'}]"
+                    >
+                        <!-- 5 -->
+                        {{ event.mark }}
                     </span>
                     <p>
                         Оценка преподавателя
@@ -163,6 +205,22 @@
             font-style: normal;
             font-weight: 500;
             line-height: 150%; /* 24px */
+            &.great {
+                background: #DDF7DA;
+                color: var(--green-500, var(--green-500, #0E9F6E));
+            }
+            &.fine {
+                background: #DDF7DA;
+                color: var(--green-500, var(--green-500, #0E9F6E));
+            }
+            &.satisfactorily {
+                background: #eef7da;
+                color: var(--green-500, var(--green-500, #959f0e));
+            }
+            &.bad {
+                background: #DDF7DA;
+                color: var(--green-500, var(--green-500, #9f0e0e));
+            }
         }
         & p {
             color: var(--unnamed, #1F222E);

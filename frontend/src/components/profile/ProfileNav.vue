@@ -1,11 +1,16 @@
 <script setup>
-
+const props = defineProps({
+    activeLink: {
+        type: String,
+        required: false
+    }
+})
 </script>
 
 <template>
     <div class="profile__nav">
         <div class="profile__nav-block">
-            <router-link to="/profile/courses">
+            <router-link to="/profile/courses" :class="{'router-link-active': props.activeLink}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
                     <path d="M8 9.83332L14 6.49999L8 3.16666L2 6.49999L8 9.83332Z" stroke="#111928"/>
                     <path d="M7.99989 9.83334L12.1066 7.552C12.6469 8.92406 12.8002 10.4181 12.5499 11.8713C10.8589 12.0355 9.2647 12.7358 7.99989 13.87C6.73526 12.7359 5.14128 12.0356 3.45056 11.8713C3.20002 10.4181 3.35338 8.92402 3.89389 7.552L7.99989 9.83334Z" stroke="#111928"/>
@@ -89,9 +94,9 @@
 
     &__nav-block {
         &:not(:last-child) {
-            margin-bottom: 25px;
+            margin-bottom: 20.5px;
             border-bottom: 1px solid var(--var-line);
-            padding-bottom: 25px;
+            padding-bottom: 20.5px;
             @media (max-width: 539px) {
                 margin-bottom: 15px;
                 padding-bottom: 15px;

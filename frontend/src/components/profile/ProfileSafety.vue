@@ -4,7 +4,7 @@
 <template>
     <main>
         <a>
-            ProfileSafety
+            Безопасность
         </a>
     </main>
 </template>

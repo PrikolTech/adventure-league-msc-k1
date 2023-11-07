@@ -5,7 +5,7 @@ import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 
 import ProfileView from '@/views/ProfileView.vue'
-import ProfileCourses from '@/components/profile/ProfileCourses.vue'
+import ProfileCourses from '@/components/profile/courses/ProfileCourses.vue'
 import ProfileTasks from '@/components/profile/ProfileTasks.vue'
 import ProfileMe from '@/components/profile/ProfileMe.vue'
 import ProfileApplications from '@/components/profile/ProfileApplications.vue'
@@ -15,6 +15,8 @@ import ProfileSettings from '@/components/profile/ProfileSettings.vue'
 import MeCourses from '@/components/profile/me/MeCourses.vue'
 import MeMarks from '@/components/profile/me/MeMarks.vue'
 import MeComments from '@/components/profile/me/MeComments.vue'
+
+import CourseView from '@/views/CourseView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -94,12 +96,17 @@ const router = createRouter({
           path: 'settings',
           name: 'profile/settings',
           component: ProfileSettings
-        }
+        },
       ],
       meta: {
         requiresAuth: true
       }
-    }
+    },
+    {
+      path: '/courses/:id',
+      name: 'courses',
+      component: CourseView
+    },
   ]
 })
 

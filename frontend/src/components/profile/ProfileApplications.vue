@@ -4,7 +4,7 @@
 <template>
     <main>
         <a>
-            ProfileApplications
+            Заявки
         </a>
     </main>
 </template>

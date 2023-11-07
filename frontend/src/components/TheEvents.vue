@@ -29,7 +29,7 @@ const events = ref([
         title: "Стратегия развития анимации в отзывчивой дизайне",
         desc: "Курс : Дизайн система как смысл жизни",
         time: "20:00 - 22:00",
-        date: '11.08.2023'
+        date: '11.07.2023'
     },
     {
         format: "# Урок онлайн",
@@ -45,6 +45,20 @@ const events = ref([
         time: "20:00 - 22:00",
         date: '11.09.2023'
     },
+    {
+        format: "# Урок онлайн",
+        title: "Стратегия развития анимации в отзывчивой дизайне",
+        desc: "Курс : Дизайн система как смысл жизни",
+        time: "20:00 - 22:00",
+        date: '11.10.2023'
+    },
+    {
+        format: "# Урок онлайн",
+        title: "Стратегия развития анимации в отзывчивой дизайне",
+        desc: "Курс : Дизайн система как смысл жизни",
+        time: "20:00 - 22:00",
+        date: '11.10.2023'
+    },
 ])
 const filteredEvents = ref([])
 const datesWithEvents = ref([])
@@ -59,8 +73,6 @@ const getEvents = async() => {
             datesWithEvents.value.push(el.date);
         }
     });
-
-    console.log(datesWithEvents.value)
     return events
 }
 

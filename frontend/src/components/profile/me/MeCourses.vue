@@ -1,62 +1,64 @@
 <script setup>
 import { ref } from "vue";
-let photoNumber = ref(getRandomNumberInRange(0,3))
-function getRandomNumberInRange(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+
+import MeCourseItem from '@/components/profile/me/MeCourseItem.vue'
+
+const courses = ref([
+    {
+        title: 'Финансовая грамотность',
+        desc: 'Вы прошли половину обучения.',
+        lecture: {
+            passed: 0,
+            total: 5,
+        },
+        tasks: {
+            passed: 0,
+            total: 3,
+        },
+    },
+    {
+        title: 'Финансовая грамотность',
+        desc: 'Вы прошли половину обучения.',
+        lecture: {
+            passed: 4,
+            total: 9,
+        },
+        tasks: {
+            passed: 2,
+            total: 3,
+        },
+    },
+    {
+        title: 'Финансовая грамотность',
+        desc: 'Вы прошли половину обучения.',
+        lecture: {
+            passed: 4,
+            total: 9,
+        },
+        tasks: {
+            passed: 3,
+            total: 3,
+        },
+    },
+])
+
+
 </script>
 
 
 <template>
     <div class="me__courses">
         <div class="me__courses-list">
-            <div class="me__courses-item"
-                v-for="(mark, index) of [1,2,3]" :key="index"
-            >
-            <img class="pic" src="@/assets/images/program-finance.png" v-if="photoNumber === 0">
-            <img class="pic" src="@/assets/images/program-disain.png" v-if="photoNumber === 1">
-            <img class="pic" src="@/assets/images/card-steps.png" v-if="photoNumber === 2">
-            <img class="pic" src="@/assets/images/program-finance.png" v-if="photoNumber === 3">
-                <div class="me__courses-item-body">
-                    <div class="me__courses-item-header">
-                        <p>
-                            Курс : Финансовая грамотность
-                        </p>
-                        <span>
-                            Вы прошли половину обучения.
-                        </span>
-                    </div>
-                    <div class="me__courses-item-content">
-                        <div class="me__courses-data">
-                            <p>
-                                Просмотрено лекций :  
-                            </p>
-                            <span>
-                                <b>
-                                    78 /
-                                </b>
-                                120
-                            </span>
-                        </div>
-                        <div class="me__courses-data">
-                            <p>
-                                Выполнено ДЗ :
-                            </p>
-                            <span>
-                                <b>
-                                    65 / 
-                                </b>
-                                100
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <me-course-item
+                v-for="(course, index) of courses" :key="index" :course="course"
+            />
         </div>
     </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.me__courses-item-inside {
+}
 .me {
 
     &__courses {
