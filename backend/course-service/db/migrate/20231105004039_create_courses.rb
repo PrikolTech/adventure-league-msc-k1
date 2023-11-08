@@ -8,6 +8,7 @@ class CreateCourses < ActiveRecord::Migration[7.1]
       t.references :course_type, type: :uuid, null: false, foreign_key: true
       t.references :period, type: :uuid, null: false, foreign_key: true
       t.references :education_form, type: :uuid, null: false, foreign_key: true
+      t.string :tg_link, null: false
 
       t.timestamps
     end
