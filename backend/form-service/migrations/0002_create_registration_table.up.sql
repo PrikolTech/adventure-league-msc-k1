@@ -1,5 +1,4 @@
 CREATE TYPE status AS ENUM ('created', 'accepted', 'approved', 'rejected');
-
 CREATE TABLE IF NOT EXISTS form.registration (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(100) UNIQUE NOT NULL,
@@ -17,5 +16,7 @@ CREATE TABLE IF NOT EXISTS form.registration (
     motivation TEXT,
     phone VARCHAR(13),
     telegram VARCHAR(100),
-    status status
+    status status,
+    user_id UUID,
+    course_id UUID
 );

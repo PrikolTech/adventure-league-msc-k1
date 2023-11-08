@@ -58,6 +58,9 @@ type Registration struct {
 	Phone    *string `json:"phone"`
 
 	Status *Status `json:"status"`
+
+	UserID   uuid.UUID `json:"user_id"`
+	CourseID uuid.UUID `json:"course_id"`
 }
 
 func (f *Registration) Validate() error {
