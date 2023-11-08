@@ -59,8 +59,8 @@ type Registration struct {
 
 	Status *Status `json:"status"`
 
-	UserID   uuid.UUID `json:"user_id"`
-	CourseID uuid.UUID `json:"course_id"`
+	UserID   *uuid.UUID `json:"user_id"`
+	CourseID *uuid.UUID `json:"course_id"`
 }
 
 func (f *Registration) Validate() error {
@@ -102,6 +102,10 @@ func (f *Registration) Validate() error {
 
 	if f.Motivation == nil {
 		return &RequiredError{"motivation"}
+	}
+
+	if f.CourseID == nil {
+		return &RequiredError{"course_id"}
 	}
 
 	return nil

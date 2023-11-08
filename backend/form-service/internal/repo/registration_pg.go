@@ -32,11 +32,11 @@ func (r *RegistrationPG) collectRows(rows pgx.Rows) ([]entity.Registration, erro
 
 func (r *RegistrationPG) Create(ctx context.Context, data entity.Registration) (*entity.Registration, error) {
 	const query = `INSERT INTO registration
-		(email, initiator_first_name, initiator_last_name, initiator_patronymic, birthdate, supervisor_first_name, supervisor_last_name, supervisor_patronymic, department, post, history, achievements, motivation, phone, telegram, status) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING *`
+		(email, initiator_first_name, initiator_last_name, initiator_patronymic, birthdate, supervisor_first_name, supervisor_last_name, supervisor_patronymic, department, post, history, achievements, motivation, phone, telegram, status, user_id, course_id)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) RETURNING *`
 
 	row := r.Pool.
-		QueryRow(ctx, query, data.Email, data.Initiator.FirstName, data.Initiator.LastName, data.Initiator.Patronymic, data.Birthdate, data.Supervisor.FirstName, data.Supervisor.LastName, data.Supervisor.Patronymic, data.Department, data.Post, data.History, data.Achievements, data.Motivation, data.Phone, data.Telegram, data.Status)
+		QueryRow(ctx, query, data.Email, data.Initiator.FirstName, data.Initiator.LastName, data.Initiator.Patronymic, data.Birthdate, data.Supervisor.FirstName, data.Supervisor.LastName, data.Supervisor.Patronymic, data.Department, data.Post, data.History, data.Achievements, data.Motivation, data.Phone, data.Telegram, data.Status, data.UserID, data.CourseID)
 
 	return r.collectRow(row)
 }

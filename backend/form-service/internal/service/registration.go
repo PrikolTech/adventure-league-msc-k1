@@ -33,6 +33,18 @@ func (r *registration) Get(id uuid.UUID) (*entity.Registration, error) {
 	return registration, nil
 }
 
+func (r *registration) GetByUser(userID uuid.UUID) ([]entity.Registration, error) {
+	return r.repo.GetByUser(context.Background(), userID)
+}
+
+func (r *registration) GetByCourse(courseID uuid.UUID) ([]entity.Registration, error) {
+	return r.repo.GetByCourse(context.Background(), courseID)
+}
+
+func (r *registration) List() ([]entity.Registration, error) {
+	return r.repo.List(context.Background())
+}
+
 func (r *registration) Update(data entity.Registration) (*entity.Registration, error) {
 	registration, err := r.Get(data.ID)
 	if err != nil {
