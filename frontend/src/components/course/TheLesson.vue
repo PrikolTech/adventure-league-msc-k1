@@ -14,7 +14,7 @@ const quantityComments = computed(() => {
     return props.lesson.comments.length
 })
 
-let commentInput = ref('test')
+let commentInput = ref('')
 
 </script>
 

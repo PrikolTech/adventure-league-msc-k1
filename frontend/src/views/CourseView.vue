@@ -211,19 +211,60 @@ const getTestOfLesson = async () => {
 
 const watchRouteChanges = watch(
   () => route.query,
-  (newParams) => {
+  (newParams, oldParams) => {
     const hasParams = Object.keys(newParams).length > 0;
-
-    if (!hasParams) {
+    if(hasParams) {
+        if(newParams.task) {
+            getTaskOfLesson()
+            return
+        }
+        if(newParams.test) {
+            getTestOfLesson()
+            return
+        }
+        if(newParams.lesson) {
+            activeTab.value = 'lesson'
+            if(navigationLinks.value.length === 4) {
+                navigationLinks.value.pop()
+            }
+            return
+        }
+    }
+    else if (!hasParams) {
         if(navigationLinks.value.length === 4) {
             navigationLinks.value.pop()
         }
-        activeTab.value = 'lesson'
-        router.push({ query: { lesson: 1 } })
+        if(!(Object.keys(newParams).length > 0)) {
+            activeTab.value = null
+        } else {
+            activeTab.value = 'lesson'
+            router.push({ query: { lesson: 1 } })
+        }
+
     }
   }
 );
 
+// const watchRouteChanges = watch(
+//   () => route.query,
+//   (newParams, oldParams) => {
+//     const hasParams = Object.keys(newParams).length > 0;
+//     if(hasParams) {
+//         if(navigationLinks.value.length === 4) {
+//             navigationLinks.value.pop()
+//         } else {
+//             if(navigationLinks.value.length === 3) {
+//                 activeTab.value = 'lesson'
+//                 router.push({ query: { lesson: 1 } })
+//             } else {
+//                 activeTab.value = 'lesson'
+//                 router.push({ query: { lesson: 1 } })
+//             }
+//         }
+//     }
+
+//   }
+// );
 
 const openLesson = () => {
     router.push({ query: { lesson: 1 } })
