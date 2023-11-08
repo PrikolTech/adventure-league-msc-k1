@@ -1,9 +1,7 @@
 <script setup>
-import TheAvatar from '@/components/layouts/TheAvatar.vue';
-import { useUser } from '@/stores/user'
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import TheComment from '@/components/layouts/TheComment.vue';
-const userStore = useUser()
+import MakeComment from '@/components/layouts/MakeComment.vue';
 
 const props = defineProps({
     lesson: {
@@ -15,6 +13,8 @@ const props = defineProps({
 const quantityComments = computed(() => {
     return props.lesson.comments.length
 })
+
+let commentInput = ref('test')
 
 </script>
 
@@ -51,15 +51,10 @@ const quantityComments = computed(() => {
                 <div class="lesson__comments-header-line line"></div>
             </div>
             <div class="lesson__comments-content comments-content">
-                <div class="make__comment">
-                    <the-avatar
-                        :first_name="userStore.user.first_name"
-                        :last_name="userStore.user.last_name"
-                    />
-                    <input
-                        placeholder="Ваш комментарий"
-                    />
-                </div>
+                <make-comment
+                    v-model="commentInput"
+                    @update:modelValue="(modelValue) => commentInput=modelValue"
+                />
                 <div class="comments__list">
                     <the-comment
                         v-for="(comment, index) of props.lesson.comments" :key="index"
@@ -216,26 +211,6 @@ const quantityComments = computed(() => {
 }
 .comments-content {
 }
-.make {
 
-    &__comment {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 40px;
-        & input {
-            border-radius: var(--rounded-xl, 12px);
-            border: 1px solid var(--backgrounds-day-gray-background-for-dies, #E1E1E9);
-            background: var(--elements-day-text-icons-on-substrates, #FFF);
-            flex: 1;
-            color: var(--gray-400, #9CA3AF);
-            font-family: Roboto;
-            font-size: 16px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: 167%; /* 26.72px */
-        }
-    }
-}
 
 </style>

@@ -12,7 +12,6 @@ import { useRouter, useRoute } from 'vue-router'
 const router = useRouter()
 const route = useRoute()
 
-
 const course = ref({
     name: 'Финансовая грамотность',
     teacher: 'Кураева Анна',
@@ -81,28 +80,8 @@ const course = ref({
     ]
 })
 
-const navigationLinks = ref([
-    {
-        href: '/',
-        text: 'Главная'
-    },
-    {
-        href: '/profile/courses',
-        text: 'Курсы'
-    },
-    {
-        href: `${route.path}`,
-        text: course.value.name
-    },
-])
 
-let activeTab = ref(null)
-
-const openLesson = () => {
-    router.push({ query: { lesson: 1 } })
-    getLesson()
-}
-
+const currentLesson = ref({})
 const test_currentLesson = ref({
     name: 'Урок 1. Введение в финансовую грамотность.',
     video: 'https://www.youtube.com/embed/__-vp0g_BhA?si=ou5xfV8arD_ccw6Q',
@@ -143,7 +122,24 @@ const test_currentLesson = ref({
     ],
 })
 
-const currentLesson = ref({})
+
+let activeTab = ref(null)
+const navigationLinks = ref([
+    {
+        href: '/',
+        text: 'Главная'
+    },
+    {
+        href: '/profile/courses',
+        text: 'Курсы'
+    },
+    {
+        href: `${route.path}`,
+        text: course.value.name
+    },
+])
+
+
 const getLesson = async () => {
 
     const response = {...test_currentLesson.value}
@@ -153,6 +149,7 @@ const getLesson = async () => {
 
     activeTab.value = 'lesson'
 }
+
 
 const getTaskOfLesson = async () => {
     if (navigationLinks.value.some(link => link.text === 'Задание к уроку')) {
@@ -183,6 +180,7 @@ const getTaskOfLesson = async () => {
 
 }
 
+
 const getTestOfLesson = async () => {
     if (navigationLinks.value.some(link => link.text === 'Тест к уроку')) {
         return
@@ -210,6 +208,7 @@ const getTestOfLesson = async () => {
 
 }
 
+
 const watchRouteChanges = watch(
   () => route.query,
   (newParams) => {
@@ -225,9 +224,19 @@ const watchRouteChanges = watch(
   }
 );
 
+
+const openLesson = () => {
+    router.push({ query: { lesson: 1 } })
+    getLesson()
+}
+
+
+
+
 onBeforeUnmount(() => {
     watchRouteChanges();
 });
+
 
 onMounted(() => {
     if(route.query.lesson) {
