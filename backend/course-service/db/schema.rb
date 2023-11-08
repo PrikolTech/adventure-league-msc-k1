@@ -40,7 +40,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_08_085935) do
     t.uuid "course_type_id", null: false
     t.uuid "period_id", null: false
     t.uuid "education_form_id", null: false
-    t.string "tg_link", null: false
+    t.string "tg_link"
+    t.string "prefix", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["course_type_id"], name: "index_courses_on_course_type_id"
@@ -76,7 +77,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_08_085935) do
     t.date "ends_at"
   end
 
-  create_table "user_groups", force: :cascade do |t|
+  create_table "user_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "group_id", null: false
     t.uuid "user_id"
     t.datetime "created_at", null: false
