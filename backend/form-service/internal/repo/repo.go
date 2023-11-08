@@ -9,5 +9,9 @@ import (
 
 type Registration interface {
 	Create(ctx context.Context, data entity.Registration) (*entity.Registration, error)
+	GetByID(ctx context.Context, id uuid.UUID) (*entity.Registration, error)
+	GetByUser(ctx context.Context, userID uuid.UUID) ([]entity.Registration, error)
+	GetByCourse(ctx context.Context, courseID uuid.UUID) ([]entity.Registration, error)
+	List(ctx context.Context) ([]entity.Registration, error)
 	UpdateStatus(ctx context.Context, id uuid.UUID, status entity.Status) (*entity.Registration, error)
 }

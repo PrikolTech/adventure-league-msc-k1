@@ -29,6 +29,29 @@ func (r *RegistrationPG) Create(ctx context.Context, data entity.Registration) (
 	return &registration, err
 }
 
+func (r *RegistrationPG) GetByID(ctx context.Context, id uuid.UUID) (*entity.Registration, error) {
+	const query = `SELECT * FROM registration WHERE id = $1`
+
+	var registration entity.Registration
+	err := r.Pool.
+		QueryRow(ctx, query, id).
+		Scan(&registration.ID, &registration.Email, &registration.Initiator.FirstName, &registration.Initiator.LastName, &registration.Initiator.Patronymic, &registration.Birthdate, &registration.Supervisor.FirstName, &registration.Supervisor.LastName, &registration.Supervisor.Patronymic, &registration.Department, &registration.Post, &registration.History, &registration.Achievements, &registration.Motivation, &registration.Phone, &registration.Telegram, &registration.Status)
+
+	return &registration, err
+}
+
+func (r *RegistrationPG) GetByUser(ctx context.Context, userID uuid.UUID) ([]entity.Registration, error) {
+	return nil, nil
+}
+
+func (r *RegistrationPG) GetByCourse(ctx context.Context, courseID uuid.UUID) ([]entity.Registration, error) {
+	return nil, nil
+}
+
+func (r *RegistrationPG) List(ctx context.Context) ([]entity.Registration, error) {
+	return nil, nil
+}
+
 func (r *RegistrationPG) UpdateStatus(ctx context.Context, id uuid.UUID, status entity.Status) (*entity.Registration, error) {
 	const query = `UPDATE registration SET status = $2 WHERE id = $1 RETURNING *`
 
