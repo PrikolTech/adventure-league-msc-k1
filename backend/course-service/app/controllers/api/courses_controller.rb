@@ -1,4 +1,6 @@
 class Api::CoursesController < ApplicationController
+  USER_ADDED_ERROR = 'user is already added'
+
   def index
     @courses = Course.all
     render json: @courses, except: [:education_form_id, :period_id, :course_type_id], include: {
@@ -23,9 +25,7 @@ class Api::CoursesController < ApplicationController
       ends_at: params['period']['ends_at']
     )
 
-    # course_type = CourseType.where(name: params['course_type']).first
     course_type = CourseType.find_or_create_by!(name: params['course_type'])
-    # render json: {message: "wrong course_type"}, status: 400 unless course_type
     
     price = params['price'].to_f if params.include? 'price'
 
@@ -68,5 +68,31 @@ class Api::CoursesController < ApplicationController
   def destroy
     @course = Course.find(params['id'])
     redirect_to @course.path
+  end
+
+  def add_user
+    course = Course.find(params[:course_id])
+    groups = Group.where(course_id: params[:course_id])
+    user_id = params[:user_id]
+
+    return render json: {message: USER_ADDED_ERROR, status: 400} unless UserGroup.where(group: groups, user_id: user_id).empty?
+
+
+    is_added = false
+    groups.each do |group|
+      user_group = group.add_user(user_id)
+      return render json: {group: group, status: 201}, include: :course if user_group
+    end
+
+    if groups.count < Course::MAX_GROUPS
+      @group = course.add_group
+      @group.add_user(user_id)
+    end
+
+    if @group
+      render json: {group: @group, status: 201}, include: :course
+    else
+      render json: {message: 'can not add user', status: 400}
+    end
   end
 end

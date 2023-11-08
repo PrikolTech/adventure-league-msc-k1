@@ -10,16 +10,6 @@ class Api::GroupsController < ActionController
     render json: @group, include: :user_group
   end
 
-  def create
-    @group = Group.create(group_params)
-
-    if @group
-      redirect_to @group.path
-    else
-      render json: {message: 'not created', status: 400}
-    end
-  end
-
   def update
     @group = Group.find(params[:id])
 
@@ -33,21 +23,6 @@ class Api::GroupsController < ActionController
   def destroy
     @group = Group.find(params[:id])
     @group.destroy
-  end
-
-  def add_user
-    group = Group.find(params[:id])
-    user_id = params[:user_id]
-
-    @u_g = UserGroup.new
-    @u_g.group = group
-    @u_g.user_id = user_id
-
-    if @u_g
-      render json: {message: 'ok', status: 201}
-    else
-      render json: {message: 'not created', status: 400}
-    end
   end
 
   private

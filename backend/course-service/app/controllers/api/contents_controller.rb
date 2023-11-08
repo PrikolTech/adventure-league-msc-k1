@@ -1,7 +1,7 @@
 class Api::ContentsController < ApplicationController
   def index
     @contents = Content.where(lecture_id: params['lecture_id'])
-    render json: @contents
+    render json: {contents: @contents, status: 200}
   end
   
   def show
@@ -18,7 +18,7 @@ class Api::ContentsController < ApplicationController
       render json: @content, include: [:content_type]
     else
       unless course_type
-        render json: {message: "bad request"}, status: 400
+        render json: {message: "bad request", status: 400}
       end
     end
   end

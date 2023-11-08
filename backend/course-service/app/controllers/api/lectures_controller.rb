@@ -1,7 +1,6 @@
 class Api::LecturesController < ApplicationController
   def index
-    course = Course.find(params['course_id'])
-    @lectures = course.lectures
+    @lectures = Lecture.where(course_id: params['course_id'])
     
     render json: @lectures
   end
