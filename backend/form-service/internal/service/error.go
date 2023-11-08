@@ -3,5 +3,6 @@ package service
 import "errors"
 
 var (
-	ErrFormNotExist = errors.New("form does not exist")
+	ErrFormNotExist       = errors.New("form does not exist")
+	ErrPasswordGeneration = errors.New("failed to generate password")
 )

@@ -1,10 +1,15 @@
 package service
 
 import (
+	"bytes"
 	"context"
+	cryptoRand "crypto/rand"
 	"form-service/internal/entity"
 	"form-service/internal/net"
 	"form-service/internal/repo"
+	"math"
+	"math/big"
+	mathRand "math/rand"
 
 	"github.com/gofrs/uuid/v5"
 )
@@ -67,16 +72,32 @@ func (r *registration) Update(data entity.Registration) (*entity.Registration, e
 		switch *data.Status {
 		case entity.Acccepted:
 			// create user
-			user, err := r.net.User.Create(entity.User{
-				Email:      *registration.Email,
-				Password:   "",
-				FirstName:  *registration.Initiator.FirstName,
-				LastName:   *registration.Initiator.LastName,
-				Patronymic: *registration.Initiator.Patronymic,
-				Birthdate:  *registration.Birthdate,
-				Phone:      *registration.Phone,
-				Telegram:   *registration.Telegram,
-			})
+			password, err := generatePassword()
+			if err != nil {
+				return nil, err
+			}
+
+			userData := entity.User{
+				Email:     *registration.Email,
+				Password:  string(password),
+				FirstName: *registration.Initiator.FirstName,
+				LastName:  *registration.Initiator.LastName,
+				Birthdate: *registration.Birthdate,
+			}
+
+			if registration.Initiator.Patronymic != nil {
+				userData.Patronymic = *registration.Initiator.Patronymic
+			}
+
+			if registration.Phone != nil {
+				userData.Phone = *registration.Phone
+			}
+
+			if registration.Telegram != nil {
+				userData.Telegram = *registration.Telegram
+			}
+
+			user, err := r.net.User.Create(userData)
 			if err != nil {
 				return nil, err
 			}
@@ -88,7 +109,7 @@ func (r *registration) Update(data entity.Registration) (*entity.Registration, e
 			}
 
 			// append role
-			err = r.net.Role.Append(user.ID, uuid.Nil)
+			err = r.net.Role.Append(user.ID, uuid.FromStringOrNil("11e8cd39-e2c5-4193-a61f-de11a3af67aa"))
 			if err != nil {
 				return nil, err
 			}
@@ -106,4 +127,72 @@ func (r *registration) Update(data entity.Registration) (*entity.Registration, e
 	}
 
 	return registration, nil
+}
+
+const (
+	lowerChars   = `abcdefghijklmnopqrstuvwxyz`
+	upperChars   = `ABCDEFGHIJKLMNOPQRSTUVWXYZ`
+	digitChars   = `0123456789`
+	specialChars = `!"#$%&'()*+,-./:;<=>?@[\]^_{|}~`
+)
+
+var chars = []byte(lowerChars + upperChars + digitChars + specialChars)
+
+func generatePassword() ([]byte, error) {
+	buf := new(bytes.Buffer)
+	buf.Grow(8)
+
+	// lower
+	val, err := cryptoRand.Int(cryptoRand.Reader, big.NewInt(int64(len(lowerChars))))
+	if err != nil {
+		return nil, ErrPasswordGeneration
+	}
+	buf.WriteByte(lowerChars[val.Int64()])
+
+	// upper
+	val, err = cryptoRand.Int(cryptoRand.Reader, big.NewInt(int64(len(upperChars))))
+	if err != nil {
+		return nil, ErrPasswordGeneration
+	}
+	buf.WriteByte(upperChars[val.Int64()])
+
+	// digit
+	val, err = cryptoRand.Int(cryptoRand.Reader, big.NewInt(int64(len(digitChars))))
+	if err != nil {
+		return nil, ErrPasswordGeneration
+	}
+	buf.WriteByte(digitChars[val.Int64()])
+
+	// special
+	val, err = cryptoRand.Int(cryptoRand.Reader, big.NewInt(int64(len(specialChars))))
+	if err != nil {
+		return nil, ErrPasswordGeneration
+	}
+	buf.WriteByte(specialChars[val.Int64()])
+
+	// remaining
+	maxInt := big.NewInt(int64(len(chars)))
+	for i := 0; i < 4; i++ {
+		val, err := cryptoRand.Int(cryptoRand.Reader, maxInt)
+		if err != nil {
+			return nil, ErrPasswordGeneration
+		}
+		buf.WriteByte(chars[val.Int64()])
+	}
+
+	// shuffle
+	val, err = cryptoRand.Int(cryptoRand.Reader, big.NewInt(math.MaxInt64))
+	if err != nil {
+		return nil, ErrPasswordGeneration
+	}
+
+	src := mathRand.NewSource(val.Int64())
+	r := mathRand.New(src)
+
+	password := buf.Bytes()
+	r.Shuffle(len(password), func(i, j int) {
+		password[i], password[j] = password[j], password[i]
+	})
+
+	return password, nil
 }

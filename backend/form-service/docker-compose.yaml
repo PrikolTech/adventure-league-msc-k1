@@ -16,7 +16,7 @@ services:
     container_name: form-db
     image: postgres:alpine
     ports:
-      - 5431:5432
+      - 5447:5432
     environment:
       POSTGRES_PASSWORD: test
     volumes:

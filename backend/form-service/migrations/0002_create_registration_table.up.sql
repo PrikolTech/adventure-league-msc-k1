@@ -1,7 +1,7 @@
 CREATE TYPE status AS ENUM ('created', 'accepted', 'approved', 'rejected');
 CREATE TABLE IF NOT EXISTS form.registration (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    email VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(100) NOT NULL,
     initiator_first_name VARCHAR(100) NOT NULL,
     initiator_last_name VARCHAR(100) NOT NULL,
     initiator_patronymic VARCHAR(100),
