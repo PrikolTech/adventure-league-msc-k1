@@ -53,7 +53,7 @@ const props = defineProps({
             
         }
         &:last-child {
-            color: var(--gray-800, #1F2A37);
+            color: var(--gray-300, #D1D5DB);
             & svg {
 
             }

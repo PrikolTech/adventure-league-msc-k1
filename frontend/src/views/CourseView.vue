@@ -211,7 +211,7 @@ const getTestOfLesson = async () => {
 
 const watchRouteChanges = watch(
   () => route.query,
-  (newParams, oldParams) => {
+  (newParams) => {
     const hasParams = Object.keys(newParams).length > 0;
     if(hasParams) {
         if(newParams.task) {
@@ -245,26 +245,6 @@ const watchRouteChanges = watch(
   }
 );
 
-// const watchRouteChanges = watch(
-//   () => route.query,
-//   (newParams, oldParams) => {
-//     const hasParams = Object.keys(newParams).length > 0;
-//     if(hasParams) {
-//         if(navigationLinks.value.length === 4) {
-//             navigationLinks.value.pop()
-//         } else {
-//             if(navigationLinks.value.length === 3) {
-//                 activeTab.value = 'lesson'
-//                 router.push({ query: { lesson: 1 } })
-//             } else {
-//                 activeTab.value = 'lesson'
-//                 router.push({ query: { lesson: 1 } })
-//             }
-//         }
-//     }
-
-//   }
-// );
 
 const openLesson = () => {
     router.push({ query: { lesson: 1 } })
@@ -432,6 +412,9 @@ onMounted(() => {
         gap: 40px;
         align-items: center;
         margin-bottom: 40px;
+        @media (max-width: 1023px) {
+            margin-bottom: 20px;
+        }
     }
 
     &__title {
@@ -443,6 +426,9 @@ onMounted(() => {
 
     &__nav {
         margin-bottom: 60px;
+        @media (max-width: 1023px) {
+            margin-bottom: 20px;
+        }
     }
 
     &__block {
@@ -455,7 +441,7 @@ onMounted(() => {
         flex: 0 0 360px;
         height: fit-content;
         @media (max-width: 539px) {
-            flex: 0 0 320px;
+            flex: 0 1 320px;
         }
     }
 
@@ -488,6 +474,7 @@ onMounted(() => {
         line-height: 167%; /* 26.72px */
         display: block;
         cursor: pointer;
+        font-weight: 400;
     }
 }
 
@@ -578,6 +565,55 @@ onMounted(() => {
     & b {
     font-weight: 400;
         color: var(--gray-800, #1F2A37);
+    }
+}
+
+[dark=true] {
+    & .course__aside-item {
+        background: var(--gray-700, #374151);
+    }
+
+    & .course__aside-title {
+        color: var(--gray-50, #F9FAFB);
+    }
+
+    & .course__aside-link {
+        color: var(--primary-400, #76A9FA);
+    }
+
+    & .aside__lesson-info {
+        & p {
+            color: var(--gray-50, #F9FAFB);
+        }
+        
+        & span {
+            color: var(--gray-400, #9CA3AF);
+        }
+    }
+
+    & .aside__lesson-action {
+        background: var(--gray-600, #4B5563);
+        & .icon {
+            & path {
+            }
+        }
+    }
+
+    & .teacher span {
+        color: var(--gray-600, #9CA3AF);
+    }
+    
+    & .teacher b {
+        color: var(--gray-600, #F9FAFB);
+    }
+
+    & .completed {
+        color: var(--gray-300, #D1D5DB);
+        & svg {
+            & path {
+                fill: #D1D5DB;
+            }
+        }
     }
 }
 

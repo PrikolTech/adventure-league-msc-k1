@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <div>
+    <div class="text">
         Тест урока        
     </div>
 </template>

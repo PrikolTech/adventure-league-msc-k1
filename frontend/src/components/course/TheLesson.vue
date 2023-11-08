@@ -81,10 +81,16 @@ let commentInput = ref('')
 
     &__material {
         margin-bottom: 50px;
+        @media (max-width: 539px) {
+            margin-bottom: 20px;
+        }
     }
 
     &__desc {
         margin-bottom: 50px;
+        @media (max-width: 539px) {
+            margin-bottom: 10px;
+        }
     }
 
     &__desc-header {
@@ -92,6 +98,9 @@ let commentInput = ref('')
         align-items: center;
         margin-bottom: 30px;
         gap: 50px;
+        @media (max-width: 539px) {
+            margin-bottom: 10px;
+        }
         & p {
             color: var(--gray-900, #111928);
             font-family: Roboto;
@@ -146,7 +155,8 @@ let commentInput = ref('')
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 20px;
+        column-gap: 20px;
+        row-gap: 5px;
         flex-wrap: wrap;
         margin-bottom: 20px;
     }
@@ -193,6 +203,7 @@ let commentInput = ref('')
         font-style: normal;
         font-weight: 400;
         line-height: 167%; /* 26.72px */
+        padding-left: 10px;
     }
 }
 .comments-header {
@@ -210,6 +221,45 @@ let commentInput = ref('')
     }
 }
 .comments-content {
+}
+
+[dark=true] {
+    & .lesson__title {
+        color: var(--gray-50, #F9FAFB);
+    }
+
+    & .lesson__desc-header {
+        & p {
+            color: var(--gray-50, #F9FAFB);
+        }
+    }
+
+    & .lesson__desc-text {
+        color: var(--gray-50, #F9FAFB);
+    }
+    
+    & .comments-header p {
+        color: var(--gray-50, #F9FAFB);
+    }
+
+    & .comments__item-info {
+        & p {
+            color: var(--gray-100, #F3F4F6);
+        }
+        
+        & span {
+            color: var(--blue-200, #C3DDFD);
+            background: var(--blue-900, #233876);
+        }
+    }
+    
+    & .comments__item-date {
+        color: var(--gray-500, #6B7280);
+    }
+
+    & .comments__item-text {
+        color: var(--gray-100, #F3F4F6);
+    }
 }
 
 

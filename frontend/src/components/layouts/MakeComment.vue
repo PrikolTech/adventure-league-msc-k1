@@ -51,6 +51,9 @@ const props = defineProps({
 .make {
     &__comment {
         margin-bottom: 40px;
+        @media (max-width: 1023px) {
+            margin-bottom: 20px;
+        }
     }
     &__comment-preview {
         display: flex;
@@ -75,6 +78,16 @@ const props = defineProps({
         gap: 15px;
         & .btn_red {
             flex: 1;
+        }
+    }
+}
+
+[dark=true] {
+    & .make__comment-preview {
+        & input {
+            color: var(--gray-500, #6B7280);
+            border: 1px solid var(--gray-700, #374151);
+            background: var(--gray-700, #374151);
         }
     }
 }
