@@ -8,9 +8,10 @@ import { useUser } from '@/stores/user'
 const userStore = useUser()
 
 let headerMobileIsActive = ref(false)
-
+let headerMeHiddenListIsActive = ref(false)
 const initialsUser = computed(() => {
-    if(userStore.user) {
+    if(!userStore.user) return
+    if(userStore.user.first_name && userStore.user.last_name) {
         return userStore.user.first_name[0] + userStore.user.last_name[0]
     }
     return ''
@@ -43,13 +44,49 @@ const initialsUser = computed(() => {
                     >
                         Войти
                     </the-button>
-                    <router-link class="header__me" to="/profile/me"
+                    <div class="header__me"
                         v-else
+                        @click="headerMeHiddenListIsActive = !headerMeHiddenListIsActive"
                     >
-                        {{ initialsUser }}
-                    </router-link>
+                        <span>
+                            {{ initialsUser }}
+                        </span>
+                        <div class="header__me-list"
+                            v-if="headerMeHiddenListIsActive"
+                        >
+                            <div class="header__me-item">
+                                <div class="name">
+                                    {{ userStore.user.first_name }} {{ userStore.user.last_name }} 
+                                </div>
+                                <div class="email">
+                                    {{ userStore.user.email }}
+                                </div>
+                            </div>
+                            <div class="header__me-item">
+                                <router-link  to="/profile/me">
+                                    Профиль
+                                </router-link>
+                                <router-link  to="/profile/settings">
+                                    Настройки
+                                </router-link>
+                            </div>
+                            <div class="header__me-item"
+                                @click="userStore.logOut()"
+                            >
+                                Выйти
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <!-- <the-button
+                :styles="['btn_red']"
+                :type="'button'"
+
+                @click="userStore.logOut()"
+            >
+                Выйты
+            </the-button> -->
             <div class="header__menu">
                 <div class="nav-icon toggle-menu"
                     :class="{open: headerMobileIsActive}"
@@ -68,7 +105,10 @@ const initialsUser = computed(() => {
                 <router-link class=" logo" to="/">
                     <logo-icon/>
                 </router-link>
-                <router-link class="header__me" to="/profile/me">
+                <router-link class="header__me" to="/profile/me"
+                    v-if="userStore.user"
+                    @click="headerMobileIsActive = false"
+                >
                     {{ initialsUser }}
                 </router-link>
                 <nav class="header-m__nav">
@@ -94,8 +134,17 @@ const initialsUser = computed(() => {
                         :type="'link'"
                         :link="'login'"
                         @click="headerMobileIsActive = false"
+                        v-if="!userStore.user"
                     >
                         Войти
+                    </the-button>
+                    <the-button
+                        :styles="['btn_red-border']"
+                        :type="'button'"
+                        @click="headerMobileIsActive = false, userStore.logOut()"
+                        v-else
+                    >
+                        Выйти
                     </the-button>
                     <div class="header__theme">
                         <switcher-theme/>
@@ -133,6 +182,11 @@ const initialsUser = computed(() => {
     line-height: 12px; /* 100% */
     transition: .2s;
     width: fit-content;
+    position: relative;
+    cursor: pointer;
+    & span {
+        cursor: pointer;
+    }
 }
 
 .header-w {
@@ -403,6 +457,48 @@ const initialsUser = computed(() => {
       cursor: pointer;
 }
 
+.header {
+
+    &__me-list {
+        position: absolute;
+        min-width: 160px;
+        background: #fff;
+        z-index: 3;
+        border: 1px solid var(--gray-300, #D1D5DB);
+        padding: 0 0px;
+        border-radius: 12px;
+        top: calc(100% + 10px);
+    }
+
+    &__me-item {
+        display: block;
+        font-size: 14px ;
+        line-height: 100%;
+        padding: 12px 12px;
+        cursor: pointer;
+        text-align: start;
+        & .name {
+            margin-bottom: 5px;
+        }
+        & .email {
+            
+        }
+
+        & a {
+            display: block;
+            font-size: 14px;
+            &:not(:last-child) {
+                margin-bottom: 10px;
+            }
+        }
+        &:not(:last-child) {
+            border-bottom: 1px solid var(--gray-200, #E5E7EB);
+
+        }
+    }
+}
+
+
 
 [dark=true] {
     & .header__nav-item {
@@ -451,6 +547,30 @@ const initialsUser = computed(() => {
         & .header__me {
             background: #809dcb;
             color: #F9FAFB;
+        }
+    }
+
+    .header {
+
+        &__me-list {
+            background: #4B5563;
+            border: 1px solid var(--gray-300, #4B5563);
+        }
+
+        &__me-item {
+            & .name {
+            }
+            & .email {
+                
+            }
+
+            & a {
+                &:not(:last-child) {
+                }
+            }
+            &:not(:last-child) {
+                border-bottom: 1px solid var(--gray-200, #E5E7EB);
+            }
         }
     }
 }

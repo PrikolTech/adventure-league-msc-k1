@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from "pinia";
-
+import router from '../router';
 // import Cookies from 'js-cookie';
 
 export const useUser = defineStore('user', () => {
@@ -14,60 +14,67 @@ export const useUser = defineStore('user', () => {
     // const router = useRouter()
 
     async function logOut() {
-        // await fetch('te', {
-        //     method: "POST",
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         'Authorization': `Bearer ${}`
-        //     },
-        // })
-        // try {
-        //     const { data } = await useFetch('/api/auth/logOut', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //     })
-    
-        //     if(data.value) {
-        //         Cookies.remove('sessionToken')
-        //         clearUserInfo()
-        //         router.push('/login')
-        //     }
+        try {
+            const response = await fetch('http://localhost:3001/token', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            })
 
-        // } catch(err) {
-        //     console.error(err)
-        // }
+            clearUserInfo()
+            router.push('/login')
+            console.log(response)
+
+        } catch(err) {
+            console.error(err)
+        }
     }
 
     async function getUserInfo() {
-        // try {
-        //     const { data } = await useFetch('/api/user/getUser', {
-        //         method: 'GET',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //     })
-        //     if(data.value) {
-        //         if(data.value.user) {
-        //             user.value = {...data.value.user}
-        //         }
-        //         if(!data.value.user.avatar || data.value.user.avatar === 'default') {
-        //             user.value.avatar = 'uploads/avatar-default.svg'
-        //         } else {
-        //             user.value.avatar = `uploads/${data.value.user.avatar}`
-        //         }
-        //     }
-        // } catch(err) {
-        //     console.error(err)
-        // }
+        try {
+            // const response = await fetch(`http://localhost:3002/user/${user.value.access_token}`, {
+            //     method: 'GET',
+            // })
+            const response = await fetch('http://localhost:3002/user/943bc07e-37ce-49f3-8ed0-710cf980ba95', {
+                method: 'GET',
+            })
+            const data = await response.json()
+            Object.assign(user.value, data);
+        } catch(err) {
+            console.error(err)
+        }
 
+    }
+
+    async function refreshTokens() {
+        try {
+            const response = await fetch('http://localhost:3001/token?grant_type=refresh_token&client_id=000000', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            });
+            console.log(response)
+            console.log(response.status === 401)
+            if(response.status === 401 || response.status === 401) {
+                return
+            }
+            user.value = {}
+            const data = await response.json()
+            Object.assign(user.value, data);
+            await getUserInfo()
+        } catch(err) {
+            console.error(err);
+        }
     }
 
     function clearUserInfo() {
-        user.value = {}
+        user.value = null
     }
 
 
-    return { user, logOut, getUserInfo, clearUserInfo, theme }
+    return { user, logOut, getUserInfo, clearUserInfo, refreshTokens, theme }
 })

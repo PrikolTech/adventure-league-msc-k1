@@ -1,5 +1,7 @@
 <script setup>
 import TheButton from '@/components/layouts/TheButton.vue';
+import { useUser } from '@/stores/user'
+const userStore = useUser()
 
 </script>
 
@@ -19,6 +21,7 @@ import TheButton from '@/components/layouts/TheButton.vue';
                     </p>
                     <div class="input-w">
                         <input
+                            v-model="userStore.user.email"
                         >
                     </div>
                 </div>
@@ -28,6 +31,7 @@ import TheButton from '@/components/layouts/TheButton.vue';
                     </p>
                     <div class="input-w">
                         <input
+                            v-model="userStore.user.phone"
                         >
                     </div>
                 </div>
@@ -37,6 +41,7 @@ import TheButton from '@/components/layouts/TheButton.vue';
                     </p>
                     <div class="input-w">
                         <input
+                            v-model="userStore.user.telegram"
                         >
                     </div>
                 </div>

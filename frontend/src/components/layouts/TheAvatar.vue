@@ -11,7 +11,10 @@ const props = defineProps({
     }
 })
 const initialsUser = computed(() => {
-    return props.first_name[0] + props.last_name[0]
+    if(props.first_name && props.last_name) {
+        return props.first_name[0] + props.last_name[0]
+    }
+    return ''
 })
 
 </script>
