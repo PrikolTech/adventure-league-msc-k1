@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"errors"
 	"time"
 
 	"github.com/gofrs/uuid/v5"
@@ -23,6 +24,23 @@ func (f *FullName) Validate() error {
 	return nil
 }
 
+type Status string
+
+const (
+	Created   Status = "created"
+	Acccepted Status = "accepted"
+	Approved  Status = "approved"
+	Rejected  Status = "rejected"
+)
+
+func (s Status) Validate() error {
+	switch s {
+	case Created, Acccepted, Approved, Rejected:
+		return nil
+	}
+	return errors.New("invalid status value")
+}
+
 type Registration struct {
 	ID    uuid.UUID `json:"id"`
 	Email *string   `json:"email"`
@@ -39,7 +57,7 @@ type Registration struct {
 	Telegram *string `json:"telegram"`
 	Phone    *string `json:"phone"`
 
-	Status *string `json:"status"`
+	Status *Status `json:"status"`
 }
 
 func (f *Registration) Validate() error {
@@ -48,6 +66,10 @@ func (f *Registration) Validate() error {
 	}
 
 	if err := f.Supervisor.Validate(); err != nil {
+		return err
+	}
+
+	if err := f.Status.Validate(); err != nil {
 		return err
 	}
 
