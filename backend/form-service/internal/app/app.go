@@ -19,10 +19,10 @@ func Run(cfg *Config, logger *zerolog.Logger) error {
 	defer postgres.Close()
 	logger.Info().Msg("database connection established")
 
-	registrationRepo := repo.NewRegistrationPG(postgres)
-	registrationService := service.NewRegistration(registrationRepo)
+	repo := repo.NewRegistrationPG(postgres)
+	service := service.NewRegistration(repo)
 
-	server := http.NewServer(logger, registrationService, http.ServerOptions{
+	server := http.NewServer(logger, service, http.ServerOptions{
 		Addr:    fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port),
 		Origins: cfg.HTTP.Origins,
 	})
