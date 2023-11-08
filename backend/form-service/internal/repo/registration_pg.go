@@ -87,3 +87,10 @@ func (r *RegistrationPG) UpdateStatus(ctx context.Context, id uuid.UUID, status 
 	row := r.Pool.QueryRow(ctx, query, id, status)
 	return r.collectRow(row)
 }
+
+func (r *RegistrationPG) UpdateUser(ctx context.Context, id uuid.UUID, userID uuid.UUID) (*entity.Registration, error) {
+	const query = `UPDATE registration SET user_id = $2 WHERE id = $1 RETURNING *`
+
+	row := r.Pool.QueryRow(ctx, query, id, userID)
+	return r.collectRow(row)
+}

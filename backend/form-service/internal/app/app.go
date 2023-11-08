@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	"form-service/internal/net"
 	"form-service/internal/repo"
 	"form-service/internal/service"
 	"form-service/internal/transport/http"
@@ -20,7 +21,12 @@ func Run(cfg *Config, logger *zerolog.Logger) error {
 	logger.Info().Msg("database connection established")
 
 	repo := repo.NewRegistrationPG(postgres)
-	service := service.NewRegistration(repo)
+
+	userNet := net.NewUser(cfg.UserAPI.URL)
+	roleNet := net.NewRole(cfg.UserAPI.URL)
+	courseNet := net.NewCourse(cfg.CourseAPI.URL)
+
+	service := service.NewRegistration(repo, service.NetServices{userNet, roleNet, courseNet})
 
 	server := http.NewServer(logger, service, http.ServerOptions{
 		Addr:    fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port),
