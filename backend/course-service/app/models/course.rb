@@ -4,4 +4,8 @@ class Course < ApplicationRecord
   belongs_to :education_form
 
   has_many :lectures
+
+  def path
+    "/api/#{id}"
+  end
 end
