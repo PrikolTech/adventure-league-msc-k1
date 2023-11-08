@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS form.registration (
     motivation TEXT,
     phone VARCHAR(13),
     telegram VARCHAR(100),
-    status status,
+    status status DEFAULT 'created',
     user_id UUID,
     course_id UUID
 );

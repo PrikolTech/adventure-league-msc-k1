@@ -52,6 +52,10 @@ func (r *registration) Update(data entity.Registration) (*entity.Registration, e
 	}
 
 	if data.Status != nil {
+		if err := data.Status.Validate(); err != nil {
+			return nil, err
+		}
+
 		registration, err = r.repo.UpdateStatus(context.Background(), registration.ID, *data.Status)
 		if err != nil {
 			return nil, err

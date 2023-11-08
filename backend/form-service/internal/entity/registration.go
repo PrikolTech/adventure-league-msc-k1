@@ -2,6 +2,7 @@ package entity
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/gofrs/uuid/v5"
@@ -65,15 +66,11 @@ type Registration struct {
 
 func (f *Registration) Validate() error {
 	if err := f.Initiator.Validate(); err != nil {
-		return err
+		return fmt.Errorf("initiator: %w", err)
 	}
 
 	if err := f.Supervisor.Validate(); err != nil {
-		return err
-	}
-
-	if err := f.Status.Validate(); err != nil {
-		return err
+		return fmt.Errorf("supervisor: %w", err)
 	}
 
 	if f.Email == nil {
