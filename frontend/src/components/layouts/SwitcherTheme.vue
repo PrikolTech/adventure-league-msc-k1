@@ -4,7 +4,6 @@ import MonthIcon from '../icons/MonthIcon.vue';
 import { useUser } from '@/stores/user'
 const user = useUser()
 const toggleTheme = () => {
-    console.log(!user.theme)
     localStorage.setItem('theme', !user.theme)
 }
 </script>
@@ -21,6 +20,7 @@ const toggleTheme = () => {
 <style lang="scss" scoped>
 .switcher {
     position: relative;
+    width: fit-content;
     & .icon {
         position: absolute;
         top: 50%;
@@ -85,7 +85,7 @@ const toggleTheme = () => {
 [dark=true] {
     & .switcher {
         & label {
-            background: var(--main-beerus, #444);
+            background: var(--main-beerus, #374151);
         }
         & .sun {
             opacity: 0;

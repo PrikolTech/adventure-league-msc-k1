@@ -1,13 +1,26 @@
 import { ref } from 'vue'
 import { defineStore } from "pinia";
+
 // import Cookies from 'js-cookie';
 
 export const useUser = defineStore('user', () => {
     const theme = ref(JSON.parse(localStorage.getItem('theme')))
-    const user = ref({})
+    const user = ref(null)
+
+    // const user = ref({
+    //     first_name: 'Артем',
+    //     last_name: 'Зимин'
+    // })
     // const router = useRouter()
 
     async function logOut() {
+        // await fetch('te', {
+        //     method: "POST",
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'Authorization': `Bearer ${}`
+        //     },
+        // })
         // try {
         //     const { data } = await useFetch('/api/auth/logOut', {
         //         method: 'POST',
@@ -55,35 +68,6 @@ export const useUser = defineStore('user', () => {
         user.value = {}
     }
 
-    async function putUser(field) {
-        console.log(field)
-        // try {
-        //     let url = '/api/user/putUser'
-        //     let body = { ...user.value }
-        //     if(field) {
-        //         url = '/api/user/putFieldUser'
-        //         body = { ...field }
-        //         body.login = user.value.login
-        //     }
-        //     const { data } = await useFetch(url, {
-        //         method: 'PUT',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //         body: JSON.stringify(body),
-        //     })
-        //     if(data.value) {
-        //         if(data.value.success) {
-        //             return data.value.success
-        //         }
-        //     } else {
-        //         throw new Error
-        //     }
 
-        // } catch(err) {
-        //     console.error(err)
-        // }
-    }
-
-    return { user, logOut, getUserInfo, putUser, clearUserInfo, theme }
+    return { user, logOut, getUserInfo, clearUserInfo, theme }
 })
