@@ -2,6 +2,9 @@
 import { ref } from "vue";
 import TheButton from './TheButton.vue';
 import { usePopups } from '@/stores/popups'
+// import TheSort from "./TheSort.vue";
+// const sortSelectors = ref(['0','1','2','3','4','5','6','7','8','9','10','больше 10 лет'])
+// let selectorIsActive = ref(false)
 
 const popupStore = usePopups()
 const namePopup = 'mainForm'
@@ -10,42 +13,56 @@ let popupData = ref([
         name: 'ФИО *',
         placeHolder: 'Иванов Иван Иванович',
         type: 'input',
+        typeValye: 'text',
+        value: '',
+    },
+    {
+        name: 'Стаж *',
+        placeHolder: '10',
+        type: 'input',
+        typeValye: 'number',
         value: '',
     },
     {
         name: 'Email *',
         placeHolder: 'pochta@mail.ru',
         type: 'input',
+        typeValye: 'text',
         value: '',
     },
     {
         name: 'ФИО руководителя *',
         placeHolder: 'Иванов Иван Иванович',
         type: 'input',
+        typeValye: 'text',
         value: '',
     },
     {
         name: 'Подразделение *',
         placeHolder: 'Placeholder',
         type: 'input',
+        typeValye: 'text',
         value: '',
     },
     {
         name: 'Должность *',
         placeHolder: 'Менеджер',
         type: 'input',
+        typeValye: 'text',
         value: '',
     },
     {
         name: 'Личные достижения в компании * (за последние 12 месяцев)',
         placeHolder: 'Напишите ваши достижения в компании...',
         type: 'textarea',
+        typeValye: 'text',
         value: '',
     },
     {
         name: 'Мотивационное письмо *',
         placeHolder: 'Напишите почему Вы хотите учиться...',
         type: 'textarea',
+        typeValye: 'text',
         value: '',
     },
 ])
@@ -81,10 +98,11 @@ let popupData = ref([
                         <div class="input-w">
                             <input
                                 :placeholder="field.placeHolder"
+                                :type="field.typeValye"
                                 v-model="field.value"
                                 v-if="field.type === 'input'"
                             >
-                            <textarea :placeholder="field.placeHolder" v-model="field.value" v-if="field.type === 'textarea'"></textarea>
+                            <textarea :placeholder="field.placeHolder" :type="field.typeValye" v-model="field.value" v-if="field.type === 'textarea'"></textarea>
                         </div>
                     </div>
                 </div>

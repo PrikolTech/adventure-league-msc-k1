@@ -17,7 +17,7 @@ function getRandomNumberInRange(min, max) {
 </script>
 
 <template>
-    <router-link to="/courses/1" class="me__courses-item">
+    <router-link :to="{ path: `/courses/${props.course.title}` }" class="me__courses-item">
         <img class="pic" src="@/assets/images/program-finance.png" v-if="photoNumber === 0">
         <img class="pic" src="@/assets/images/program-disain.png" v-if="photoNumber === 1">
         <img class="pic" src="@/assets/images/card-steps.png" v-if="photoNumber === 2">

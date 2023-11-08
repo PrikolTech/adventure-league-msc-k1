@@ -1,6 +1,6 @@
 <script setup>
-
 import TheButton from '@/components/layouts/TheButton.vue';
+import TheAvatar from '@/components/layouts/TheAvatar.vue';
 import { useUser } from '@/stores/user'
 const userStore = useUser()
 
@@ -16,32 +16,40 @@ const userStore = useUser()
                     </div>
                     <div class="profile__header-line line"></div>
                 </div>
-                <div class="profile__me-header">
-                    <p>
-                        <!-- Радкевич Наталья Владимировна -->
-                        {{ userStore.user.first_name + ' ' + userStore.user.last_name }}
-                    </p>
-                    <the-button
-                        :styles="['btn_grey']"
-                        :type="'link'"
-                        :link="'/profile/settings'"
-                        style="gap: 10px;"
-                    >
-                        Редактировать
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                            <path d="M7.33317 3.83333H3.99984C3.64622 3.83333 3.30708 3.97381 3.05703 4.22385C2.80698 4.4739 2.6665 4.81304 2.6665 5.16666V12.5C2.6665 12.8536 2.80698 13.1928 3.05703 13.4428C3.30708 13.6929 3.64622 13.8333 3.99984 13.8333H11.3332C11.6868 13.8333 12.0259 13.6929 12.276 13.4428C12.526 13.1928 12.6665 12.8536 12.6665 12.5V9.16666M11.7238 2.89066C11.8468 2.76332 11.994 2.66174 12.1566 2.59186C12.3193 2.52198 12.4943 2.4852 12.6713 2.48366C12.8483 2.48212 13.0239 2.51586 13.1878 2.5829C13.3516 2.64994 13.5005 2.74895 13.6257 2.87414C13.7509 2.99933 13.8499 3.1482 13.9169 3.31206C13.984 3.47592 14.0177 3.65149 14.0162 3.82853C14.0146 4.00557 13.9779 4.18053 13.908 4.3432C13.8381 4.50587 13.7365 4.653 13.6092 4.776L7.88517 10.5H5.99984V8.61466L11.7238 2.89066Z" stroke="#4B5563" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </the-button>
-                </div>
-                <div class="profile__me-groups">
-                    <p>
-                        Студент группы:
-                    </p>
-                    <div class="profile__me-groups-item">
-                        ИДБ-20-09
-                    </div>
-                    <div class="profile__me-groups-item">
-                        ИДБ-20-10
+                <div class="profile__me-header-info">
+                    <the-avatar
+                        :first_name="userStore.user.first_name"
+                        :last_name="userStore.user.last_name"
+                    />
+                    <div class="profile__me-header-w">
+                        <div class="profile__me-header">
+                            <p>
+                                <!-- Радкевич Наталья Владимировна -->
+                                {{ userStore.user.first_name + ' ' + userStore.user.last_name }}
+                            </p>
+                            <the-button
+                                :styles="['btn_grey']"
+                                :type="'link'"
+                                :link="'/profile/settings'"
+                                style="gap: 10px;"
+                            >
+                                Редактировать
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
+                                    <path d="M7.33317 3.83333H3.99984C3.64622 3.83333 3.30708 3.97381 3.05703 4.22385C2.80698 4.4739 2.6665 4.81304 2.6665 5.16666V12.5C2.6665 12.8536 2.80698 13.1928 3.05703 13.4428C3.30708 13.6929 3.64622 13.8333 3.99984 13.8333H11.3332C11.6868 13.8333 12.0259 13.6929 12.276 13.4428C12.526 13.1928 12.6665 12.8536 12.6665 12.5V9.16666M11.7238 2.89066C11.8468 2.76332 11.994 2.66174 12.1566 2.59186C12.3193 2.52198 12.4943 2.4852 12.6713 2.48366C12.8483 2.48212 13.0239 2.51586 13.1878 2.5829C13.3516 2.64994 13.5005 2.74895 13.6257 2.87414C13.7509 2.99933 13.8499 3.1482 13.9169 3.31206C13.984 3.47592 14.0177 3.65149 14.0162 3.82853C14.0146 4.00557 13.9779 4.18053 13.908 4.3432C13.8381 4.50587 13.7365 4.653 13.6092 4.776L7.88517 10.5H5.99984V8.61466L11.7238 2.89066Z" stroke="#4B5563" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </the-button>
+                        </div>
+                        <div class="profile__me-groups">
+                            <p>
+                                Студент группы:
+                            </p>
+                            <div class="profile__me-groups-item">
+                                ИДБ-20-09
+                            </div>
+                            <div class="profile__me-groups-item">
+                                ИДБ-20-10
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="profile__me-tabs">
@@ -69,7 +77,35 @@ const userStore = useUser()
 </template>
 
 <style lang="scss">
+.profile__me-header-info {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 60px;
+    @media (max-width: 1023px) {
+        margin-bottom: 20px;
+    }
+    & .avatar {
+        min-width: 80px;
+        min-height: 80px;
+        color: var(--gray-900, #111928);
+        font-family: Inter;
+        font-size: 30px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 30px; /* 100% */
+        @media (max-width: 767px) {
+            display: none;
+            min-width: 30px;
+            min-height: 30px;
+            font-size: 13px;
+        }
+    }
+}
 .profile {
+    &__me-header-w {
+        flex: 1;
+    }
 
     &__me-body {
         display: flex;
@@ -95,9 +131,9 @@ const userStore = useUser()
         display: flex;
         column-gap: 50px;
         row-gap: 10px;
-        margin-bottom: 27px;
         flex-wrap: wrap;
         justify-content: space-between;
+        margin-bottom: 15px;
         & p {
             color: var(--gray-900, #111928);
             font-family: Inter;
@@ -109,6 +145,14 @@ const userStore = useUser()
                 font-size: 16px;
             }
         }
+        & a {
+            font-family: Roboto;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 150%; /* 21px */
+            padding: 9px 10px;
+        }
     }
 
     &__me-groups {
@@ -116,15 +160,11 @@ const userStore = useUser()
         align-items: center;
         gap: 12px;
         flex-wrap: wrap;
-        margin-bottom: 60px;
         @media (max-width: 1023px) {
-            margin-bottom: 40px;
         }
         @media (max-width: 767px) {
-            margin-bottom: 30px;
         }
         @media (max-width: 539px) {
-            margin-bottom: 20px;
         }
         & p {
             color: var(--gray-900, #111928);
@@ -141,6 +181,11 @@ const userStore = useUser()
         background: var(--gray-100, #F3F4F6);
         padding: 8px 10px;
         transition: .2s;
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 150%; /* 21px */
         @media (max-width: 767px) {
             font-size: 14px;
             padding: 4px 6px;
