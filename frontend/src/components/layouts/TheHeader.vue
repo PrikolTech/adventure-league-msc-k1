@@ -10,7 +10,8 @@ const userStore = useUser()
 let headerMobileIsActive = ref(false)
 
 const initialsUser = computed(() => {
-    return userStore.user.first_name[0] + userStore.user.last_name[0]
+    // return userStore.user.first_name[0] + userStore.user.last_name[0]
+    return 'test'
 })
 </script>
 
