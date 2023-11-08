@@ -6,7 +6,8 @@ const props = defineProps({
     course: {
         type: Object,
         required: true
-    }
+    },
+
 });
 
 const photoNumber = ref(getRandomNumberInRange(0, 3));
@@ -59,7 +60,7 @@ const chartOptions = ref({
     <img class="pic" src="@/assets/images/program-finance.png" v-if="photoNumber === 3">
         <div class="me__courses-item-body" style="display: flex; gap: 5px; flex-direction: row;">
             <div id="chart">
-                <VueApexCharts class="test" type="radialBar" :options="chartOptions" :series="[progress]"></VueApexCharts>
+                <VueApexCharts class="graph" type="radialBar" :options="chartOptions" :series="[progress]"></VueApexCharts>
             </div>
             <div class="me__courses-item-inside">
                 <div class="me__courses-item-header">
@@ -106,7 +107,7 @@ const chartOptions = ref({
 </template>
 
 <style lang="scss">
-.test {
+.graph {
     width: 200px;
     height: 100%;
     display: flex;

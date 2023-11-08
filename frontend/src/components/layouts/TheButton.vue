@@ -73,6 +73,13 @@ const props = defineProps({
       background: #e43f52;
     }
   }
+  &_blue {
+    background: #003791;
+    color: #fff;
+    &:hover {
+      background: #032b6b;
+    }
+  }
   &_grey {
     color: var(--var-grey-dark-font);
     border: 1px solid var(--gray-400, #9CA3AF);

@@ -122,7 +122,7 @@ const test_currentLesson = ref({
     ],
 })
 
-
+let showTest = ref(false)
 let activeTab = ref(null)
 const navigationLinks = ref([
     {
@@ -231,6 +231,7 @@ const watchRouteChanges = watch(
         }
     }
     else if (!hasParams) {
+        showTest.value = false
         if(navigationLinks.value.length === 4) {
             navigationLinks.value.pop()
         }
@@ -278,6 +279,7 @@ onMounted(() => {
         <div class="profile course container" style="padding-top: 5px;">
             <profile-nav
                 :activeLink="'/profile/courses'"
+                v-if="!showTest"
             />
             <div class="course__content profile__block">
                 <div class="course__header">
@@ -300,12 +302,15 @@ onMounted(() => {
                     />
                     <test-lesson
                         v-if="activeTab === 'test'"
+                        v-model:show-test="showTest"
                     />
                 </div>
             </div>
-            <div class="course__aside profile__events">
+            <div class="course__aside profile__events"
+            v-if="!showTest"
+            >
                 <div class="course__aside-item materials"
-                    v-if="currentLesson.links"
+                    v-if="currentLesson.links && activeTab"
                 >
                     <div class="course__aside-title">
                         Материалы :
@@ -324,7 +329,7 @@ onMounted(() => {
                     </div>
                 </div>
                 <div class="course__aside-item materials"
-                    v-if="currentLesson.job"
+                    v-if="currentLesson.job && activeTab && activeTab !=='task' && activeTab !=='test'"
                 >
                     <div class="course__aside-title">
                         Практическое задание:
