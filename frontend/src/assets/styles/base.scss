@@ -35,7 +35,7 @@ html, body {
 body {
 }
 input, button, textarea {
-  color: var(--gray-900, #111928);
+  color: var(--var-grey-lite-font);
   font-family: Inter;
   font-size: 18px;
   font-style: normal;
@@ -62,7 +62,7 @@ a, a:visited {
 
 }
 a {
-  color: var(--gray-900, #111928);
+  color: var(--var-grey-lite-font);
   font-family: Inter;
   font-size: 18px;
   font-style: normal;
@@ -98,7 +98,7 @@ html {
   --width__nav-item: 0px;
 }
 body {
-  color: var(--gray-900, #111928);
+  color: var(--var-grey-lite-font);
   font-family: Inter;
   font-size: 18px;
   font-style: normal;
@@ -108,14 +108,13 @@ body {
 }
 
 .wrapper {
+  position: relative;
   min-height: 100vh;
-  // position: relative;
-  // min-height: 100%;
-  // display: flex;
-  // flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 main {
-  // flex: 1 1 auto;
+  flex: 1 1 auto;
 }
 .container {
   max-width: 1310px;
@@ -126,7 +125,7 @@ main {
 
 
 input {
-  color: var(--gray-900, #111928);
+  color: var(--var-grey-lite-font);
   font-family: Roboto;
   font-size: 14px;
   font-style: normal;
@@ -161,6 +160,9 @@ input {
   font-style: normal;
   font-weight: 600;
   line-height: 150%; /* 45px */
+  @media (max-width: 539px) {
+    font-size: 20px;
+  }
 }
 
 
@@ -176,7 +178,15 @@ input {
   opacity: 0;
 }
 
-.b-contain span {
+.b-contain {
+  & span {
+    color: var(--gray-900, #111928);
+    font-family: Roboto;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; /* 21px */
+}
 }
 
 .b-contain {
@@ -195,19 +205,19 @@ input {
   background: #f1f5f9;
   transition: background 250ms;
   border: 1px solid #94a3b8;
-  border-radius: 0.2rem;
+  border-radius: 4px;
 }
 
 .b-contain input[type="radio"] ~ .b-input {
   position: absolute;
-  top: 0;
+  top: 6px;
   left: 0;
   height: 1.25rem;
   width: 1.25rem;
   background: #f1f5f9;
-  transition: background 250ms;
   border: 1px solid #94a3b8;
-  border-radius: 3rem;
+  transition: background 250ms;
+  border-radius: 50%;
 }
 
 .b-contain input[type="checkbox"] ~ .b-input::after {
@@ -228,10 +238,10 @@ input {
   content: "";
   position: absolute;
   display: none;
-  left: 4px;
-  top: 4px;
-  width: 0.75rem;
-  height: 0.75rem;
+  left: 5px;
+  top: 5px;
+  width: 0.65rem;
+  height: 0.65rem;
   border-radius: 3rem;
   background: #ffffff;
   transition: background 250ms;
@@ -261,13 +271,13 @@ input {
 }
 
 .b-contain input[type="checkbox"]:checked ~ .b-input {
-  background: #003791;
-  border-color: rgb(0, 55, 145);
+  background: var(--var-checkbox-bg);
+  border-color: var(--var-checkbox-bg);
 }
 
 .b-contain input[type="radio"]:checked ~ .b-input {
-  background: #003791;
-  border-color: #1d4ed8;
+  background: var(--var-checkbox-bg);
+  border-color: var(--var-checkbox-bg);
 }
 
 .b-contain input[type="checkbox"]:disabled ~ .b-input,
@@ -282,8 +292,8 @@ input {
 
 .b-contain:hover input[type="checkbox"]:not([disabled]):checked ~ .b-input,
 .b-contain input[type="checkbox"]:checked:focus ~ .b-input {
-  background: rgb(0, 55, 145);
-  border-color: rgb(0, 55, 145);
+  background: var(--var-checkbox-bg);
+  border-color: var(--var-checkbox-bg);
 }
 
 .b-contain:hover input[type="radio"]:not([disabled]):checked ~ .b-input,
@@ -291,3 +301,71 @@ input {
   background: #2563eb;
   border-color: #1e40af;
 }
+
+.comment {
+  resize: none;
+  border-radius: var(--rounded-xl, 12px);
+  border: 1px solid var(--backgrounds-day-gray-background-for-dies, #E1E1E9);
+  background: var(--elements-day-text-icons-on-substrates, #FFF);
+  padding: 12px;
+  width: 100%;
+  font-family: Roboto;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 167%; /* 26.72px */
+  max-height: 400px;
+  height: auto;
+  @media (max-width: 767px) {
+    padding: 8px;
+    font-size: 14px;
+  }
+}
+
+.input-w {
+  position: relative;
+  & .eye {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    cursor: pointer;
+    top: 50%;
+    transform: translate(0,-50%);
+    right: 10px;
+  }
+}
+
+.text {
+  color: var(--var-grey-lite-font);
+  @media (max-width: 767px) {
+    font-size: 15px;
+  }}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+[dark=true] {
+  & .b-contain {
+      & span {
+          color: var(--white, #FFF);
+      }
+  }
+  & .comment {
+    border: 1px solid var(--gray-700, #374151);
+    background: var(--gray-700, #374151);
+    color: var(--gray-200, #E5E7EB);
+  }
+  // .input-w {
+  //   & .eye {
+  //     & path {
+  //       stroke: #D1D5DB;
+  //     }
+  //   }
+  // }
+}
+

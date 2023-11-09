@@ -27,13 +27,11 @@ func Router(services Services) *chi.Mux {
 			r.Post("/authenticate", user.Authenticate)
 		})
 		r.Route("/role", func(r chi.Router) {
-			r.Route("/user", func(r chi.Router) {
-				r.Post("/{user_id}", role.Append)
-				r.Delete("/{user_id}", role.Remove)
-			})
 			r.Get("/", role.Get)
 			r.Post("/", role.Create)
+			r.Post("/append", role.Append)
 			r.Delete("/{id}", role.Delete)
+			r.Delete("/remove", role.Remove)
 		})
 	})
 

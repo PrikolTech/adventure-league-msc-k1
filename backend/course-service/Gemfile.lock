@@ -120,13 +120,14 @@ GEM
       racc (~> 1.4)
     pg (1.5.4)
     pg (1.5.4-x64-mingw-ucrt)
-    pgcrypto (0.4.1)
     psych (5.1.1.1)
       stringio
     puma (6.4.0)
       nio4r (~> 2.0)
     racc (1.7.3)
     rack (3.0.8)
+    rack-cors (2.0.1)
+      rack (>= 2.0.0)
     rack-session (2.0.0)
       rack (>= 3.0.0)
     rack-test (2.1.0)
@@ -188,8 +189,8 @@ PLATFORMS
 
 DEPENDENCIES
   pg (~> 1.1)
-  pgcrypto
   puma (>= 5.0)
+  rack-cors
   rails (~> 7.1.1)
   tzinfo-data
 

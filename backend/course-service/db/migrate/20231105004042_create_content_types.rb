@@ -6,10 +6,4 @@ class CreateContentTypes < ActiveRecord::Migration[7.1]
       t.string :name
     end
   end
-
-  def up
-    TYPES.each do |type|
-      ContentType.create(name: type)
-    end
-  end
 end
