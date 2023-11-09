@@ -1,7 +1,9 @@
 class Api::HomeworkSolutionsController < ApplicationController
+  EXTERNAL_ERROR = 'file service error'.freeze
+  
   def index
     @solutions = HomeworkSolution.where(homework_id: params[:homework_id])
-    render json: @solutions
+    render json: @solutions, include: :homework_result
   end
   
   def show
@@ -14,9 +16,16 @@ class Api::HomeworkSolutionsController < ApplicationController
     @solution = HomeworkSolution.new(homework_solution_params)
     
     if @solution
+      begin
+        url = HomeworkSolution.send_file(params[:file])  
+      rescue => exception
+        return render json: {message: EXTERNAL_ERROR, status: 500}
+      end
+
+      @solution.url = url
       @solution.homework_id = params[:homework_id]
       @solution.save
-
+      
       redirect_to @solution.path
     else
       render json: {message: 'not created', status: 400}
@@ -48,6 +57,6 @@ class Api::HomeworkSolutionsController < ApplicationController
   private
 
   def homework_solution_params
-    params.require(:homework_solution).permit(:user_id, :file_url)
+    params.require(:homework_solution).permit(:user_id)
   end
 end

@@ -1,6 +1,10 @@
 class Api::JobsController < ApplicationController
   def index
     @jobs = Job.all
+    if params[:lecture_id]
+      @jobs = @jobs.where(lecture_id: params[:lecture_id])
+    end
+
     render json: @jobs
   end
 
@@ -14,7 +18,7 @@ class Api::JobsController < ApplicationController
     @job = Job.create(job_params)
     
     if @job
-      redirect_to api_job_url @job
+      render json: @job, include: :tests
     else
       render json: {message: 'not created'}, status: 400
     end
@@ -24,7 +28,7 @@ class Api::JobsController < ApplicationController
     @job = Job.find(params[:id])
 
     if @job.update(job_params)
-      redirect_to api_job_url @job
+      redirect_to @job.path
     else
       render json: {message: 'not updated'}, status: 400
     end
