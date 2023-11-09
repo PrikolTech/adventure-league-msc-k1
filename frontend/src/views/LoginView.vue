@@ -25,7 +25,7 @@ const login = async () => {
             password: password.value
         });
 
-        const url = `http://localhost:3001/token?${queryParams.toString()}`;
+        const url = `${import.meta.env.VITE_SERVICE_AUTH_URL}/token?${queryParams.toString()}`;
 
         const response = await fetch(url, {
             method: 'GET',

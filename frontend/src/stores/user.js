@@ -15,7 +15,7 @@ export const useUser = defineStore('user', () => {
 
     async function logOut() {
         try {
-            const response = await fetch('http://localhost:3001/token', {
+            const response = await fetch(`${import.meta.env.VITE_SERVICE_AUTH_URL}/token`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ export const useUser = defineStore('user', () => {
             // const response = await fetch(`http://localhost:3002/user/${user.value.access_token}`, {
             //     method: 'GET',
             // })
-            const response = await fetch('http://localhost:3002/user/943bc07e-37ce-49f3-8ed0-710cf980ba95', {
+            const response = await fetch(`${import.meta.env.VITE_SERVICE_USER_URL}/user/943bc07e-37ce-49f3-8ed0-710cf980ba95`, {
                 method: 'GET',
             })
             const data = await response.json()
@@ -49,7 +49,7 @@ export const useUser = defineStore('user', () => {
 
     async function refreshTokens() {
         try {
-            const response = await fetch('http://localhost:3001/token?grant_type=refresh_token&client_id=000000', {
+            const response = await fetch(`${import.meta.env.VITE_SERVICE_AUTH_URL}/token?grant_type=refresh_token&client_id=000000`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
