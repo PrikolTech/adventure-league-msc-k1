@@ -83,46 +83,47 @@ const course = ref({})
 
 
 const currentLesson = ref({})
-const test_currentLesson = ref({
-    name: 'Урок 1. Введение в финансовую грамотность.',
-    video: 'https://www.youtube.com/embed/__-vp0g_BhA?si=ou5xfV8arD_ccw6Q',
-    desc: 'В этом уроке вы познакомитесь с основами и понятиями финансовой грамотности. Более подробно разберете важность изучения финансовой грамотности и многое другое.',
-    links: {
-        presentation: 'Ссылка на презентацю',
-        abstract: 'Ссылка на конспект',
-    },
-    job: {
-        test: 'Ссылка на тест',
-        task: 'Ссылка на задание'
-    },
-    comments: [
-        {
-            first_name: 'Вера',
-            last_name: 'Красулина',
-            type: 'Студент',
-            text: 'Всем привет, подскажите что задали.',
-            date: '25 августа 2023',
-            time: '21:35',
-        },
-        {
-            first_name: 'Анатолий',
-            last_name: 'Видин',
-            type: 'Учитель',
-            text: 'Всем привет, подскажите что задали.',
-            date: '25 августа 2023',
-            time: '21:35',
-        },
-        {
-            first_name: 'Максим',
-            last_name: 'Трушин',
-            type: 'Студент',
-            text: 'Всем привет, подскажите что задали.',
-            date: '25 августа 2023',
-            time: '21:35',
-        }
-    ],
-})
+// const test_currentLesson = ref({
+//     name: 'Урок 1. Введение в финансовую грамотность.',
+//     video: 'https://www.youtube.com/embed/__-vp0g_BhA?si=ou5xfV8arD_ccw6Q',
+//     desc: 'В этом уроке вы познакомитесь с основами и понятиями финансовой грамотности. Более подробно разберете важность изучения финансовой грамотности и многое другое.',
+//     links: {
+//         presentation: 'Ссылка на презентацю',
+//         abstract: 'Ссылка на конспект',
+//     },
+//     job: {
+//         test: 'Ссылка на тест',
+//         task: 'Ссылка на задание'
+//     },
+//     comments: [
+//         {
+//             first_name: 'Вера',
+//             last_name: 'Красулина',
+//             type: 'Студент',
+//             text: 'Всем привет, подскажите что задали.',
+//             date: '25 августа 2023',
+//             time: '21:35',
+//         },
+//         {
+//             first_name: 'Анатолий',
+//             last_name: 'Видин',
+//             type: 'Учитель',
+//             text: 'Всем привет, подскажите что задали.',
+//             date: '25 августа 2023',
+//             time: '21:35',
+//         },
+//         {
+//             first_name: 'Максим',
+//             last_name: 'Трушин',
+//             type: 'Студент',
+//             text: 'Всем привет, подскажите что задали.',
+//             date: '25 августа 2023',
+//             time: '21:35',
+//         }
+//     ],
+// })
 
+let files = ref({})
 let showTest = ref(false)
 let activeTab = ref(null)
 const navigationLinks = ref([
@@ -192,16 +193,49 @@ const getCourseLessons = async () => {
     }
 }
 
-const getLesson = async () => {
+const getLesson = async (id) => {
+    let lessonID = null
+    if(id) {
+        lessonID = id
+    } else {
+        lessonID = route.query.lesson
+    }
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${course.value.id}/lectures/${lessonID}`, {
+            method: "GET",
+        })
+        
+        const data = await response.json()
+        currentLesson.value = {...data}
 
-    const response = {...test_currentLesson.value}
+        console.log('лекция',data)
+    } catch(err) {
+        console.error(err)
+    }
 
-    currentLesson.value = {...response}
+    // const response = {...test_currentLesson.value}
+
+    // currentLesson.value = {...response}
 
     showTest.value = false
     activeTab.value = 'lesson'
+    getLessonFiles(lessonID)
 }
 
+const getLessonFiles = async (lessonID) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${course.value.id}/lectures/${lessonID}/contents`, {
+            method: "GET",
+        })
+        
+        const data = await response.json()
+        files.value = {...data}
+
+        console.log('файлы лекции',data)
+    } catch(err) {
+        console.error(err)
+    }
+}
 
 const getTaskOfLesson = async () => {
     if (navigationLinks.value.some(link => link.text === 'Задание к уроку')) {
@@ -301,26 +335,31 @@ const watchRouteChanges = watch(
 );
 
 
-const openLesson = () => {
-    router.push({ query: { lesson: 1 } })
-    getLesson()
+const openLesson = (lessonID) => {
+    router.push({ query: { lesson: lessonID } })
+    getLesson(lessonID)
 }
 
+
+const makeUrlFordownloadFile = (fileName) => {
+    return `${import.meta.env.VITE_FILE_COURSE_URL}/api/files/${fileName}`;
+}
 
 onBeforeUnmount(() => {
     watchRouteChanges();
 });
 
 
-onMounted(() => {
-    getCourseInfo()
+onMounted(async() => {
+    await getCourseInfo()
     if(route.query.lesson) {
-        getLesson()
+        await getLesson()
     }
     if(route.query.task) {
         getTaskOfLesson()
     }
     if(route.query.test) {
+        console.log('test')
         getTestOfLesson()
     }
 })
@@ -363,39 +402,36 @@ onMounted(() => {
             v-if="!showTest"
             >
                 <div class="course__aside-item materials"
-                    v-if="currentLesson.links && activeTab"
+                    v-if="files && activeTab"
                 >
                     <div class="course__aside-title">
                         Материалы :
                     </div>
                     <div class="course__aside-item-list">
-                        <p class="course__aside-link"
-                            v-if="currentLesson.links.presentation"
+                        <a class="course__aside-link"
+                            v-for="(file, index) of files" :key="index"
+                            :href="makeUrlFordownloadFile(file.url)"
                         >
-                            Презентация
-                        </p>
-                        <p class="course__aside-link"
-                            v-if="currentLesson.links.abstract"
-                        >
-                            Конспект лекции. Введение. 
-                        </p>
+                            {{file.url.split('/')[1]}}
+                        </a>
+
                     </div>
                 </div>
                 <div class="course__aside-item materials"
-                    v-if="currentLesson.job && activeTab && activeTab !=='task' && activeTab !=='test'"
+                    v-if="activeTab && activeTab !=='task' && activeTab !=='test'"
                 >
                     <div class="course__aside-title">
                         Практическое задание:
                     </div>
                     <div class="course__aside-item-list">
                         <p class="course__aside-link"
-                            v-if="currentLesson.job.task"
+                            v-if="currentLesson"
                             @click="getTaskOfLesson()"
                         >
                             Задание по материалу
                         </p>
                         <p class="course__aside-link"
-                            v-if="currentLesson.job.test"
+                            v-if="currentLesson"
                             @click="getTestOfLesson()"
                         >
                             Тест 
@@ -409,7 +445,7 @@ onMounted(() => {
                     <div class="course__aside-item-list">
                         <aside-lesson
                             v-for="(lesson, index) of course.lessons" :key="index" :lesson="lesson"
-                            @click="openLesson"
+                            @click="openLesson(lesson.id)"
                         />
                     </div>
                 </div>

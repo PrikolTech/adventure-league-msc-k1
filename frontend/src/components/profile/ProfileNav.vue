@@ -32,7 +32,7 @@ const props = defineProps({
             </router-link>
         </div>
         <div class="profile__nav-block">
-            <router-link to="/profile/me">
+            <router-link to="/profile/me/meCourses">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
                     <path d="M9.88554 7.05229C10.3856 6.55219 10.6666 5.87391 10.6666 5.16667C10.6666 4.45942 10.3856 3.78115 9.88554 3.28105C9.38544 2.78095 8.70716 2.5 7.99992 2.5C7.29267 2.5 6.6144 2.78095 6.1143 3.28105C5.6142 3.78115 5.33325 4.45942 5.33325 5.16667C5.33325 5.87391 5.6142 6.55219 6.1143 7.05229C6.6144 7.55238 7.29267 7.83333 7.99992 7.83333C8.70716 7.83333 9.38544 7.55238 9.88554 7.05229Z" stroke="#1F2A37" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M4.70009 11.2002C5.57526 10.325 6.76224 9.83333 7.99992 9.83333C9.2376 9.83333 10.4246 10.325 11.2998 11.2002C12.1749 12.0753 12.6666 13.2623 12.6666 14.5H3.33325C3.33325 13.2623 3.82492 12.0753 4.70009 11.2002Z" stroke="#1F2A37" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

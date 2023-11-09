@@ -13,7 +13,7 @@ let showHiddenText = ref(false)
 
 <template>
     <div class="me__courses-progress-item"
-        :class="[{ complited: props.job.completed == 'true' }, { home: props.job.type == 'home' }]"
+        :class="[{ complited: props.job.is_viewed === true }, { home: props.job.type == 'home' }]"
         @click.stop.prevent=""
         @mouseenter="showHiddenText = true"
         @mouseleave="showHiddenText = false"

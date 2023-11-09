@@ -112,11 +112,11 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 main {
   padding-top: 30px;
   flex: 1 1 auto;
-  position: relative;
   overflow: hidden;
   @media (max-width: 539px) {
     padding-top: 5px;
@@ -131,7 +131,10 @@ main {
     opacity: 0;
     background: var(--primary-2-default, #003791);
     filter: blur(150px);
-    display: none;
+    @media (max-width: 1023px) {
+      display: none;
+    }
+    // display: none;
   } 
   &::after {
     // background: url('@/assets/images/bg-1.png');
@@ -146,7 +149,7 @@ main {
     // background-repeat: no-repeat;
     right: -250px;
     width: 17%;
-    top: 60%;
+    top: 70%;
   }
 }
 .container {
@@ -418,8 +421,47 @@ input::-webkit-inner-spin-button {
     background-color: var(--var-scroll-bg);
   }
 }
+.add-file-w {
+  margin-bottom: 40px;
+  @media (max-width: 1023px) {
+    margin-bottom: 20px;
+  }
+}
+.add-file-btn {
+  width: 100% !important;
+}
 
-
+.add-file {
+  border-radius: 20px;
+  border: 2px dashed var(--gray-200, #E5E7EB);
+  background: var(--gray-50, #F9FAFB);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  width: 100%;
+  gap: 7px;
+  margin-bottom: 10px;
+  & input {
+      display: none;
+  }
+  & p {
+      color: var(--gray-500, #6B7280);
+      font-family: Roboto;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 150%; /* 21px */
+  }
+  & span {
+      color: var(--gray-500, #6B7280);
+      font-family: Roboto;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 150%; /* 18px */
+  }
+}
 
 
 
@@ -446,5 +488,25 @@ input::-webkit-inner-spin-button {
       opacity: 1;
     }
   }
+
+
+  & .add-file {
+    border: 2px dashed var(--gray-500, #6B7280);
+    background: #1A2537;
+    
+    & p {
+        color: var(--gray-400, #9CA3AF);
+    }
+
+    & span {
+        color: var(--gray-400, #9CA3AF);
+    }
+
+    & svg {
+        & path {
+            fill: #6B7280;
+        }
+    }
+}
 }
 
