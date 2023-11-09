@@ -52,7 +52,6 @@ post '/api/files' do
   headers 'Access-Control-Allow-Origin' => '*', 
           'Access-Control-Allow-Methods' => ['POST']
 
-  puts params
   tempfile = params[:file][:tempfile]
   filename = params.include?(:name) ? params[:name] : params[:file][:filename]
   extension = filename.split('.')[-1]

@@ -82,6 +82,19 @@ func (u *user) Get(id uuid.UUID) (*entity.User, error) {
 	return user, nil
 }
 
+func (u *user) Exist(email string) (bool, error) {
+	_, err := u.userRepo.GetByEmail(context.Background(), email)
+	if err == nil {
+		return true, nil
+	}
+
+	if err == repo.ErrNoRows {
+		return false, nil
+	}
+
+	return false, err
+}
+
 func (u *user) Update(data entity.User) (*entity.User, error) {
 	user, err := u.Get(data.ID)
 	if err != nil {

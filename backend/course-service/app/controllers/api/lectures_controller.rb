@@ -2,11 +2,17 @@ class Api::LecturesController < ApplicationController
   def index
     @lectures = Lecture.where(course_id: params[:course_id])
     if params[:user_id]
-      courses = Course.find_by_user_id(params[:user_id])
+      user_id = params[:user_id]
+
+      courses = Course.find_by_user_id(user_id)
 
       @lectures = @lectures.where(course: courses, is_hidden: false)
+      
+      lectures_with_views = []
+      @lectures.each {|lecture| lectures_with_views << lecture.attributes.merge({is_viewed: !UserViews.where(user_id: user_id, lecture_id: lecture.id).empty?})}
+      @lectures = lectures_with_views
     end
-    
+
     render json: @lectures
   end
 
