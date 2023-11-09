@@ -1,12 +1,13 @@
-FROM ruby:3.2.2
+FROM ruby:3.2.2-slim
 
 WORKDIR /app
-ADD Gemfile /app/Gemfile
-ADD Gemfile.lock /app/Gemfile.lock
-RUN bundle install --system
 
-ADD . /app
-RUN bundle install --system
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential
+
+
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
 
 EXPOSE 3008
 

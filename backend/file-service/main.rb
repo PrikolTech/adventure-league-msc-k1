@@ -1,6 +1,10 @@
 require 'sinatra'
+# require 'sinatra/base'
 require 'sinatra/json'
 require 'fileutils'
+
+set :bind, '0.0.0.0'
+set :port, 3008
 
 ALLOWED_EXTENSION = %w(
  txt
@@ -32,6 +36,9 @@ end
 
 get '/api/files/*/*' do
   # Returns file by path and name
+  headers 'Access-Control-Allow-Origin' => '*',
+          'Access-Control-Allow-Methods' => ['GET']  
+
   file_path, filename = params['splat']
   full_file_path = "#{STORAGE_PATH}/#{file_path}/#{filename}" 
 
@@ -42,6 +49,9 @@ end
 
 post '/api/files' do
   # Saves file and returns a file url
+  headers 'Access-Control-Allow-Origin' => '*', 
+          'Access-Control-Allow-Methods' => ['POST']
+
   tempfile = params[:file][:tempfile]
   filename = params[:file][:filename]
   extension = filename.split('.')[-1]

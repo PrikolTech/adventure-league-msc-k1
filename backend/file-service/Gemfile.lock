@@ -28,9 +28,9 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  puma
-  sinatra
-  sinatra-contrib
+  puma (~> 6.3)
+  sinatra (~> 3.1)
+  sinatra-contrib (~> 3.1)
 
 RUBY VERSION
    ruby 3.2.2p53
