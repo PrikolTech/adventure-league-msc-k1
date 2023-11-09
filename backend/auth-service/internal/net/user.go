@@ -1,56 +1,52 @@
 package net
 
 import (
+	"auth-service/internal/entity"
 	"bytes"
 	"encoding/json"
 	"net/http"
 )
 
 type user struct {
-	url string
+	client *http.Client
+	url    string
 }
 
 func NewUser(url string) *user {
-	return &user{url}
+	client := &http.Client{}
+	return &user{client, url}
 }
 
-type Role struct {
-	ID          string
-	Title       string
-	Description string
-}
-
-type AuthenticateRequest struct {
+type AuthenticateRequestBody struct {
 	Email    string
 	Password string
 }
 
-type AuthenticateResponse struct {
+type AuthenticateResponseBody struct {
 	ID    string
-	Roles []Role
+	Roles []entity.Role
 }
 
 func (u *user) Authenticate(email string, password string) (string, error) {
 	reqData := new(bytes.Buffer)
 	e := json.NewEncoder(reqData)
-	e.Encode(AuthenticateRequest{email, password})
+	e.Encode(AuthenticateRequestBody{email, password})
 
-	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodPost, u.url+"/user/authenticate", reqData)
 	if err != nil {
-		return "", err
+		return "", ErrInternalNetwork
 	}
 
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := client.Do(req)
+	resp, err := u.client.Do(req)
 	if err != nil {
-		return "", err
+		return "", ErrInternalNetwork
 	}
 
 	defer resp.Body.Close()
 
-	respData := new(AuthenticateResponse)
+	respData := new(AuthenticateResponseBody)
 	d := json.NewDecoder(resp.Body)
 	err = d.Decode(respData)
 
