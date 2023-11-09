@@ -39,27 +39,30 @@ func (h *Role) Create(w http.ResponseWriter, r *http.Request) {
 	e.Encode(role)
 }
 
-type AppendRequest struct {
-	RoleID uuid.UUID `json:"role_id"`
+type AppendRequestBody struct {
+	UserID uuid.UUID  `json:"user_id"`
+	RoleID *uuid.UUID `json:"role_id"`
+	Title  string     `json:"title"`
 }
 
 func (h *Role) Append(w http.ResponseWriter, r *http.Request) {
-	userParam := chi.URLParam(r, "user_id")
-	userID, err := uuid.FromString(userParam)
-	if err != nil {
-		DecodingError(w)
-		return
-	}
-
-	data := new(AppendRequest)
+	data := new(AppendRequestBody)
 	d := json.NewDecoder(r.Body)
-	err = d.Decode(data)
+	err := d.Decode(data)
 	if err != nil {
 		DecodingError(w)
 		return
 	}
 
-	err = h.service.Append(userID, data.RoleID)
+	if data.RoleID != nil {
+		err = h.service.AppendByID(data.UserID, *data.RoleID)
+	} else if data.Title != "" {
+		err = h.service.AppendByTitle(data.UserID, data.Title)
+	} else {
+		DecodingError(w)
+		return
+	}
+
 	if err != nil {
 		ErrorJSON(w, err.Error(), http.StatusBadRequest)
 		return
@@ -69,24 +72,28 @@ func (h *Role) Append(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Role) Remove(w http.ResponseWriter, r *http.Request) {
-	userParam := chi.URLParam(r, "user_id")
+	userParam := r.URL.Query().Get("user_id")
 	userID, err := uuid.FromString(userParam)
 	if err != nil {
 		DecodingError(w)
 		return
 	}
 
-	roleParam := r.URL.Query().Get("role_id")
-	if roleParam == "" {
-		err = h.service.RemoveAll(userID)
-	} else {
+	id := r.URL.Query().Get("role_id")
+	title := r.URL.Query().Get("title")
+
+	if id != "" {
 		var roleID uuid.UUID
-		roleID, err = uuid.FromString(roleParam)
+		roleID, err = uuid.FromString(id)
 		if err != nil {
 			DecodingError(w)
 			return
 		}
-		err = h.service.Remove(userID, roleID)
+		err = h.service.RemoveByID(userID, roleID)
+	} else if title != "" {
+		err = h.service.RemoveByTitle(userID, title)
+	} else {
+		err = h.service.RemoveAll(userID)
 	}
 
 	if err != nil {

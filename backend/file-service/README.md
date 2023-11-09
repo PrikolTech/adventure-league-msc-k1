@@ -5,7 +5,7 @@ ruby 3.2 + sinatra
 
 #### Отправка и сохранение файла
 ```
- /api/files/ (POST)
+ /api/files?name={string} (POST)
 
 Response:
 {

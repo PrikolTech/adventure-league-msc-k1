@@ -9,7 +9,7 @@ class Course < ApplicationRecord
   MAX_GROUPS = 3
 
   def path
-    "/api/#{id}"
+    "/api/courses/#{id}"
   end
 
   def new_group_name

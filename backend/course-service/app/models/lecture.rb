@@ -3,7 +3,7 @@ class Lecture < ApplicationRecord
   has_many :contents
 
   def path
-    "#{course.id}/lectures/#{id}"
+    "#{course.path}/lectures/#{id}"
   end
 
   def available_for?(user_id)
