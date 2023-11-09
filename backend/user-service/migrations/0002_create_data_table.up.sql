@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS "user".data (
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     patronymic VARCHAR(100),
+    birthdate DATE NOT NULL,
     phone VARCHAR(13),
     telegram VARCHAR(100)
 );

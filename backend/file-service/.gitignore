@@ -1,0 +1,4 @@
+.ruby-lsp
+
+storage/uploads
+!storage/.keep
