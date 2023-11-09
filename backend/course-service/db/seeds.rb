@@ -51,20 +51,6 @@ end
 
 puts '== Periods seeding complete'
 
-lectures_seed = load_seed('lectures')
-
-lectures_seed.each do |lecture|
-  Lecture.create(
-    id: lecture['id'],
-    name: lecture['name'],
-    description: lecture['description'],
-    starts_at: lecture['starts_at'],
-    course_id: lecture['course_id']
-  )
-end
-
-puts '== Lectures seeding complete'
-
 courses_seed = load_seed('courses')
 
 courses_seed.each do |course|
@@ -83,3 +69,16 @@ end
 
 puts '== Courses seeding complete'
 
+lectures_seed = load_seed('lectures')
+
+lectures_seed.each do |lecture|
+  Lecture.create(
+    id: lecture['id'],
+    name: lecture['name'],
+    description: lecture['description'],
+    starts_at: lecture['starts_at'],
+    course_id: lecture['course_id']
+  )
+end
+
+puts '== Lectures seeding complete'

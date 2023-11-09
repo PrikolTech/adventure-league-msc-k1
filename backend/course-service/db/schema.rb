@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_08_085935) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_08_160218) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -85,6 +85,14 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_08_085935) do
     t.index ["group_id"], name: "index_user_groups_on_group_id"
   end
 
+  create_table "user_views", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "lecture_id", null: false
+    t.uuid "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lecture_id"], name: "index_user_views_on_lecture_id"
+  end
+
   add_foreign_key "contents", "content_types"
   add_foreign_key "contents", "lectures"
   add_foreign_key "courses", "course_types"
@@ -93,4 +101,5 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_08_085935) do
   add_foreign_key "groups", "courses"
   add_foreign_key "lectures", "courses"
   add_foreign_key "user_groups", "groups"
+  add_foreign_key "user_views", "lectures"
 end
