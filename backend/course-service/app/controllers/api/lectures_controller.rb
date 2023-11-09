@@ -31,12 +31,7 @@ class Api::LecturesController < ApplicationController
       @lecture.save
 
       params['contents']&.each do |content|
-        type = ContentType.find_or_create_by!(name: content['type'])
-        Content.create(
-          lecture_id: @lecture.id,
-          url: content['url'],
-          content_type_id: type.id
-        )
+        Content.send_and_create(@lecture, content[:file])
       end
 
       redirect_to @lecture.path

@@ -78,10 +78,26 @@ UserGroup: {
 }
 ```
 
+#### Контент (файлы)
+
+```
+Content: {
+  "id": uuid,
+  "url": string,
+  "lecture_id": "11111111-1111-1111-1111-111111111111",
+  "created_at": "2023-11-09T13:07:10.800Z",
+  "updated_at": "2023-11-09T13:07:10.800Z",
+  "content_type": {
+    "id": "0279e5bd-266f-40d2-9abc-0c39a31d8801",
+    "name": "TEST FILE"
+  }
+}
+```
+
 ### Курсы
 
 ```
-/api/courses?user_id={user_id}(GET)
+/api/courses?user_id={user_id} (GET)
 
 Response:
 [
@@ -92,7 +108,7 @@ Response:
 ```
 
 ```
-/api/courses/{course_id} (POST) -> Create
+/api/courses (POST) -> Create
 /api/courses/{course_id} (PUT) -> Update
 
 Request: 
@@ -140,7 +156,7 @@ Response:
 ```
 
 ```
-/api/courses/{course_id}/lectures/{lecture_id} (POST) -> Create
+/api/courses/{course_id}/lectures (POST) -> Create
 /api/courses/{course_id}/lectures/{lecture_id} (PUT) -> Update
 
 Request: 
@@ -158,6 +174,37 @@ Response:
 ```
 /api/courses/{course_id}/lectures/{lecture_id} (DELETE)
 ```
+
+### Контент (файлы)
+
+```
+/api/courses/{course_id}/lectures/{lecture_id}/contents (GET)
+
+Response:
+[
+  Content,
+  Content,
+  ...
+]
+```
+
+```
+/api/courses/{course_id}/lectures/{lecture_id}/contents (POST)
+
+Request:
+file
+
+Response:
+{
+  Content
+}
+```
+
+```
+/api/courses/{course_id}/lectures/{lecture_id}/contents/{content_id} (DELETE)
+```
+
+
 
 ### Группы
 

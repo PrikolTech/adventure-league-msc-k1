@@ -7,3 +7,6 @@ services:
       - .:/app
     ports:
       - "3008:3008"
+networks:
+  default:
+    name: backend
