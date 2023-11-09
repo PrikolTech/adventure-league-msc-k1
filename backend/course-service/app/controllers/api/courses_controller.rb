@@ -1,8 +1,14 @@
 class Api::CoursesController < ApplicationController
   USER_ADDED_ERROR = 'user is already added'
+  COURSE_STARTED_ERROR = 'course is already started'
 
   def index
     @courses = Course.all
+
+    if params[:user_id]
+      @courses = Course.find_by_user_id(params[:user_id])
+    end
+
     render json: @courses, except: [:education_form_id, :period_id, :course_type_id], include: {
       period: {except: :id},
       course_type: {except: :id},
@@ -48,22 +54,15 @@ class Api::CoursesController < ApplicationController
     end
   end
 
-  # def update
-  #   @course = Course.find(params[:id])
+  def update
+    @course = Course.find(params[:id])
     
-  #   if @course.update(
-  #       name: params['name'],
-  #       description: params['description'],
-  #       price: price,
-  #       course_type_id: course_type.id,
-  #       period_id: period.id,
-  #       education_form_id: education_form.id
-  #     )
-  #     redirect_to @lecture.path
-  #   else
-  #     render json: {message: 'not updated', status: 400}
-  #   end
-  # end
+    if @course.update(course_params)
+      redirect_to @course.path
+    else
+      render json: {message: 'not updated', status: 400}
+    end
+  end
 
   def destroy
     @course = Course.find(params['id'])
@@ -74,16 +73,18 @@ class Api::CoursesController < ApplicationController
     course = Course.find(params[:course_id])
     groups = Group.where(course_id: params[:course_id])
     user_id = params[:user_id]
-
+    
+    # Errors Handing
+    return render json: {message: COURSE_STARTED_ERROR, status: 400} if course.started?
     return render json: {message: USER_ADDED_ERROR, status: 400} unless UserGroup.where(group: groups, user_id: user_id).empty?
 
-
-    is_added = false
+    # Adding user to group
     groups.each do |group|
       user_group = group.add_user(user_id)
       return render json: {group: group, status: 201}, include: :course if user_group
     end
 
+    # Adding user to a new group
     if groups.count < Course::MAX_GROUPS
       @group = course.add_group
       @group.add_user(user_id)
@@ -94,5 +95,11 @@ class Api::CoursesController < ApplicationController
     else
       render json: {message: 'can not add user', status: 400}
     end
+  end
+
+  private
+
+  def course_params
+    params.require(:course).permit(:name, :description, :price)
   end
 end

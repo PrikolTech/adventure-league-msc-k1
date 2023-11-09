@@ -1,12 +1,18 @@
 class Api::LecturesController < ApplicationController
   def index
     @lectures = Lecture.where(course_id: params['course_id'])
+    if params[:user_id]
+      courses = Course.find_by_user_id(params[user_id])
+      
+      @lectures = @lectures.where(course: courses, is_hidden: false)
+    end
     
     render json: @lectures
   end
 
   def show
     @lecture = Lecture.find(params['id'])
+    return { status: 403 } unless @lecture.available_for?(params[:user_id])
     
     render json: @lecture, include: [contents: {except: [:content_type_id], include: [:content_type]}]
   end

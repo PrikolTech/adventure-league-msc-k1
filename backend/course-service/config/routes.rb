@@ -10,5 +10,7 @@ Rails.application.routes.draw do
         resources :contents
       end
     end
+
+    resources :groups
   end
 end
