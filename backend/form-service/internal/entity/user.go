@@ -17,4 +17,19 @@ type User struct {
 	Birthdate  time.Time `json:"birthdate"`
 	Phone      string    `json:"phone"`
 	Telegram   string    `json:"telegram"`
+
+	Roles []Role `json:"roles"`
 }
+
+type Role struct {
+	ID          uuid.UUID `json:"id"`
+	Title       RoleTitle `json:"title"`
+	Description string    `json:"description"`
+}
+
+type RoleTitle string
+
+const (
+	Enrollee RoleTitle = "enrollee"
+	Student  RoleTitle = "student"
+)

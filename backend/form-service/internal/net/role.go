@@ -18,15 +18,16 @@ func NewRole(url string) *role {
 	return &role{url}
 }
 
-func (r *role) Append(userID uuid.UUID, roleID uuid.UUID) error {
+func (r *role) Append(userID uuid.UUID, title string) error {
 	reqData := new(bytes.Buffer)
 	e := json.NewEncoder(reqData)
 	e.Encode(map[string]string{
-		"role_id": roleID.String(),
+		"user_id": userID.String(),
+		"title":   title,
 	})
 
 	client := &http.Client{}
-	url := fmt.Sprintf("%s/role/user/%s", r.url, userID)
+	url := fmt.Sprintf("%s/role/append", r.url)
 	req, err := http.NewRequest(http.MethodPost, url, reqData)
 	if err != nil {
 		return err

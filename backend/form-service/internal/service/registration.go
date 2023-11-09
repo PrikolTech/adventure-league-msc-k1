@@ -10,6 +10,7 @@ import (
 	"math"
 	"math/big"
 	mathRand "math/rand"
+	"slices"
 
 	"github.com/gofrs/uuid/v5"
 )
@@ -33,6 +34,10 @@ func (r *registration) Create(data entity.Registration) (*entity.Registration, e
 	if err := data.Validate(); err != nil {
 		return nil, err
 	}
+
+	// if data.UserID != nil {
+	// user, err := r.net.User.Get(*data.UserID)
+	// }
 
 	return r.repo.Create(context.Background(), data)
 }
@@ -69,54 +74,29 @@ func (r *registration) Update(data entity.Registration) (*entity.Registration, e
 			return nil, err
 		}
 
-		switch *data.Status {
-		case entity.Acccepted:
-			// create user
-			password, err := generatePassword()
+		status := *data.Status
+		switch status {
+		case entity.Acccepted, entity.Approved:
+			user, err := r.getOrCreateUser(registration)
 			if err != nil {
 				return nil, err
 			}
 
-			userData := entity.User{
-				Email:     *registration.Email,
-				Password:  string(password),
-				FirstName: *registration.Initiator.FirstName,
-				LastName:  *registration.Initiator.LastName,
-				Birthdate: *registration.Birthdate,
-			}
-
-			if registration.Initiator.Patronymic != nil {
-				userData.Patronymic = *registration.Initiator.Patronymic
-			}
-
-			if registration.Phone != nil {
-				userData.Phone = *registration.Phone
-			}
-
-			if registration.Telegram != nil {
-				userData.Telegram = *registration.Telegram
-			}
-
-			user, err := r.net.User.Create(userData)
+			err = r.appendRole(user, entity.Enrollee)
 			if err != nil {
 				return nil, err
 			}
 
-			// update user id
-			registration, err = r.repo.UpdateUser(context.Background(), registration.ID, user.ID)
-			if err != nil {
-				return nil, err
-			}
+			if *data.Status == entity.Approved {
+				err = r.net.Course.Append(*registration.UserID, *registration.CourseID)
+				if err != nil {
+					return nil, err
+				}
 
-			// append role
-			err = r.net.Role.Append(user.ID, uuid.FromStringOrNil("11e8cd39-e2c5-4193-a61f-de11a3af67aa"))
-			if err != nil {
-				return nil, err
-			}
-		case entity.Approved:
-			err := r.net.Course.Append(*registration.UserID, *registration.CourseID)
-			if err != nil {
-				return nil, err
+				err = r.appendRole(user, entity.Enrollee)
+				if err != nil {
+					return nil, err
+				}
 			}
 		}
 
@@ -127,6 +107,64 @@ func (r *registration) Update(data entity.Registration) (*entity.Registration, e
 	}
 
 	return registration, nil
+}
+
+func (r *registration) createUser(data *entity.Registration) (*entity.User, error) {
+	password, err := generatePassword()
+	if err != nil {
+		return nil, err
+	}
+
+	userData := entity.User{
+		Email:     *data.Email,
+		Password:  string(password),
+		FirstName: *data.Initiator.FirstName,
+		LastName:  *data.Initiator.LastName,
+		Birthdate: *data.Birthdate,
+	}
+
+	if data.Initiator.Patronymic != nil {
+		userData.Patronymic = *data.Initiator.Patronymic
+	}
+
+	if data.Phone != nil {
+		userData.Phone = *data.Phone
+	}
+
+	if data.Telegram != nil {
+		userData.Telegram = *data.Telegram
+	}
+
+	return r.net.User.Create(userData)
+}
+
+func (r *registration) getOrCreateUser(data *entity.Registration) (*entity.User, error) {
+	if data.UserID == nil {
+		user, err := r.createUser(data)
+		if err != nil {
+			return nil, err
+		}
+
+		_, err = r.repo.UpdateUser(context.Background(), data.ID, user.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		return user, nil
+	}
+	return r.net.User.Get(*data.UserID)
+}
+
+func (r *registration) appendRole(user *entity.User, title entity.RoleTitle) error {
+	hasRole := slices.ContainsFunc(user.Roles, func(role entity.Role) bool {
+		return role.Title == title
+	})
+
+	if hasRole {
+		return nil
+	}
+
+	return r.net.Role.Append(user.ID, string(title))
 }
 
 const (

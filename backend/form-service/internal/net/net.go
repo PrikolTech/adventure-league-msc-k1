@@ -7,11 +7,12 @@ import (
 )
 
 type User interface {
+	Get(id uuid.UUID) (*entity.User, error)
 	Create(data entity.User) (*entity.User, error)
 }
 
 type Role interface {
-	Append(userID uuid.UUID, roleID uuid.UUID) error
+	Append(userID uuid.UUID, title string) error
 }
 
 type Course interface {
