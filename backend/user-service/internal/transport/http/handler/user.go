@@ -52,6 +52,27 @@ func (h *User) Authenticate(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func (h *User) Exist(w http.ResponseWriter, r *http.Request) {
+	email := r.URL.Query().Get("email")
+	if email == "" {
+		DecodingError(w)
+		return
+	}
+
+	exists, err := h.service.Exist(email)
+	if err != nil {
+		InternalServerError(w)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	e := json.NewEncoder(w)
+	e.Encode(map[string]bool{
+		"exists": exists,
+	})
+}
+
 func (h *User) Create(w http.ResponseWriter, r *http.Request) {
 	var data entity.User
 	d := json.NewDecoder(r.Body)
