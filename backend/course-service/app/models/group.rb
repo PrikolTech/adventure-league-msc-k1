@@ -1,6 +1,6 @@
 class Group < ApplicationRecord
   belongs_to :course
-  has_many :user_group
+  has_many :user_groups
 
   MAX_USERS = 20
 

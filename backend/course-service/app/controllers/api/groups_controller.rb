@@ -7,7 +7,7 @@ class Api::GroupsController < ApplicationController
   def show
     @group = Group.find(params[:id])
 
-    render json: @group, include: :user_group
+    render json: @group, include: {user_groups: {except: :id}}
   end
 
   def update

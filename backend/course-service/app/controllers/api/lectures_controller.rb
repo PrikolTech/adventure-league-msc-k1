@@ -2,7 +2,7 @@ class Api::LecturesController < ApplicationController
   def index
     @lectures = Lecture.where(course_id: params[:course_id])
     if params[:user_id]
-      courses = Course.find_by_user_id(params[user_id])
+      courses = Course.find_by_user_id(params[:user_id])
 
       @lectures = @lectures.where(course: courses, is_hidden: false)
     end
