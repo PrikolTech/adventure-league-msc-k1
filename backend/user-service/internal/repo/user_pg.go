@@ -20,6 +20,9 @@ func NewUserPG(pg *postgres.Postgres) *UserPG {
 func (u *UserPG) collectRow(row pgx.Row) (*entity.User, error) {
 	var data entity.User
 	err := row.Scan(&data.ID, &data.Email, &data.Password, &data.FirstName, &data.LastName, &data.Patronymic, &data.Birthdate, &data.Phone, &data.Telegram)
+	if err == pgx.ErrNoRows {
+		return nil, ErrNoRows
+	}
 	return &data, err
 }
 

@@ -20,6 +20,7 @@ func Router(services Services) *chi.Mux {
 
 	mux.Route("/", func(r chi.Router) {
 		r.Route("/user", func(r chi.Router) {
+			r.Get("/", user.Exist)
 			r.Get("/{id}", user.Get)
 			r.Post("/", user.Create)
 			r.Patch("/{id}", user.Update)
