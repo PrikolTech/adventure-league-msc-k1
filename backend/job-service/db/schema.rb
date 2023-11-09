@@ -50,13 +50,19 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_06_093012) do
     t.index ["job_id"], name: "index_homeworks_on_job_id"
   end
 
+  create_table "job_types", force: :cascade do |t|
+    t.string "name"
+  end
+
   create_table "jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "lecture_id"
     t.string "name"
     t.text "description"
     t.datetime "deadline"
+    t.bigint "job_type_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["job_type_id"], name: "index_jobs_on_job_type_id"
   end
 
   create_table "questions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -105,6 +111,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_06_093012) do
   add_foreign_key "homework_results", "homework_solutions"
   add_foreign_key "homework_solutions", "homeworks"
   add_foreign_key "homeworks", "jobs"
+  add_foreign_key "jobs", "job_types"
   add_foreign_key "questions", "tests"
   add_foreign_key "solution_answers", "answers"
   add_foreign_key "solution_answers", "test_solutions"

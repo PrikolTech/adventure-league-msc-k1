@@ -1,3 +1,3 @@
 class TestResult < ApplicationRecord
-  belongs_to :solution_answer
+  belongs_to :test_solution
 end
