@@ -16,7 +16,7 @@ ALLOWED_EXTENSION = %w(
 
 MAX_SIZE = 2 * 2**20 # 2 MB
 
-STORAGE_PATH = './storage/content'
+STORAGE_PATH = './storage/uploads'
 
 get '/' do
   # Files send html form (DEBUG ONLY)
@@ -26,7 +26,7 @@ end
 get '/api/files' do
   # Returns list of files (DEBUG ONLY)
 
-  files = Dir.glob("./storage/content/*/*.*").map{ |f| "#{f.split('/')[2..-1].join('/')}" }
+  files = Dir.glob("#{STORAGE_PATH}/*/*.*").map{ |f| "#{f.split('/')[2..-1].join('/')}" }
   return json(files.to_a)
 end
 
