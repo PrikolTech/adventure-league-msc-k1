@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/gofrs/uuid/v5"
@@ -9,7 +10,7 @@ import (
 type User struct {
 	ID       uuid.UUID `json:"id"`
 	Email    *string   `json:"email"`
-	Password *string   `json:"password"`
+	Password *string   `json:"password,omitempty"`
 
 	FirstName  *string    `json:"first_name"`
 	LastName   *string    `json:"last_name"`
@@ -17,7 +18,17 @@ type User struct {
 	Birthdate  *time.Time `json:"birthdate"`
 	Phone      *string    `json:"phone"`
 	Telegram   *string    `json:"telegram"`
-	Roles      []Role     `json:"roles,omitempty"`
+	Roles      []Role     `json:"roles"`
+}
+
+func (e User) MarshalJSON() ([]byte, error) {
+	type user User
+	u := user(e)
+	u.Password = nil
+	if u.Roles == nil {
+		u.Roles = make([]Role, 0)
+	}
+	return json.Marshal(u)
 }
 
 func (e *User) Validate() error {
