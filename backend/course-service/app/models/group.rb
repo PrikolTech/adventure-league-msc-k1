@@ -15,6 +15,6 @@ class Group < ApplicationRecord
   end
 
   def full?
-    user_group.count >= Group::MAX_USERS
+    user_groups.count >= Group::MAX_USERS
   end
 end
