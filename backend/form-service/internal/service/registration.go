@@ -35,9 +35,16 @@ func (r *registration) Create(data entity.Registration) (*entity.Registration, e
 		return nil, err
 	}
 
-	// if data.UserID != nil {
-	// user, err := r.net.User.Get(*data.UserID)
-	// }
+	if data.UserID == nil {
+		exists, err := r.net.User.Exist(*data.Email)
+		if err != nil {
+			return nil, err
+		}
+
+		if exists {
+			return nil, ErrEmailOccupied
+		}
+	}
 
 	return r.repo.Create(context.Background(), data)
 }

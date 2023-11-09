@@ -11,11 +11,13 @@ import (
 )
 
 type role struct {
-	url string
+	client *http.Client
+	url    string
 }
 
 func NewRole(url string) *role {
-	return &role{url}
+	client := &http.Client{}
+	return &role{client, url}
 }
 
 func (r *role) Append(userID uuid.UUID, title string) error {
@@ -26,18 +28,17 @@ func (r *role) Append(userID uuid.UUID, title string) error {
 		"title":   title,
 	})
 
-	client := &http.Client{}
 	url := fmt.Sprintf("%s/role/append", r.url)
 	req, err := http.NewRequest(http.MethodPost, url, reqData)
 	if err != nil {
-		return err
+		return ErrInternalNetwork
 	}
 
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := client.Do(req)
+	resp, err := r.client.Do(req)
 	if err != nil {
-		return err
+		return ErrInternalNetwork
 	}
 
 	defer resp.Body.Close()
@@ -47,7 +48,7 @@ func (r *role) Append(userID uuid.UUID, title string) error {
 		d := json.NewDecoder(resp.Body)
 		err = d.Decode(&respData)
 		if err != nil {
-			return err
+			return ErrInternalNetwork
 		}
 
 		return errors.New(respData["error"])

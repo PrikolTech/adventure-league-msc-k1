@@ -7,6 +7,7 @@ import (
 )
 
 type User interface {
+	Exist(email string) (bool, error)
 	Get(id uuid.UUID) (*entity.User, error)
 	Create(data entity.User) (*entity.User, error)
 }

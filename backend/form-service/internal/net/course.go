@@ -10,24 +10,25 @@ import (
 )
 
 type course struct {
-	url string
+	client *http.Client
+	url    string
 }
 
 func NewCourse(url string) *course {
-	return &course{url}
+	client := &http.Client{}
+	return &course{client, url}
 }
 
 func (c *course) Append(userID uuid.UUID, courseID uuid.UUID) error {
-	client := &http.Client{}
 	url := fmt.Sprintf("%s/courses/%s/add_user?user_id=%s", c.url, courseID, userID)
 	req, err := http.NewRequest(http.MethodPost, url, nil)
 	if err != nil {
-		return err
+		return ErrInternalNetwork
 	}
 
-	resp, err := client.Do(req)
+	resp, err := c.client.Do(req)
 	if err != nil {
-		return err
+		return ErrInternalNetwork
 	}
 
 	defer resp.Body.Close()
@@ -37,7 +38,7 @@ func (c *course) Append(userID uuid.UUID, courseID uuid.UUID) error {
 		d := json.NewDecoder(resp.Body)
 		err = d.Decode(&respData)
 		if err != nil {
-			return err
+			return ErrInternalNetwork
 		}
 
 		return errors.New(respData["message"])
