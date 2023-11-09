@@ -130,14 +130,27 @@ let programs = ref([
 
 let filteredPrograms = ref([])
 const getPrograms = async () => {
+    console.log(COURSE_SERVICE_URL)
+    try {
+        const response = await fetch('http://localhost:3003/api/courses',{
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+        })
+        console.log(response)
+        // const response = programs.value;
+        // filteredPrograms.value = [...programs.value];
 
-    const response = programs.value;
-    filteredPrograms.value = [...programs.value];
+        // filterProgram.value = [
+        //     { text: 'Все', value: 'all' },
+        //     ...[...new Set(response.map(program => program.type))].map(type => ({ text: type, value: type }))
+        // ];
+    } catch (err) {
+        console.error(err)
+    }
 
-    filterProgram.value = [
-        { text: 'Все', value: 'all' },
-        ...[...new Set(response.map(program => program.type))].map(type => ({ text: type, value: type }))
-    ];
 
 }
 

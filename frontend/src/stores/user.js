@@ -25,7 +25,6 @@ export const useUser = defineStore('user', () => {
 
             clearUserInfo()
             router.push('/login')
-            console.log(response)
 
         } catch(err) {
             console.error(err)
@@ -57,8 +56,6 @@ export const useUser = defineStore('user', () => {
                 },
                 credentials: 'include',
             });
-            console.log(response)
-            console.log(response.status === 401)
             if(response.status === 401 || response.status === 401) {
                 return
             }
