@@ -32,7 +32,7 @@ export const useUser = defineStore('user', () => {
     }
 
     async function getUserInfo() {
-        user.value.id = '943bc07e-37ce-49f3-8ed0-710cf980ba95'
+        user.value.id = '2101e124-fdba-46ca-b092-6ea32c308f1a'
         try {
             // const response = await fetch(`http://localhost:3002/user/${user.value.access_token}`, {
             //     method: 'GET',
@@ -64,7 +64,7 @@ export const useUser = defineStore('user', () => {
                 return
             }
             user.value = {}
-            user.value.id = '943bc07e-37ce-49f3-8ed0-710cf980ba95'
+            user.value.id = '2101e124-fdba-46ca-b092-6ea32c308f1a'
             const data = await response.json()
             delete data.refresh_token
             Object.assign(user.value, data);

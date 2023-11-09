@@ -310,7 +310,7 @@ onMounted(() => {
                     </div>
                     <div class="profile__header-line line"></div>
                 </div>
-                <div class="profile__courses-filter">
+                <div class="profile__courses-filter" v-if="courses.length">
                     <the-sort
                         :selectors="sortSelectors"
                         v-model="selectorIsActive"
@@ -322,6 +322,9 @@ onMounted(() => {
                     >
                         Скрыть пройденные
                     </the-switcher>
+                </div>
+                <div class="text" v-else>
+                    У вас еще нет курсов
                 </div>
                 <div class="profile__courses-header">
                     

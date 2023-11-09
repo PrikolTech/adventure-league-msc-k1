@@ -153,10 +153,20 @@ const getCourseInfo = async () => {
         const data = await response.json()
         course.value = {...data}
 
-        navigationLinks.value.push({
-            href: `${route.path}`,
-            text: course.value.name
-        })
+        if(navigationLinks.value.length === 3) {
+            const link = {...navigationLinks.value[2]}
+            navigationLinks.value[2] = {
+                href: `${route.path}`,
+                text: course.value.name
+            }
+            navigationLinks.value.push({...link})
+        } else {
+            navigationLinks.value.push({
+                href: `${route.path}`,
+                text: course.value.name
+            })
+        }
+
 
         console.log('курс:',data)
 
@@ -188,7 +198,7 @@ const getLesson = async () => {
 
     currentLesson.value = {...response}
 
-
+    showTest.value = false
     activeTab.value = 'lesson'
 }
 
@@ -265,6 +275,7 @@ const watchRouteChanges = watch(
             return
         }
         if(newParams.lesson) {
+            showTest.value = false
             activeTab.value = 'lesson'
             if(navigationLinks.value.length === 4) {
                 navigationLinks.value.pop()
@@ -280,6 +291,7 @@ const watchRouteChanges = watch(
         if(!(Object.keys(newParams).length > 0)) {
             activeTab.value = null
         } else {
+            showTest.value = false
             activeTab.value = 'lesson'
             router.push({ query: { lesson: 1 } })
         }
