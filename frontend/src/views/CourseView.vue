@@ -7,78 +7,79 @@ import TheLesson from '@/components/course/TheLesson.vue';
 import TaskLesson from '@/components/course/TaskLesson.vue';
 import TestLesson from '@/components/course/TestLesson.vue';
 import { useRouter, useRoute } from 'vue-router'
+import { useUser } from '@/stores/user'
 
-
+const userStore = useUser()
 const router = useRouter()
 const route = useRoute()
-
-const course = ref({
-    name: 'Финансовая грамотность',
-    teacher: 'Кураева Анна',
-    curator: 'Зайцев Денис',
-    lessons: [
-        {
-            title: 'Урок 1. Основы и понятия',
-            date: '08.11.23 в 20:00',
-            format: 'video',
-            completed: true,
-        },
-        {
-            title: 'Урок 2. Основы и понятия',
-            date: '08.11.23 в 20:00',
-            format: 'file',
-            completed: true,
-        },
-        {
-            title: 'Урок 3. Основы и понятия',
-            date: '08.11.23 в 20:00',
-            format: 'video',
-            completed: false,
-        },
-        {
-            title: 'Урок 4. Основы и понятия',
-            date: '08.11.23 в 20:00',
-            format: 'file',
-            completed: false,
-        },
-        {
-            title: 'Урок 5. Основы и понятия',
-            date: '08.11.23 в 20:00',
-            format: 'video',
-            completed: false,
-        },
-        {
-            title: 'Урок 6. Основы и понятия',
-            date: '08.11.23 в 20:00',
-            format: 'file',
-            completed: false,
-        },
-        {
-            title: 'Урок 7. Основы и понятия',
-            date: '08.11.23 в 20:00',
-            format: 'video',
-            completed: false,
-        },
-        {
-            title: 'Урок 8. Основы и понятия',
-            date: '08.11.23 в 20:00',
-            format: 'file',
-            completed: false,
-        },
-        {
-            title: 'Урок 9. Основы и понятия',
-            date: '08.11.23 в 20:00',
-            format: 'video',
-            completed: false,
-        },
-        {
-            title: 'Урок 10. Основы и понятия',
-            date: '08.11.23 в 20:00',
-            format: 'file',
-            completed: false,
-        },
-    ]
-})
+const course = ref({})
+// const course = ref({
+//     name: 'Финансовая грамотность',
+//     teacher: 'Кураева Анна',
+//     curator: 'Зайцев Денис',
+//     lessons: [
+//         {
+//             title: 'Урок 1. Основы и понятия',
+//             date: '08.11.23 в 20:00',
+//             format: 'video',
+//             completed: true,
+//         },
+//         {
+//             title: 'Урок 2. Основы и понятия',
+//             date: '08.11.23 в 20:00',
+//             format: 'file',
+//             completed: true,
+//         },
+//         {
+//             title: 'Урок 3. Основы и понятия',
+//             date: '08.11.23 в 20:00',
+//             format: 'video',
+//             completed: false,
+//         },
+//         {
+//             title: 'Урок 4. Основы и понятия',
+//             date: '08.11.23 в 20:00',
+//             format: 'file',
+//             completed: false,
+//         },
+//         {
+//             title: 'Урок 5. Основы и понятия',
+//             date: '08.11.23 в 20:00',
+//             format: 'video',
+//             completed: false,
+//         },
+//         {
+//             title: 'Урок 6. Основы и понятия',
+//             date: '08.11.23 в 20:00',
+//             format: 'file',
+//             completed: false,
+//         },
+//         {
+//             title: 'Урок 7. Основы и понятия',
+//             date: '08.11.23 в 20:00',
+//             format: 'video',
+//             completed: false,
+//         },
+//         {
+//             title: 'Урок 8. Основы и понятия',
+//             date: '08.11.23 в 20:00',
+//             format: 'file',
+//             completed: false,
+//         },
+//         {
+//             title: 'Урок 9. Основы и понятия',
+//             date: '08.11.23 в 20:00',
+//             format: 'video',
+//             completed: false,
+//         },
+//         {
+//             title: 'Урок 10. Основы и понятия',
+//             date: '08.11.23 в 20:00',
+//             format: 'file',
+//             completed: false,
+//         },
+//     ]
+// })
 
 
 const currentLesson = ref({})
@@ -133,12 +134,53 @@ const navigationLinks = ref([
         href: '/profile/courses',
         text: 'Курсы'
     },
-    {
-        href: `${route.path}`,
-        text: course.value.name
-    },
+    // {
+    //     href: `${route.path}`,
+    //     text: course.value.name
+    // },
 ])
 
+
+
+const getCourseInfo = async () => {
+    const courseID = route.params.id
+    try {
+        
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${courseID}`, {
+            method: "GET",
+        })
+
+        const data = await response.json()
+        course.value = {...data}
+
+        navigationLinks.value.push({
+            href: `${route.path}`,
+            text: course.value.name
+        })
+
+        console.log('курс:',data)
+
+        await getCourseLessons()
+
+    } catch(err) {
+        console.error(err)
+    }
+}
+
+
+const getCourseLessons = async () => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${course.value.id}/lectures?user_id=${userStore.user.id}`, {
+            method: "GET",
+        })
+        
+        const data = await response.json()
+        course.value.lessons = [...data]
+        console.log('лекции',data)
+    } catch(err) {
+        console.error(err)
+    }
+}
 
 const getLesson = async () => {
 
@@ -253,14 +295,13 @@ const openLesson = () => {
 }
 
 
-
-
 onBeforeUnmount(() => {
     watchRouteChanges();
 });
 
 
 onMounted(() => {
+    getCourseInfo()
     if(route.query.lesson) {
         getLesson()
     }

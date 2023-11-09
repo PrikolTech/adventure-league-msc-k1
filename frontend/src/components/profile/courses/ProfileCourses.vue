@@ -3,247 +3,269 @@ import { onMounted, ref, watch } from "vue";
 import CourseItem from "@/components/profile/courses/courseitem.vue";
 import TheSort from "@/components/layouts/TheSort.vue";
 import TheSwitcher from "@/components/layouts/TheSwitcher.vue";
+import { useUser } from '@/stores/user'
 
+const userStore = useUser()
 const sortSelectors = ref(['Все'])
 let filterSelect = ref('Все')
 
 let selectorIsActive = ref(false)
 let showCompleted = ref(false)
 
-const courses = ref([
-    {
-        title: 'Финансовая грамотность',
-        date: '06.11.23 - 10.01.24',
-        format: 'Онлайн',
-        lecture: {
-            passed: 0,
-            total: 5,
-        },
-        tasks: {
-            passed: 0,
-            total: 3,
-        },
-        jobs: [
-            {
-                type: 'lecture',
-                text: 'Урок 1. Знакомство с компонентами.',
-                completed: 'true',
-            },
-            {
-                type: 'home',
-                text: 'ДЗ 1. Считаем свой месячный расход.',
-                completed: 'true',
-            },
-            {
-                type: 'lecture',
-                text: 'Урок 2. Знакомство с компонентами.',
-                completed: 'false',
-            },
-            {
-                type: 'home',
-                text: 'ДЗ 2. Считаем свой месячный расход.',
-                completed: 'true',
-            },
-            {
-                type: 'lecture',
-                text: 'Урок 3. Знакомство с компонентами.',
-                completed: 'false',
-            },
-            {
-                type: 'home',
-                text: 'ДЗ 3. Считаем свой месячный расход.',
-                completed: 'false',
-            },
-            {
-                type: 'lecture',
-                text: 'Урок 4. Знакомство с компонентами.',
-                completed: 'false',
-            },
-            {
-                type: 'home',
-                text: 'ДЗ 4. Считаем свой месячный расход.',
-                completed: 'false',
-            },
-        ]
-    },
-    {
-        title: 'Дизайн система как смысл жизни',
-        date: '06.11.23 - 10.01.24',
-        format: 'Онлайн',
-        lecture: {
-            passed: 3,
-            total: 3,
-        },
-        tasks: {
-            passed: 5,
-            total: 5,
-        },
-        jobs: [
-            {
-                type: 'lecture',
-                text: 'Урок 1. Знакомство с компонентами.',
-                completed: 'true',
-            },
-            {
-                type: 'home',
-                text: 'ДЗ 1. Считаем свой месячный расход.',
-                completed: 'true',
-            },
-            {
-                type: 'lecture',
-                text: 'Урок 2. Знакомство с компонентами.',
-                completed: 'true',
-            },
-            {
-                type: 'home',
-                text: 'ДЗ 2. Считаем свой месячный расход.',
-                completed: 'true',
-            },
-            {
-                type: 'lecture',
-                text: 'Урок 3. Знакомство с компонентами.',
-                completed: 'true',
-            },
-            {
-                type: 'home',
-                text: 'ДЗ 3. Считаем свой месячный расход.',
-                completed: 'true',
-            },
-            {
-                type: 'lecture',
-                text: 'Урок 4. Знакомство с компонентами.',
-                completed: 'true',
-            },
-            {
-                type: 'home',
-                text: 'ДЗ 4. Считаем свой месячный расход.',
-                completed: 'true',
-            },
-        ]
-    },
-    {
-        title: 'Дизайн система как смысл жизни',
-        date: '06.11.23 - 10.01.24',
-        format: 'Онлайн',
-        lecture: {
-            passed: 4,
-            total: 9,
-        },
-        tasks: {
-            passed: 2,
-            total: 3,
-        },
-        jobs: [
-            {
-                type: 'lecture',
-                text: 'Урок 1. Знакомство с компонентами.',
-                completed: 'true',
-            },
-            {
-                type: 'home',
-                text: 'ДЗ 1. Считаем свой месячный расход.',
-                completed: 'true',
-            },
-            {
-                type: 'lecture',
-                text: 'Урок 2. Знакомство с компонентами.',
-                completed: 'false',
-            },
-            {
-                type: 'home',
-                text: 'ДЗ 2. Считаем свой месячный расход.',
-                completed: 'true',
-            },
-            {
-                type: 'lecture',
-                text: 'Урок 3. Знакомство с компонентами.',
-                completed: 'false',
-            },
-            {
-                type: 'home',
-                text: 'ДЗ 3. Считаем свой месячный расход.',
-                completed: 'false',
-            },
-            {
-                type: 'lecture',
-                text: 'Урок 4. Знакомство с компонентами.',
-                completed: 'false',
-            },
-            {
-                type: 'home',
-                text: 'ДЗ 4. Считаем свой месячный расход.',
-                completed: 'false',
-            },
-        ]
-    },
-    {
-        title: 'Управление командой',
-        date: '06.11.23 - 10.01.24',
-        format: 'Онлайн',
-        lecture: {
-            passed: 4,
-            total: 9,
-        },
-        tasks: {
-            passed: 2,
-            total: 3,
-        },
-        jobs: [
-            {
-                type: 'lecture',
-                text: 'Урок 1. Знакомство с компонентами.',
-                completed: 'true',
-            },
-            {
-                type: 'home',
-                text: 'ДЗ 1. Считаем свой месячный расход.',
-                completed: 'true',
-            },
-            {
-                type: 'lecture',
-                text: 'Урок 2. Знакомство с компонентами.',
-                completed: 'false',
-            },
-            {
-                type: 'home',
-                text: 'ДЗ 2. Считаем свой месячный расход.',
-                completed: 'true',
-            },
-            {
-                type: 'lecture',
-                text: 'Урок 3. Знакомство с компонентами.',
-                completed: 'false',
-            },
-            {
-                type: 'home',
-                text: 'ДЗ 3. Считаем свой месячный расход.',
-                completed: 'false',
-            },
-            {
-                type: 'lecture',
-                text: 'Урок 4. Знакомство с компонентами.',
-                completed: 'false',
-            },
-            {
-                type: 'home',
-                text: 'ДЗ 4. Считаем свой месячный расход.',
-                completed: 'false',
-            },
-        ]
-    },
-])
+// const courses = ref([
+//     {
+//         title: 'Финансовая грамотность',
+//         date: '06.11.23 - 10.01.24',
+//         format: 'Онлайн',
+//         lecture: {
+//             passed: 0,
+//             total: 5,
+//         },
+//         tasks: {
+//             passed: 0,
+//             total: 3,
+//         },
+//         jobs: [
+//             {
+//                 type: 'lecture',
+//                 text: 'Урок 1. Знакомство с компонентами.',
+//                 completed: 'true',
+//             },
+//             {
+//                 type: 'home',
+//                 text: 'ДЗ 1. Считаем свой месячный расход.',
+//                 completed: 'true',
+//             },
+//             {
+//                 type: 'lecture',
+//                 text: 'Урок 2. Знакомство с компонентами.',
+//                 completed: 'false',
+//             },
+//             {
+//                 type: 'home',
+//                 text: 'ДЗ 2. Считаем свой месячный расход.',
+//                 completed: 'true',
+//             },
+//             {
+//                 type: 'lecture',
+//                 text: 'Урок 3. Знакомство с компонентами.',
+//                 completed: 'false',
+//             },
+//             {
+//                 type: 'home',
+//                 text: 'ДЗ 3. Считаем свой месячный расход.',
+//                 completed: 'false',
+//             },
+//             {
+//                 type: 'lecture',
+//                 text: 'Урок 4. Знакомство с компонентами.',
+//                 completed: 'false',
+//             },
+//             {
+//                 type: 'home',
+//                 text: 'ДЗ 4. Считаем свой месячный расход.',
+//                 completed: 'false',
+//             },
+//         ]
+//     },
+//     {
+//         title: 'Дизайн система как смысл жизни',
+//         date: '06.11.23 - 10.01.24',
+//         format: 'Онлайн',
+//         lecture: {
+//             passed: 3,
+//             total: 3,
+//         },
+//         tasks: {
+//             passed: 5,
+//             total: 5,
+//         },
+//         jobs: [
+//             {
+//                 type: 'lecture',
+//                 text: 'Урок 1. Знакомство с компонентами.',
+//                 completed: 'true',
+//             },
+//             {
+//                 type: 'home',
+//                 text: 'ДЗ 1. Считаем свой месячный расход.',
+//                 completed: 'true',
+//             },
+//             {
+//                 type: 'lecture',
+//                 text: 'Урок 2. Знакомство с компонентами.',
+//                 completed: 'true',
+//             },
+//             {
+//                 type: 'home',
+//                 text: 'ДЗ 2. Считаем свой месячный расход.',
+//                 completed: 'true',
+//             },
+//             {
+//                 type: 'lecture',
+//                 text: 'Урок 3. Знакомство с компонентами.',
+//                 completed: 'true',
+//             },
+//             {
+//                 type: 'home',
+//                 text: 'ДЗ 3. Считаем свой месячный расход.',
+//                 completed: 'true',
+//             },
+//             {
+//                 type: 'lecture',
+//                 text: 'Урок 4. Знакомство с компонентами.',
+//                 completed: 'true',
+//             },
+//             {
+//                 type: 'home',
+//                 text: 'ДЗ 4. Считаем свой месячный расход.',
+//                 completed: 'true',
+//             },
+//         ]
+//     },
+//     {
+//         title: 'Дизайн система как смысл жизни',
+//         date: '06.11.23 - 10.01.24',
+//         format: 'Онлайн',
+//         lecture: {
+//             passed: 4,
+//             total: 9,
+//         },
+//         tasks: {
+//             passed: 2,
+//             total: 3,
+//         },
+//         jobs: [
+//             {
+//                 type: 'lecture',
+//                 text: 'Урок 1. Знакомство с компонентами.',
+//                 completed: 'true',
+//             },
+//             {
+//                 type: 'home',
+//                 text: 'ДЗ 1. Считаем свой месячный расход.',
+//                 completed: 'true',
+//             },
+//             {
+//                 type: 'lecture',
+//                 text: 'Урок 2. Знакомство с компонентами.',
+//                 completed: 'false',
+//             },
+//             {
+//                 type: 'home',
+//                 text: 'ДЗ 2. Считаем свой месячный расход.',
+//                 completed: 'true',
+//             },
+//             {
+//                 type: 'lecture',
+//                 text: 'Урок 3. Знакомство с компонентами.',
+//                 completed: 'false',
+//             },
+//             {
+//                 type: 'home',
+//                 text: 'ДЗ 3. Считаем свой месячный расход.',
+//                 completed: 'false',
+//             },
+//             {
+//                 type: 'lecture',
+//                 text: 'Урок 4. Знакомство с компонентами.',
+//                 completed: 'false',
+//             },
+//             {
+//                 type: 'home',
+//                 text: 'ДЗ 4. Считаем свой месячный расход.',
+//                 completed: 'false',
+//             },
+//         ]
+//     },
+//     {
+//         title: 'Управление командой',
+//         date: '06.11.23 - 10.01.24',
+//         format: 'Онлайн',
+//         lecture: {
+//             passed: 4,
+//             total: 9,
+//         },
+//         tasks: {
+//             passed: 2,
+//             total: 3,
+//         },
+//         jobs: [
+//             {
+//                 type: 'lecture',
+//                 text: 'Урок 1. Знакомство с компонентами.',
+//                 completed: 'true',
+//             },
+//             {
+//                 type: 'home',
+//                 text: 'ДЗ 1. Считаем свой месячный расход.',
+//                 completed: 'true',
+//             },
+//             {
+//                 type: 'lecture',
+//                 text: 'Урок 2. Знакомство с компонентами.',
+//                 completed: 'false',
+//             },
+//             {
+//                 type: 'home',
+//                 text: 'ДЗ 2. Считаем свой месячный расход.',
+//                 completed: 'true',
+//             },
+//             {
+//                 type: 'lecture',
+//                 text: 'Урок 3. Знакомство с компонентами.',
+//                 completed: 'false',
+//             },
+//             {
+//                 type: 'home',
+//                 text: 'ДЗ 3. Считаем свой месячный расход.',
+//                 completed: 'false',
+//             },
+//             {
+//                 type: 'lecture',
+//                 text: 'Урок 4. Знакомство с компонентами.',
+//                 completed: 'false',
+//             },
+//             {
+//                 type: 'home',
+//                 text: 'ДЗ 4. Считаем свой месячный расход.',
+//                 completed: 'false',
+//             },
+//         ]
+//     },
+// ])
 let filteredCourses = ref([])
+let courses = ref([])
+const getUserCourse = async() => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses?user_id=${userStore.user.id}`, {
+            method: "GET",
+        })
+        
+        const data = await response.json()
 
-const getCourses = async() => {
-    const response = [...courses.value]
 
-    filteredCourses.value = [...response]
+        console.log(data)
+        filteredCourses.value = [...data]
+        courses.value = [...data]
 
-    filteredCourses.value.forEach(el => {
-        if(!sortSelectors.value.includes(el.title)) {
-            sortSelectors.value.push(el.title)
-        }
-    });
+        filteredCourses.value.forEach(el => {
+            if(!sortSelectors.value.includes(el.name)) {
+                sortSelectors.value.push(el.name)
+            }
+        });
+    } catch(err) {
+        console.error(err)
+    }
+    // const response = [...courses.value]
+
+    // filteredCourses.value = [...response]
+
+    // filteredCourses.value.forEach(el => {
+    //     if(!sortSelectors.value.includes(el.title)) {
+    //         sortSelectors.value.push(el.title)
+    //     }
+    // });
 }
 
 const filterCourses = (filterValue) => {
@@ -262,7 +284,7 @@ const filterCourses = (filterValue) => {
             if(filterSelect.value === 'Все') {
                 return true
             } else {
-                return cource.title === filterSelect.value
+                return cource.name === filterSelect.value
             }
         }
     })]
@@ -274,7 +296,7 @@ watch(showCompleted, () => {
 });
 
 onMounted(() => {
-    getCourses()
+    getUserCourse()
 })
 </script>
 

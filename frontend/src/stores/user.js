@@ -36,10 +36,13 @@ export const useUser = defineStore('user', () => {
             // const response = await fetch(`http://localhost:3002/user/${user.value.access_token}`, {
             //     method: 'GET',
             // })
-            const response = await fetch(`${import.meta.env.VITE_SERVICE_USER_URL}/user/943bc07e-37ce-49f3-8ed0-710cf980ba95`, {
+            const response = await fetch(`${import.meta.env.VITE_SERVICE_USER_URL}/user/${user.value.id}`, {
                 method: 'GET',
             })
             const data = await response.json()
+            if(data.password) {
+                delete data.password
+            }
             Object.assign(user.value, data);
         } catch(err) {
             console.error(err)
@@ -60,7 +63,9 @@ export const useUser = defineStore('user', () => {
                 return
             }
             user.value = {}
+            user.value.id = '943bc07e-37ce-49f3-8ed0-710cf980ba95'
             const data = await response.json()
+            delete data.refresh_token
             Object.assign(user.value, data);
             await getUserInfo()
         } catch(err) {

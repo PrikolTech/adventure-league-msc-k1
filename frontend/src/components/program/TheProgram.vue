@@ -134,6 +134,7 @@ const getPrograms = async () => {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses`)
         const data = await response.json()
         console.log(data)
+        
         programs.value = [...data];
         filteredPrograms.value = [...data];
         filterProgram.value = [

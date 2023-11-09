@@ -1,50 +1,74 @@
 <script setup>
-import { ref } from "vue";
-
+import { onMounted, ref } from "vue";
 import MeCourseItem from '@/components/profile/me/MeCourseItem.vue'
+import { useUser } from '@/stores/user'
+
+const userStore = useUser()
 
 
 
-const courses = ref([
-    {
-        title: 'Финансовая грамотность',
-        desc: 'Вы прошли половину обучения.',
-        lecture: {
-            passed: 0,
-            total: 5,
-        },
-        tasks: {
-            passed: 0,
-            total: 3,
-        },
-    },
-    {
-        title: 'Финансовая грамотность',
-        desc: 'Вы прошли половину обучения.',
-        lecture: {
-            passed: 4,
-            total: 9,
-        },
-        tasks: {
-            passed: 2,
-            total: 3,
-        },
-    },
-    {
-        title: 'Финансовая грамотность',
-        desc: 'Вы прошли половину обучения.',
-        lecture: {
-            passed: 4,
-            total: 9,
-        },
-        tasks: {
-            passed: 3,
-            total: 3,
-        },
-    },
-])
+const courses = ref([])
+
+// const courses = ref([
+//     {
+//         title: 'Финансовая грамотность',
+//         desc: 'Вы прошли половину обучения.',
+//         lecture: {
+//             passed: 0,
+//             total: 5,
+//         },
+//         tasks: {
+//             passed: 0,
+//             total: 3,
+//         },
+//     },
+//     {
+//         title: 'Финансовая грамотность',
+//         desc: 'Вы прошли половину обучения.',
+//         lecture: {
+//             passed: 4,
+//             total: 9,
+//         },
+//         tasks: {
+//             passed: 2,
+//             total: 3,
+//         },
+//     },
+//     {
+//         title: 'Финансовая грамотность',
+//         desc: 'Вы прошли половину обучения.',
+//         lecture: {
+//             passed: 4,
+//             total: 9,
+//         },
+//         tasks: {
+//             passed: 3,
+//             total: 3,
+//         },
+//     },
+// ])
 
 
+const getUserCourse = async () => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses?user_id=${userStore.user.id}`, {
+            method: "GET",
+        })
+        
+        const data = await response.json()
+
+        
+        console.log(data)
+        courses.value = [...data]
+
+    } catch(err) {
+        console.error(err)
+    }
+}
+
+onMounted(() => {
+    getUserCourse()
+})
 </script>
 
 
@@ -53,10 +77,13 @@ const courses = ref([
         <div class="me__courses-header">
 
         </div>
-        <div class="me__courses-list">
+        <div class="me__courses-list" v-if="courses.length">
             <me-course-item
                 v-for="(course, index) of courses" :key="index" :course="course"
             />
+        </div>
+        <div class="text" v-else>
+            У вас еще нет курсов
         </div>
     </div>
 </template>
