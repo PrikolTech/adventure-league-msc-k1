@@ -81,7 +81,7 @@ onBeforeUnmount(() => {
             </div>
             <div class="hidden" ref="hiddenBlock"
             >
-                <div class="program__item-description">
+                <div class="program__item-description scroll-custom">
                     {{ props.program.description }}
                 </div>
                 <div class="program__item-btns">

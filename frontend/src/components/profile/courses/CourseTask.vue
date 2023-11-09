@@ -32,24 +32,25 @@ let showHiddenText = ref(false)
 <style lang="scss" scoped>
 
 .me__courses-progress-item {
-    width: 44px;
+    // width: 44px;
+    flex: 1;
     height: 5px;
     border-radius: 30px;
     background: var(--gray-300, #D1D5DB);
     position: relative;
     cursor: pointer;
     @media (max-width: 1023px) {
-        width: 25px;
+        // width: 25px;
         position: static;
     }
     &.complited {
         background:#0E9F6E;
     }
-    &.home {
-        width: 5px;
-        height: 5px;
-        border-radius: 50%;
-    }
+    // &.home {
+    //     width: 5px;
+    //     height: 5px;
+    //     border-radius: 50%;
+    // }
 }
 .hidden-info {
     border-radius: var(--rounded-lg, 8px);
@@ -101,6 +102,7 @@ let showHiddenText = ref(false)
 
 [dark=true] {
     .me__courses-item-info {
+
         & p {
             color: var(--gray-200, #E5E7EB);
             background: var(--gray-500, #6B7280);
@@ -108,6 +110,9 @@ let showHiddenText = ref(false)
     }
     & .me__courses-progress-item {
         background: var(--gray-300, #6B7280);
+        &.complited {
+            background:#0E9F6E;
+        }
     }
     
     & .hidden-info {

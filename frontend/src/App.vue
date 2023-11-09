@@ -23,4 +23,18 @@ const user = useUser()
   transition: .2s;
   background: var(--var-body);
 }
+.bg  {
+  position: absolute;
+  top: 50%;
+}
+
+.bg-1 {
+  left: 0;
+}
+
+.bg-2 {
+  right: 0;
+}
+
+
 </style>

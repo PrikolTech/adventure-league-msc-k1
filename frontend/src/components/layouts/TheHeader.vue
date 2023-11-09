@@ -203,11 +203,11 @@ const initialsUser = computed(() => {
     justify-content: space-between;
     padding-top: 20px;
     padding-bottom: 20px;
-    margin-bottom: 35px;
+    // margin-bottom: 35px;
     @media (max-width: 539px) {
         padding-top: 15px;
         padding-bottom: 15px;
-        margin-bottom: 5px;
+        // margin-bottom: 5px;
     }
     &__logo {
         display: flex;

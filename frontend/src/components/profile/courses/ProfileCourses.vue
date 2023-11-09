@@ -322,6 +322,8 @@ onMounted(() => {
     align-items: center;
     gap: 5px;
     margin-bottom: 40px;
+    flex-wrap: wrap;
+    row-gap: 15px;
     @media (max-width: 767px) {
         margin-bottom: 20px;
     }

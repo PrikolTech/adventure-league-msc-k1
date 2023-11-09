@@ -114,13 +114,46 @@ body {
   flex-direction: column;
 }
 main {
+  padding-top: 30px;
   flex: 1 1 auto;
+  position: relative;
+  overflow: hidden;
+  @media (max-width: 539px) {
+    padding-top: 5px;
+  }
+  &::after, &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+    width: 39%;
+    height: 70%;
+    opacity: 0;
+    display: none;
+  } 
+  &::after {
+    background: url('@/assets/images/bg-1.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    left: 0;
+  }
+
+  &::before {
+    background: url('@/assets/images/bg-2.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    right: 0;
+    width: 17%;
+    height: 57%;
+  }
 }
 .container {
   max-width: 1310px;
   margin: 0 auto;
   padding-left: 15px;
   padding-right: 15px;
+  // z-index: 2;
+  // position: relative;
 }
 
 
@@ -349,6 +382,45 @@ input::-webkit-inner-spin-button {
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 
+.scroll-custom {
+    scrollbar-width: thin;
+    scrollbar-color: #D9D9D9 transparent;
+
+  &::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 5px;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-track:hover {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-track:active {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: var(--var-scroll-bg);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--var-scroll-bg);
+  }
+
+  &::-webkit-scrollbar-thumb:active {
+    background-color: var(--var-scroll-bg);
+  }
+}
+
+
+
+
+
 [dark=true] {
   & .b-contain {
       & span {
@@ -367,5 +439,10 @@ input::-webkit-inner-spin-button {
   //     }
   //   }
   // }
+  & main {
+    &::after, &::before {
+      opacity: 1;
+    }
+  }
 }
 
