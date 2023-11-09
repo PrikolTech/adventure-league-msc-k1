@@ -32,6 +32,7 @@ export const useUser = defineStore('user', () => {
     }
 
     async function getUserInfo() {
+        user.value.id = '943bc07e-37ce-49f3-8ed0-710cf980ba95'
         try {
             // const response = await fetch(`http://localhost:3002/user/${user.value.access_token}`, {
             //     method: 'GET',

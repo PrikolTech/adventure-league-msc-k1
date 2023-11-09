@@ -35,6 +35,7 @@ const login = async () => {
 
         if (response.ok) {
             const data = await response.json();
+            console.log(data)
             userStore.user = {}
             userStore.user.access_token = data.access_token
             userStore.user.token_type = data.token_type
