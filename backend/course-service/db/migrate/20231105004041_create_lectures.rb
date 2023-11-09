@@ -5,6 +5,7 @@ class CreateLectures < ActiveRecord::Migration[7.1]
       t.text :description
       t.datetime :starts_at
       t.references :course, type: :uuid, null: false, foreign_key: true
+      t.boolean :is_hidden, default: false
 
       t.timestamps
     end

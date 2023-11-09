@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_05_004043) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_08_160218) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,6 +40,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_05_004043) do
     t.uuid "course_type_id", null: false
     t.uuid "period_id", null: false
     t.uuid "education_form_id", null: false
+    t.string "tg_link"
+    t.string "prefix", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["course_type_id"], name: "index_courses_on_course_type_id"
@@ -51,11 +53,20 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_05_004043) do
     t.string "name"
   end
 
+  create_table "groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.uuid "course_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id"], name: "index_groups_on_course_id"
+  end
+
   create_table "lectures", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.datetime "starts_at"
     t.uuid "course_id", null: false
+    t.boolean "is_hidden", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["course_id"], name: "index_lectures_on_course_id"
@@ -66,10 +77,29 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_05_004043) do
     t.date "ends_at"
   end
 
+  create_table "user_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "group_id", null: false
+    t.uuid "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_user_groups_on_group_id"
+  end
+
+  create_table "user_views", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "lecture_id", null: false
+    t.uuid "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lecture_id"], name: "index_user_views_on_lecture_id"
+  end
+
   add_foreign_key "contents", "content_types"
   add_foreign_key "contents", "lectures"
   add_foreign_key "courses", "course_types"
   add_foreign_key "courses", "education_forms"
   add_foreign_key "courses", "periods"
+  add_foreign_key "groups", "courses"
   add_foreign_key "lectures", "courses"
+  add_foreign_key "user_groups", "groups"
+  add_foreign_key "user_views", "lectures"
 end

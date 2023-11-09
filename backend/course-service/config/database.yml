@@ -9,8 +9,3 @@ default: &default
 development:
   <<: *default
   database: course_development
-
-
-test:
-  <<: *default
-  database: course_test
