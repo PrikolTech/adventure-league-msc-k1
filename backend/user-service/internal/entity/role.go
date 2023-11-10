@@ -19,3 +19,9 @@ func (e *Role) Validate() error {
 
 	return nil
 }
+
+type RoleTitle string
+
+const (
+	Admin RoleTitle = "admin"
+)
