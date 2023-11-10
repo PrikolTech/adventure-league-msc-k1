@@ -115,7 +115,7 @@ func (h VerifyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	e := json.NewEncoder(w)
 	e.Encode(map[string]any{
-		"id":    claims.Id,
-		"roles": claims.Scopes,
+		"id":    claims.Subject,
+		"roles": claims.Roles,
 	})
 }

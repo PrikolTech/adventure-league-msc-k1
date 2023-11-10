@@ -9,7 +9,7 @@ import (
 
 type Claims struct {
 	jwt.StandardClaims
-	Scopes []string `json:"scopes"`
+	Roles []string `json:"roles"`
 }
 
 type Parser interface {

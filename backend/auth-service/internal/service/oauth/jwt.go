@@ -27,7 +27,7 @@ type JWTAccessGenerate struct {
 
 type Claims struct {
 	generates.JWTAccessClaims
-	Scope []string `json:"scope,omitempty"`
+	Roles []string `json:"roles,omitempty"`
 }
 
 func (a *JWTAccessGenerate) Token(ctx context.Context, data *oauth2.GenerateBasic, isGenRefresh bool) (string, string, error) {
