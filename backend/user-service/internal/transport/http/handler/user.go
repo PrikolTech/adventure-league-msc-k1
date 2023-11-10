@@ -2,7 +2,9 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
+	"slices"
 	"user-service/internal/entity"
 	"user-service/internal/service"
 
@@ -102,6 +104,11 @@ func (h *User) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := validateAccess(id, r); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
 	user, err := h.service.Get(id)
 	if err != nil {
 		ErrorJSON(w, err.Error(), http.StatusBadRequest)
@@ -119,6 +126,11 @@ func (h *User) Update(w http.ResponseWriter, r *http.Request) {
 	id, err := uuid.FromString(param)
 	if err != nil {
 		DecodingError(w)
+		return
+	}
+
+	if err := validateAccess(id, r); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
@@ -151,6 +163,11 @@ func (h *User) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := validateAccess(id, r); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
 	err = h.service.Delete(id)
 	if err != nil {
 		ErrorJSON(w, err.Error(), http.StatusBadRequest)
@@ -158,4 +175,18 @@ func (h *User) Delete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func validateAccess(id uuid.UUID, r *http.Request) error {
+	ctx := r.Context()
+	userID, _ := ctx.Value("userID").(uuid.UUID)
+	roles, _ := ctx.Value("roles").([]string)
+
+	isAdmin := slices.Contains(roles, string(entity.Admin))
+
+	if id != userID && !isAdmin {
+		return errors.New("unauthorized")
+	}
+
+	return nil
 }

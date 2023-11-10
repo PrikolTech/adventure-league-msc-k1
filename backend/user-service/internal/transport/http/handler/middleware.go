@@ -1,10 +1,13 @@
 package handler
 
 import (
+	"context"
 	"net/http"
 	"strings"
 	"time"
+	"user-service/internal/net"
 
+	"github.com/gofrs/uuid/v5"
 	"github.com/rs/zerolog"
 )
 
@@ -75,6 +78,34 @@ func RecovererMiddleware(logger *zerolog.Logger) Middleware {
 				}
 			}()
 			next.ServeHTTP(w, r)
+		})
+	}
+}
+
+func AuthMiddleware(auth net.Auth) Middleware {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			authorization := strings.SplitN(r.Header.Get("Authorization"), " ", 2)
+			if len(authorization) < 2 || authorization[0] != "Bearer" {
+				ErrorJSON(w, "invalid authorization header", http.StatusUnauthorized)
+				return
+			}
+
+			id, roles, err := auth.Verify(authorization[1])
+			if err != nil {
+				ErrorJSON(w, err.Error(), http.StatusUnauthorized)
+				return
+			}
+
+			userID, err := uuid.FromString(id)
+			if err != nil {
+				ErrorJSON(w, err.Error(), http.StatusUnauthorized)
+				return
+			}
+
+			ctx := context.WithValue(r.Context(), "userID", userID)
+			ctx = context.WithValue(ctx, "roles", roles)
+			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
 }
