@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import TheComment from '@/components/layouts/TheComment.vue';
 import MakeComment from '@/components/layouts/MakeComment.vue';
 import TheButton from '../layouts/TheButton.vue';
@@ -36,7 +36,50 @@ const changeFile = (event) => {
 };
 
 let commentInput = ref('')
+const comments = ref([])
+const getComments = async () => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COMMENT_URL}/api/comments/lecture/${props.lesson.id}`, {
+            method: "GET",
+        })
 
+        const data = await response.json()
+        console.log('комментарии',data)
+        comments.value = [...data]
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const postComment = async () => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COMMENT_URL}/api/comments/lecture/`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user_id: userStore.user.id,
+                body: commentInput.value,
+                target_id: props.lesson.id
+            })
+        });
+
+        const data = await response.json()
+        console.log('новый комментарий',data)
+        commentInput.value = ''
+        if(data) {
+            comments.value.push(data)
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
+onMounted(() => {
+    getComments()
+})
 </script>
 
 <template>
@@ -65,6 +108,7 @@ let commentInput = ref('')
                 </span>
                 <textarea v-model="props.lesson.description" v-if="userStore.user.role === 'teacher'"></textarea>
                 <the-button
+                    v-if="userStore.user.role === 'teacher'"
                     :styles="['btn_red']"
                     :type="'button'"
                     class="add-file-btn"
@@ -116,10 +160,11 @@ let commentInput = ref('')
                 <make-comment
                     v-model="commentInput"
                     @update:modelValue="(modelValue) => commentInput=modelValue"
+                    @send="postComment()"
                 />
                 <div class="comments__list">
                     <the-comment
-                        v-for="(comment, index) of props.lesson.comments" :key="index"
+                        v-for="(comment, index) of comments" :key="index"
                         :comment="comment"
                     />
                 </div>

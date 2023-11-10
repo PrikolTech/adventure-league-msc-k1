@@ -343,22 +343,6 @@ const openCreateLessonPopup = () => {
     popupStore.disableScroll('createLesson')
 }
 
-const createLesson = async () => {
-    return 
-    // try {
-        
-    //     const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/22222222-2222-2222-2222-222222222222/lectures`, {
-    //         method: "POST",
-    //         body: {
-
-    //         }
-    //     })
-
-    // } catch(err) {
-    //     console.error(err)
-    // }
-}
-
 
 const openLesson = (lessonID) => {
     router.push({ query: { lesson: lessonID } })
@@ -517,9 +501,7 @@ onMounted(async() => {
                 </div>
             </div>
         </div>
-    <create-lesson-popup
-        @send="createLesson()"
-    />
+    <create-lesson-popup/>
     </main>
 </template>
 

@@ -20,11 +20,17 @@ const changeFile = (event) => {
     }
 };
 
-
-
 const deleteFile = () => {
     fileInput.value = null
     fileName.value = ''
+}
+
+const sendFile = async () => {
+    try {
+        console.log("test")
+    } catch (err) {
+        console.log(err);
+    }
 }
 </script>
 
@@ -94,6 +100,7 @@ const deleteFile = () => {
                 :styles="['btn_red']"
                 :type="'button'"
                 class="add-file-btn"
+                @click="sendFile()"
             >
                 Отправить
             </the-button>

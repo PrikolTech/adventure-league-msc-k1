@@ -13,8 +13,8 @@ const popupStore = usePopups()
 </script>
 
 <template>
-    <div class="popup modal mainForm"
-        :class="{active: popupStore.popups.has(props.name)}"
+    <div class="popup modal"
+        :class="[{active: popupStore.popups.has(props.name)},props.name]"
         @click.stop.self="popupStore.enableScroll(props.name)"
     >
         <div class="popup__body">
@@ -42,8 +42,7 @@ const popupStore = usePopups()
                 <div class="popup__btns">
                     <the-button
                         :styles="['btn_red-border']"
-                        :type="'link'"
-                        :link="'login'"
+                        :type="'button'"
                         @click="emit('send')"
                     >
                         <slot name="btnSend">
