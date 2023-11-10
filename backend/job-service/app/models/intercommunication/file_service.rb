@@ -14,6 +14,7 @@ module Intercommunication
         form_data = [['file', file], ['name', file.original_filename]]
         response = post(path, form_data, 'multipart/form-data')
         response_data = JSON.parse response
+        puts "RESPONSE #{response_data}"
         
         return response_data['url']
       end

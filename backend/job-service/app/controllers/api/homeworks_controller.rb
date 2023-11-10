@@ -17,7 +17,7 @@ class Api::HomeworksController < ApplicationController
       @homework.job_id = params[:job_id]
       @homework.save
 
-      redirect_to @homework.path
+      render json: @homework, include: :homework_solutions
     else
       render json: {message: 'not created', status: 400}
     end
