@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:alpine
+    image: postgres
     volumes:
       - ./tmp/db:/var/lib/postgresql/data
     environment:
