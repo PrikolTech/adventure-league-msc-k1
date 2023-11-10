@@ -11,17 +11,29 @@
 require 'json'
 
 def load_seed(name)
-  JSON.parse File.open(File.join(Rails.root, 'storage', 'seeds', "#{name}.json")).read
+  JSON.parse File.open(File.join(Rails.root, 'db', 'seeds', "#{name}.json")).read
 end
+
+job_types_seed = load_seed('job_types')
+
+job_types_seed.each do |job_type|
+  JobType.create!(
+    name: job_type['name']
+  )
+end
+
+puts '== Job Types seeding complete'
 
 jobs_seed = load_seed('jobs')
 
 jobs_seed.each do |job|
-  Job.create(
+  Job.create!(
     id: job['id'],
     lecture_id: job['lecture_id'],
     name: job['name'],
-    deadline: job['deadline']
+    description: job['description'],
+    deadline: job['deadline'],
+    job_type_id: job['job_type'],
   )
 end
 
