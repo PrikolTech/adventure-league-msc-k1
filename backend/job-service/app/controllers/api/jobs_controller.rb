@@ -1,6 +1,8 @@
 class Api::JobsController < ApplicationController
   def index
     @jobs = Job.all
+
+    # Intercommunication::BaseRetriever.get('http://172.20.0.1:3003/api/courses')
     if params[:lecture_id]
       @jobs = @jobs.where(lecture_id: params[:lecture_id])
     end
