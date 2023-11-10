@@ -3,6 +3,7 @@ import alertsList from '@/components/AlertsList.vue'
 import TheHeader from '@/components/layouts/TheHeader.vue';
 import TheFooter from '@/components/layouts/TheFooter.vue';
 import ThePopup from '@/components/layouts/ThePopup.vue'
+import CreateTaskPopup from './components/course/CreateTaskPopup.vue';
 import { useUser } from '@/stores/user'
 const user = useUser()
 </script>
@@ -14,6 +15,7 @@ const user = useUser()
     <the-footer/>
 
     <the-popup/>
+    <create-task-popup/>
     <alerts-list/>
   </div>
 </template>
