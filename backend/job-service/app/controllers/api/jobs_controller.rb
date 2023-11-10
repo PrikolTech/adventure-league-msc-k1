@@ -7,7 +7,7 @@ class Api::JobsController < ApplicationController
       @jobs = @jobs.where(lecture_id: params[:lecture_id])
     end
 
-    render json: @jobs
+    render json: @jobs, include: [:tests, :homeworks]
   end
 
   def show
