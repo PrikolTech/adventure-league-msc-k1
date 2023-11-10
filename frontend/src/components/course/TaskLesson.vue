@@ -2,7 +2,13 @@
 import MakeComment from '@/components/layouts/MakeComment.vue';
 import TheButton from '../layouts/TheButton.vue';
 import UploadFile from "../layouts/UploadFile.vue";
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+
+const props = defineProps({
+    lesson: {
+        type: Object,
+    }
+})
 
 let commentInput = ref('')
 // let input = ref(null)
@@ -25,13 +31,36 @@ const deleteFile = () => {
     fileName.value = ''
 }
 
-const sendFile = async () => {
-    try {
-        console.log("test")
-    } catch (err) {
-        console.log(err);
-    }
-}
+
+
+// const sendFile = async () => {
+//     try {
+//         const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/api/jobs/${job_id}/homeworks/${homework_id}/homework_solutions `, {
+//             method: "POST",
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify({
+//                 user_id: userStore.user.id,
+//                 body: commentInput.value,
+//                 target_id: props.lesson.id
+//             })
+//         });
+
+//         const data = await response.json()
+//         console.log('новый комментарий',data)
+//         commentInput.value = ''
+//         if(data) {
+//             comments.value.push(data)
+//         }
+//     } catch (err) {
+//         console.log(err);
+//     }
+// }
+
+onMounted(() => {
+    getTaskLesson()
+})
 </script>
 
 <template>

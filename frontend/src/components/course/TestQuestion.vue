@@ -1,17 +1,40 @@
 <script setup>
+import { onMounted, ref } from 'vue';
+
 const props = defineProps({
     question: {
         type: Object,
         required: true
-    }
+    },
+    number: Number,
 })
+
+const getQuestionInfo = async() => {
+    // try {
+    //     const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/api/questions/${props.question.id}`, {
+    //         method: "GET",
+    //     })
+        
+    //     const data = await response.json()
+    //     console.log('ВОПРОС:', data)
+        
+    // } catch(err) {
+    //     console.error(err)
+    // }
+}
+
+onMounted(() => {
+    getQuestionInfo()
+})
+
+
 </script>
 
 <template>
     <div class="test__item">
         <div class="test__item-aside">
             <div class="test__preview">
-                Вопрос 1
+                Вопрос {{ props.number + 1 }}
             </div>
             <div class="test__ball">
                 Балл : 1
@@ -19,16 +42,17 @@ const props = defineProps({
         </div>
         <div class="test__item-content">
             <div class="test__item-title">
-                При выборе банка необходимо в первую очередь обратить внимание на:
+                <!-- При выборе банка необходимо в первую очередь обратить внимание на: -->
+                {{ props.question.body }}
             </div>
             <div class="test__item-questions-list">
-                <div class="test__item-question">
+                <!-- <div class="test__item-question">
                     <label class="b-contain">
                         <span>Его рейтинг и отзывы в интернете</span>
                         <input name="radio" type="radio" />
                         <div class="b-input"></div>
                     </label>
-                </div>
+                </div> -->
                 <div class="test__item-question">
                     <label class="b-contain">
                         <span>Наличие лицензии, выданной Банком России</span>
@@ -130,5 +154,9 @@ const props = defineProps({
     }
 }
 
-
+[dark=true] {
+    & .test__ball {
+        color: #fff;
+    }
+}
 </style>

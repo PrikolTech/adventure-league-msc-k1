@@ -129,6 +129,9 @@ const currentLesson = ref({})
 // })
 
 let files = ref({})
+let tests = ref({})
+let homes = ref({})
+let currentTest = ref({})
 let showTest = ref(false)
 let activeTab = ref(null)
 const navigationLinks = ref([
@@ -150,6 +153,7 @@ const navigationLinks = ref([
 
 const getCourseInfo = async () => {
     const courseID = route.params.id
+    console.log('test', courseID)
     try {
         
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${courseID}`, {
@@ -225,6 +229,8 @@ const getLesson = async (id) => {
     showTest.value = false
     activeTab.value = 'lesson'
     getLessonFiles(lessonID)
+    getHomeLesson(lessonID)
+    getTestLesson(lessonID)
 }
 
 const getLessonFiles = async (lessonID) => {
@@ -242,7 +248,36 @@ const getLessonFiles = async (lessonID) => {
     }
 }
 
-const getTaskOfLesson = async () => {
+
+const getTestLesson = async (lessonID) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/api/jobs/${lessonID}/tests`, {
+            method: "GET",
+        });
+
+        const data = await response.json()
+        console.log('Тесты к уроку',data)
+        tests.value = { ...data }
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const getHomeLesson = async (lessonID) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/api/jobs/${lessonID}/homeworks`, {
+            method: "GET",
+        });
+        console.log('homes', response)
+        const data = await response.json()
+        console.log('Домашка к уроку',data)
+        homes.value = { ...data }
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const getTaskOfLesson = async (taskInfo) => {
     if (navigationLinks.value.some(link => link.text === 'Задание к уроку')) {
         return
     }
@@ -256,7 +291,9 @@ const getTaskOfLesson = async () => {
         delete currentParams.test;
     }
 
-    currentParams.task = 1;
+    if(taskInfo) {
+        currentParams.test = taskInfo.id;
+    }
 
     router.push({ query: currentParams });
 
@@ -271,8 +308,7 @@ const getTaskOfLesson = async () => {
 
 }
 
-
-const getTestOfLesson = async () => {
+const getTestOfLesson = async (testInfo) => {
     if (navigationLinks.value.some(link => link.text === 'Тест к уроку')) {
         return
     }
@@ -284,8 +320,9 @@ const getTestOfLesson = async () => {
     if (currentParams.task) {
         delete currentParams.task;
     }
-
-    currentParams.test = 1;
+    if(testInfo) {
+        currentParams.test = testInfo.id;
+    }
 
     router.push({ query: currentParams });
     navigationLinks.value.push(
@@ -296,6 +333,8 @@ const getTestOfLesson = async () => {
     )
 
     activeTab.value = 'test'
+
+    currentTest.value = { ...testInfo }
 
 }
 
@@ -368,7 +407,6 @@ onMounted(async() => {
         getTaskOfLesson()
     }
     if(route.query.test) {
-        console.log('test')
         getTestOfLesson()
     }
 })
@@ -400,15 +438,18 @@ onMounted(async() => {
                     />
                     <task-lesson
                         v-if="activeTab === 'task'"
+                        :lesson="currentLesson"
                     />
                     <test-lesson
                         v-if="activeTab === 'test'"
+                        :lesson="currentLesson"
+                        :test="currentTest"
                         v-model:show-test="showTest"
                     />
                 </div>
             </div>
             <div class="course__aside profile__events"
-            v-if="!showTest"
+                v-if="!showTest"
             >
                 <div class="course__aside-item materials"
                     v-if="files && activeTab"
@@ -433,18 +474,29 @@ onMounted(async() => {
                         Практическое задание:
                     </div>
                     <div class="course__aside-item-list">
-                        <p class="course__aside-link"
-                            v-if="currentLesson"
+                        <!-- <p class="course__aside-link"
                             @click="getTaskOfLesson()"
+                        >
+                            Задание по материалу
+                        </p> -->
+                        <p class="course__aside-link"
+                            v-for="home of homes" :key="home.id"
+                            @click="getTaskOfLesson(home)"
                         >
                             Задание по материалу
                         </p>
                         <p class="course__aside-link"
+                            v-for="test of tests" :key="test.id"
+                            @click="getTestOfLesson(test)"
+                        >
+                            Тест
+                        </p>
+                        <!-- <p class="course__aside-link"
                             v-if="currentLesson"
                             @click="getTestOfLesson()"
                         >
                             Тест 
-                        </p>
+                        </p> -->
                     </div>
                 </div>
                 <div class="course__aside-item content">
@@ -459,7 +511,7 @@ onMounted(async() => {
                     </div>
                 </div>
                 <the-button
-                    v-if="userStore.user.role === 'teacher'"
+                    v-if="userStore.user.role === 'employee'"
                     :styles="['btn_red']"
                     :type="'button'"
                     style="margin-top: 10px; width: 100%;"
