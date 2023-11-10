@@ -7,3 +7,11 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+TARGET_TYPES = ['lecture', 'homework_result', 'test_result'].freeze
+
+TARGET_TYPES.each do |type|
+  TargetType.create(name: type)
+end
+
+puts 'TargetTypes seeding complete'
