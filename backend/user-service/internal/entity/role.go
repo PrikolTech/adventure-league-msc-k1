@@ -23,5 +23,8 @@ func (e *Role) Validate() error {
 type RoleTitle string
 
 const (
-	Admin RoleTitle = "admin"
+	Admin    RoleTitle = "admin"
+	Employee RoleTitle = "employee"
+	Student  RoleTitle = "student"
+	Enrollee RoleTitle = "enrollee"
 )

@@ -211,7 +211,7 @@ func (h *Registration) Update(w http.ResponseWriter, r *http.Request) {
 func validateUserID(ctx context.Context, id uuid.UUID) error {
 	userID, _ := ctx.Value("userID").(uuid.UUID)
 
-	err := validateRoles(ctx, entity.Admin, entity.Employee)
+	err := validateRoles(ctx, entity.Employee)
 	if userID != id && err != nil {
 		return errors.New("you pick the wrong house")
 	}
