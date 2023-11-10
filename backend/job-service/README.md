@@ -6,11 +6,7 @@
 > docker-compose build 
 > docker-compose up 
 ```
-
-### Подготовка Базы Данных
-```
-> docker-compose exec api bundle exec rake db:drop db:create db:migrate db:seed
-```
+*Микросервис будет поднят по адресу localhost*:**3004**
 
 ### Схемы
 
