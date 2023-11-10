@@ -25,13 +25,21 @@ type JWTAccessGenerate struct {
 	SignedKey *ecdsa.PrivateKey
 }
 
+type Claims struct {
+	generates.JWTAccessClaims
+	Scope []string `json:"scope,omitempty"`
+}
+
 func (a *JWTAccessGenerate) Token(ctx context.Context, data *oauth2.GenerateBasic, isGenRefresh bool) (string, string, error) {
-	claims := &generates.JWTAccessClaims{
-		jwt.StandardClaims{
-			Audience:  data.Client.GetID(),
-			Subject:   data.UserID,
-			ExpiresAt: data.TokenInfo.GetAccessCreateAt().Add(data.TokenInfo.GetAccessExpiresIn()).Unix(),
+	claims := &Claims{
+		generates.JWTAccessClaims{
+			jwt.StandardClaims{
+				Audience:  data.Client.GetID(),
+				Subject:   data.UserID,
+				ExpiresAt: data.TokenInfo.GetAccessCreateAt().Add(data.TokenInfo.GetAccessExpiresIn()).Unix(),
+			},
 		},
+		strings.Split(data.TokenInfo.GetScope(), ","),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodES512, claims)

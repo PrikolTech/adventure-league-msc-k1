@@ -1,9 +1,8 @@
 package http
 
 import (
-	"auth-service/internal/net"
 	"auth-service/internal/pkg/jwt"
-	"auth-service/internal/service/oauth"
+	"auth-service/internal/service"
 	"net/http"
 
 	"github.com/rs/cors"
@@ -15,8 +14,7 @@ type ServerOptions struct {
 }
 
 type Services struct {
-	OAuth  *oauth.OAuth
-	Role   net.Role
+	OAuth  service.OAuth
 	Parser jwt.Parser
 }
 
@@ -29,8 +27,8 @@ func NewServer(services Services, opts ServerOptions) *http.Server {
 		AllowCredentials: true,
 	})
 
-	mux.Handle("/token", TokenHandler{services.OAuth.Server})
-	mux.Handle("/verify", VerifyHandler{services.Role, services.Parser})
+	mux.Handle("/token", TokenHandler{services.OAuth})
+	mux.Handle("/verify", VerifyHandler{services.Parser})
 
 	return &http.Server{
 		Addr:    opts.Addr,

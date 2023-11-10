@@ -5,9 +5,5 @@ import (
 )
 
 type User interface {
-	Authenticate(email string, password string) (string, error)
-}
-
-type Role interface {
-	GetByUser(userID string, token string) ([]entity.Role, error)
+	Authenticate(email string, password string) (string, []entity.Role, error)
 }

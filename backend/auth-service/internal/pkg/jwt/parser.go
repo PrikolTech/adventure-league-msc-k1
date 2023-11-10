@@ -7,8 +7,13 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
+type Claims struct {
+	jwt.StandardClaims
+	Scopes []string `json:"scopes"`
+}
+
 type Parser interface {
-	Parse(tokenString string) (*jwt.StandardClaims, error)
+	Parse(tokenString string) (*Claims, error)
 }
 
 var ErrClaimsInvalid = errors.New("claims is invalid")
@@ -35,8 +40,8 @@ func NewParserFromFile(path string) (*parser, error) {
 	return NewParser(key), nil
 }
 
-func (p *parser) Parse(tokenString string) (*jwt.StandardClaims, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &jwt.StandardClaims{}, func(t *jwt.Token) (any, error) {
+func (p *parser) Parse(tokenString string) (*Claims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(t *jwt.Token) (any, error) {
 		return p.key, nil
 	})
 
@@ -44,7 +49,7 @@ func (p *parser) Parse(tokenString string) (*jwt.StandardClaims, error) {
 		return nil, err
 	}
 
-	if claims, ok := token.Claims.(*jwt.StandardClaims); ok {
+	if claims, ok := token.Claims.(*Claims); ok {
 		return claims, nil
 	}
 

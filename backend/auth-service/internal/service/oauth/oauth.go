@@ -1,18 +1,69 @@
 package oauth
 
-import "auth-service/internal/net"
+import (
+	"auth-service/internal/entity"
+	"auth-service/internal/net"
+	"context"
+	"strings"
 
-type OAuth struct {
-	Server *Server
+	"github.com/go-oauth2/oauth2/v4"
+)
+
+type oauth struct {
+	manager oauth2.Manager
+	user    net.User
 }
 
-func New(user net.User, opts ManagerOptions) (*OAuth, error) {
+func NewOAuth(user net.User, opts ManagerOptions) (*oauth, error) {
 	manager, err := NewManager(opts)
 	if err != nil {
 		return nil, err
 	}
+	return &oauth{manager, user}, nil
+}
 
-	server := NewServer(manager, user)
+func (o *oauth) GenerateToken(clientID string, email string, password string) (*entity.Token, error) {
+	id, roles, err := o.user.Authenticate(email, password)
+	if err != nil {
+		return nil, err
+	}
 
-	return &OAuth{server}, nil
+	var builder strings.Builder
+	for _, role := range roles {
+		builder.WriteString(role.Title + ",")
+	}
+
+	scope := builder.String()
+	gt := oauth2.PasswordCredentials
+	tgr := &oauth2.TokenGenerateRequest{
+		ClientID: clientID,
+		UserID:   id,
+		Scope:    scope[:len(scope)-1],
+	}
+	ti, err := o.manager.GenerateAccessToken(context.Background(), gt, tgr)
+	if err != nil {
+		return nil, err
+	}
+
+	token := &entity.Token{ti.GetAccess(), ti.GetAccessExpiresIn(), ti.GetRefresh(), ti.GetRefreshExpiresIn()}
+	return token, nil
+}
+
+func (o *oauth) RefreshToken(clientID string, refreshToken string) (*entity.Token, error) {
+	tgr := &oauth2.TokenGenerateRequest{
+		ClientID: clientID,
+		Refresh:  refreshToken,
+	}
+
+	ti, err := o.manager.RefreshAccessToken(context.Background(), tgr)
+	if err != nil {
+		return nil, err
+	}
+
+	token := &entity.Token{ti.GetAccess(), ti.GetAccessExpiresIn(), ti.GetRefresh(), ti.GetRefreshExpiresIn()}
+	return token, nil
+}
+
+func (o *oauth) RemoveToken(refreshToken string) error {
+	return o.manager.RemoveRefreshToken(context.Background(), refreshToken)
 }

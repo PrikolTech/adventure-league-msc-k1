@@ -18,14 +18,13 @@ func Run(cfg *Config, logger *zerolog.Logger) error {
 	}
 
 	user := net.NewUser(cfg.UserAPI.URL)
-	role := net.NewRole(cfg.UserAPI.URL)
 
 	parser, err := jwt.NewParserFromFile(cfg.Key.Path + ".pub")
 	if err != nil {
 		return fmt.Errorf("failed to parse public key: %w", err)
 	}
 
-	oauth, err := oauth.New(user, oauth.ManagerOptions{
+	oauth, err := oauth.NewOAuth(user, oauth.ManagerOptions{
 		ClientID:     cfg.Client.ID,
 		ClientDomain: cfg.Client.Domain,
 		Key:          privateKey,
@@ -35,7 +34,7 @@ func Run(cfg *Config, logger *zerolog.Logger) error {
 		return fmt.Errorf("failed to init oauth: %w", err)
 	}
 
-	server := http.NewServer(http.Services{oauth, role, parser}, http.ServerOptions{
+	server := http.NewServer(http.Services{oauth, parser}, http.ServerOptions{
 		Addr:    fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port),
 		Origins: cfg.HTTP.Origins,
 	})
