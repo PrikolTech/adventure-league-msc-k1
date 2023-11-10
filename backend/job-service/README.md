@@ -83,6 +83,33 @@ TestSolution: {
 }
 ```
 
+#### Домашнее задание
+
+```
+Homework: {
+  "id": uuid,
+  "job_id": uuid,
+  "name": string,
+  "description": string,
+  "created_at": datetime,
+  "updated_at": datetime
+}
+```
+
+#### Решение домашнего задания
+
+```
+HomeworkSolution: {
+  "id": uuid,
+  "homework_id": uuid,
+  "user_id": uuid,
+  "file_url": string,
+  "created_at": datetime,
+  "updated_at": datetime
+}
+```
+
+
 ### Работы
 
 ```
@@ -246,4 +273,27 @@ TestSolution: {
       ...
     ]
   ]
+```
+
+### Домашняя работа
+
+```
+api/jobs/{job_id}/homeworks (GET, POST)
+```
+
+### Решение домашней работы
+
+```
+api/jobs/{job_id}/homeworks/{homework_id}/homework_solutions (GET, POST)
+```
+
+### Отправить оценку
+
+```
+api/jobs/{job_id}/homeworks/{homework_id}/homework_solutions/{solutions_id}/result (POST)
+
+Request:
+{
+  "score": integer # From 2 to 5
+}
 ```

@@ -17,10 +17,12 @@ module Intercommunication
         uri = URI.parse(url) 
         request = Net::HTTP::Post.new(uri)
 
+        puts "URI #{uri}"
         request.set_form form_data, content_type
         response = Net::HTTP.start(uri.host, uri.port) { |http|
           http.request request
         }
+        puts "RESPONSE #{response.body}"
 
         response.body
       end
