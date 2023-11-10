@@ -4,6 +4,7 @@ import (
 	"auth-service/internal/entity"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"net/http"
 )
 
@@ -45,6 +46,17 @@ func (u *user) Authenticate(email string, password string) (string, []entity.Rol
 	}
 
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		respData := make(map[string]string)
+		d := json.NewDecoder(resp.Body)
+		err = d.Decode(&respData)
+		if err != nil {
+			return "", nil, ErrInternalNetwork
+		}
+
+		return "", nil, errors.New(respData["error"])
+	}
 
 	respData := new(AuthenticateResponseBody)
 	d := json.NewDecoder(resp.Body)

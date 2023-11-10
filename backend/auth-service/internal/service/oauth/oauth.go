@@ -45,7 +45,7 @@ func (o *oauth) GenerateToken(clientID string, email string, password string) (*
 		return nil, err
 	}
 
-	token := &entity.Token{ti.GetAccess(), ti.GetAccessExpiresIn(), ti.GetRefresh(), ti.GetRefreshExpiresIn()}
+	token := &entity.Token{ti.GetAccess(), ti.GetAccessExpiresIn(), ti.GetRefresh(), ti.GetRefreshExpiresIn(), ti.GetUserID()}
 	return token, nil
 }
 
@@ -60,7 +60,7 @@ func (o *oauth) RefreshToken(clientID string, refreshToken string) (*entity.Toke
 		return nil, err
 	}
 
-	token := &entity.Token{ti.GetAccess(), ti.GetAccessExpiresIn(), ti.GetRefresh(), ti.GetRefreshExpiresIn()}
+	token := &entity.Token{ti.GetAccess(), ti.GetAccessExpiresIn(), ti.GetRefresh(), ti.GetRefreshExpiresIn(), ti.GetUserID()}
 	return token, nil
 }
 
