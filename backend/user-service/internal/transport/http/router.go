@@ -28,6 +28,7 @@ func Router(services Services) *chi.Mux {
 			r.Post("/authenticate", user.Authenticate)
 
 			r.With(auth).Get("/{id}", user.Get)
+			r.With(auth).Get("/", user.List)
 			r.Post("/", user.Create)
 			r.With(auth).Patch("/{id}", user.Update)
 			r.With(auth).Delete("/{id}", user.Delete)
