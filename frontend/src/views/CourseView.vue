@@ -8,11 +8,16 @@ import TaskLesson from '@/components/course/TaskLesson.vue';
 import TestLesson from '@/components/course/TestLesson.vue';
 import { useRouter, useRoute } from 'vue-router'
 import { useUser } from '@/stores/user'
+import TheButton from '@/components/layouts/TheButton.vue';
+import { usePopups } from '@/stores/popups';
+import CreateLessonPopup from '@/components/course/CreateLessonPopup.vue';
 
 const userStore = useUser()
 const router = useRouter()
 const route = useRoute()
 const course = ref({})
+const popupStore = usePopups()
+
 // const course = ref({
 //     name: 'Финансовая грамотность',
 //     teacher: 'Кураева Анна',
@@ -334,6 +339,26 @@ const watchRouteChanges = watch(
   }
 );
 
+const openCreateLessonPopup = () => {
+    popupStore.disableScroll('createLesson')
+}
+
+const createLesson = async () => {
+    return 
+    // try {
+        
+    //     const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/22222222-2222-2222-2222-222222222222/lectures`, {
+    //         method: "POST",
+    //         body: {
+
+    //         }
+    //     })
+
+    // } catch(err) {
+    //     console.error(err)
+    // }
+}
+
 
 const openLesson = (lessonID) => {
     router.push({ query: { lesson: lessonID } })
@@ -449,6 +474,15 @@ onMounted(async() => {
                         />
                     </div>
                 </div>
+                <the-button
+                    v-if="userStore.user.role === 'teacher'"
+                    :styles="['btn_red']"
+                    :type="'button'"
+                    style="margin-top: 10px; width: 100%;"
+                    @click="openCreateLessonPopup()"
+                >
+                    Добавить занятие
+                </the-button>
                 <div class="course__aside-item teacher" v-if="course.teacher">
                     <div class="course__aside-title">
                         Вопросы по ДЗ и учебному материалу можно задать преподавателю:
@@ -483,6 +517,9 @@ onMounted(async() => {
                 </div>
             </div>
         </div>
+    <create-lesson-popup
+        @send="createLesson()"
+    />
     </main>
 </template>
 

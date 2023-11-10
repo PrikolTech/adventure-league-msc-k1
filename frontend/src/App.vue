@@ -14,6 +14,7 @@ const user = useUser()
     <RouterView />
     <the-footer/>
 
+    <!-- форма -->
     <the-popup/>
     <create-task-popup/>
     <alerts-list/>

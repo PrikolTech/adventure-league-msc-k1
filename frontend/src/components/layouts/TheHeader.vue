@@ -63,7 +63,7 @@ const initialsUser = computed(() => {
                                 </div>
                             </div>
                             <div class="header__me-item">
-                                <router-link  to="/profile/me">
+                                <router-link  to="/profile/me/meCourses">
                                     Профиль
                                 </router-link>
                                 <router-link  to="/profile/settings">

@@ -80,7 +80,7 @@ export const useUser = defineStore('user', () => {
 
     //временная функция для заполнения данных
     function addCustomData() {
-        user.value.id = '2101e124-fdba-46ca-b092-6ea32c308f1a'
+        user.value.id = '35e8a1e4-c0d9-4a79-be68-192603d0205f'
         user.value.role = 'teacher'
     }
 

@@ -6,6 +6,8 @@ const props = defineProps({
     name: String,
 })
 
+const emit = defineEmits(['send'])
+
 const popupStore = usePopups()
 
 </script>
@@ -42,8 +44,11 @@ const popupStore = usePopups()
                         :styles="['btn_red-border']"
                         :type="'link'"
                         :link="'login'"
+                        @click="emit('send')"
                     >
-                        Подать заявку
+                        <slot name="btnSend">
+                            Подать заявку
+                        </slot>
                     </the-button>
                     <the-button
                         :styles="['btn btn_grey']"
