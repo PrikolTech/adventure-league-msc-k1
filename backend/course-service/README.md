@@ -9,11 +9,6 @@
 
 *Микросервис будет поднят по адресу localhost*:**3003**
 
-Подготовка базы данных (с предварительным заполнением)
-```
-> docker-compose exec api bundle exec rake db:drop db:create db:migrate db:seed
-```
-
 ## Эндпоинты
 
 ### Схемы

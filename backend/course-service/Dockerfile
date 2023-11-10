@@ -28,9 +28,10 @@ WORKDIR /myapp
 # RUN bundle install
 
 # Add a script to be executed every time the container starts.
-# COPY entrypoint.sh /usr/bin/
-# RUN chmod +x /usr/bin/entrypoint.sh
-# ENTRYPOINT ["entrypoint.sh"]
+COPY bin/docker-entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/docker-entrypoint.sh
+ENTRYPOINT ["docker-entrypoint.sh"]
+
 EXPOSE 3003
 
 # Configure the main process to run when running the image
