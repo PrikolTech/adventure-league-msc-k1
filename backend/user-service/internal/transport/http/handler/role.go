@@ -19,8 +19,8 @@ func NewRole(service service.Role) *Role {
 }
 
 func (h *Role) Create(w http.ResponseWriter, r *http.Request) {
-	if err := validateAccess(uuid.Nil, r); err != nil {
-		ErrorJSON(w, err.Error(), http.StatusUnauthorized)
+	if err := validateRoles(r.Context()); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusForbidden)
 		return
 	}
 
@@ -59,8 +59,8 @@ func (h *Role) Append(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := validateAccess(data.UserID, r); err != nil {
-		ErrorJSON(w, err.Error(), http.StatusUnauthorized)
+	if err := validateRoles(r.Context(), entity.Employee); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusForbidden)
 		return
 	}
 
@@ -89,8 +89,8 @@ func (h *Role) Remove(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := validateAccess(userID, r); err != nil {
-		ErrorJSON(w, err.Error(), http.StatusUnauthorized)
+	if err := validateRoles(r.Context(), entity.Employee); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusForbidden)
 		return
 	}
 
@@ -129,8 +129,8 @@ func (h *Role) Get(w http.ResponseWriter, r *http.Request) {
 	if param == "" {
 		roles, err = h.service.List()
 
-		if err := validateAccess(uuid.Nil, r); err != nil {
-			ErrorJSON(w, err.Error(), http.StatusUnauthorized)
+		if err := validateRoles(r.Context()); err != nil {
+			ErrorJSON(w, err.Error(), http.StatusForbidden)
 			return
 		}
 	} else {
@@ -141,8 +141,8 @@ func (h *Role) Get(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if err := validateAccess(userID, r); err != nil {
-			ErrorJSON(w, err.Error(), http.StatusUnauthorized)
+		if err := validateUserID(r.Context(), userID); err != nil {
+			ErrorJSON(w, err.Error(), http.StatusForbidden)
 			return
 		}
 
@@ -161,8 +161,8 @@ func (h *Role) Get(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Role) Delete(w http.ResponseWriter, r *http.Request) {
-	if err := validateAccess(uuid.Nil, r); err != nil {
-		ErrorJSON(w, err.Error(), http.StatusUnauthorized)
+	if err := validateRoles(r.Context()); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusForbidden)
 		return
 	}
 

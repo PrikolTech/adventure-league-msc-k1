@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"form-service/internal/entity"
@@ -61,8 +62,18 @@ func (h *Registration) Append(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := validateAccess(data.ID, r); err != nil {
-		ErrorJSON(w, err.Error(), http.StatusUnauthorized)
+	if data.UserID == nil {
+		ErrorJSON(w, "user_id must be non-nil", http.StatusBadRequest)
+		return
+	}
+
+	if err := validateUserID(r.Context(), *data.UserID); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusForbidden)
+		return
+	}
+
+	if err := validateRoles(r.Context(), entity.Enrollee, entity.Student); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusForbidden)
 		return
 	}
 
@@ -83,16 +94,21 @@ func (h *Registration) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var userID uuid.UUID
 	if registration.UserID == nil {
-		userID = uuid.Nil
+		if err := validateRoles(r.Context(), entity.Employee); err != nil {
+			ErrorJSON(w, err.Error(), http.StatusForbidden)
+			return
+		}
 	} else {
-		userID = *registration.UserID
-	}
+		if err := validateUserID(r.Context(), *registration.UserID); err != nil {
+			ErrorJSON(w, err.Error(), http.StatusForbidden)
+			return
+		}
 
-	if err := validateAccess(userID, r); err != nil {
-		ErrorJSON(w, err.Error(), http.StatusUnauthorized)
-		return
+		if err = validateRoles(r.Context(), entity.Enrollee, entity.Student, entity.Employee); err != nil {
+			ErrorJSON(w, err.Error(), http.StatusForbidden)
+			return
+		}
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -109,8 +125,8 @@ func (h *Registration) List(w http.ResponseWriter, r *http.Request) {
 
 	param := r.URL.Query().Get("user_id")
 	if param == "" {
-		if err := validateAccess(uuid.Nil, r); err != nil {
-			ErrorJSON(w, err.Error(), http.StatusUnauthorized)
+		if err := validateRoles(r.Context(), entity.Employee); err != nil {
+			ErrorJSON(w, err.Error(), http.StatusForbidden)
 			return
 		}
 
@@ -134,8 +150,13 @@ func (h *Registration) List(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if err := validateAccess(userID, r); err != nil {
-			ErrorJSON(w, err.Error(), http.StatusUnauthorized)
+		if err := validateUserID(r.Context(), userID); err != nil {
+			ErrorJSON(w, err.Error(), http.StatusForbidden)
+			return
+		}
+
+		if err := validateRoles(r.Context(), entity.Enrollee, entity.Student, entity.Employee); err != nil {
+			ErrorJSON(w, err.Error(), http.StatusForbidden)
 			return
 		}
 
@@ -154,8 +175,8 @@ func (h *Registration) List(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Registration) Update(w http.ResponseWriter, r *http.Request) {
-	if err := validateAccess(uuid.Nil, r); err != nil {
-		ErrorJSON(w, err.Error(), http.StatusUnauthorized)
+	if err := validateRoles(r.Context(), entity.Employee); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusForbidden)
 		return
 	}
 
@@ -187,16 +208,24 @@ func (h *Registration) Update(w http.ResponseWriter, r *http.Request) {
 	e.Encode(form)
 }
 
-func validateAccess(id uuid.UUID, r *http.Request) error {
-	ctx := r.Context()
+func validateUserID(ctx context.Context, id uuid.UUID) error {
 	userID, _ := ctx.Value("userID").(uuid.UUID)
-	roles, _ := ctx.Value("roles").([]string)
 
-	isAdmin := slices.Contains(roles, string(entity.Admin))
-
-	if id != userID && !isAdmin {
-		return errors.New("unauthorized")
+	err := validateRoles(ctx, entity.Employee)
+	if userID != id && err != nil {
+		return errors.New("you pick the wrong house")
 	}
 
 	return nil
+}
+
+func validateRoles(ctx context.Context, roles ...entity.RoleTitle) error {
+	userRoles, _ := ctx.Value("roles").([]string)
+	for _, role := range append(roles, entity.Admin) {
+		if slices.Contains(userRoles, string(role)) {
+			return nil
+		}
+	}
+
+	return errors.New("you have no power here")
 }
