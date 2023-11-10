@@ -7,10 +7,10 @@ services:
       POSTGRES_PASSWORD: password
   api:
     build: .
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3004 -b '0.0.0.0'"
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3005 -b '0.0.0.0'"
     volumes:
       - .:/myapp
     ports:
-      - "3004:3004"
+      - "3005:3005"
     depends_on:
       - db
