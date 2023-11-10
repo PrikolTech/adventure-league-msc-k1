@@ -1,5 +1,8 @@
 <script setup>
 import TheAvatar from '@/components/layouts/TheAvatar.vue';
+import { computed } from 'vue';
+import { useUser } from '@/stores/user'
+const userStore = useUser()
 
 const props = defineProps({
     comment: {
@@ -7,6 +10,18 @@ const props = defineProps({
         required: true,
     }
 })
+
+const dateComment = computed(() => {
+    const dateObj = new Date(props.comment.created_at);
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return dateObj.toLocaleString('ru', options);
+});
+
+const timeComment = computed(() => {
+    const dateObj = new Date(props.comment.created_at);
+    const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    return dateObj.toLocaleTimeString('ru', options);
+});
 </script>
 
 <template>
@@ -14,6 +29,12 @@ const props = defineProps({
         <div class="comments__item-header">
             <div class="comments__item-info">
                 <the-avatar
+                    v-if="userStore.user.id === props.comment.user_id"
+                    :first_name="userStore.user.first_name"
+                    :last_name="userStore.user.last_name"
+                />
+                <the-avatar
+                    v-else
                     :first_name="props.comment.first_name"
                     :last_name="props.comment.last_name"
                 />
@@ -21,19 +42,19 @@ const props = defineProps({
                     <!-- Вера Красулина -->
                     {{ props.comment.first_name }} {{ props.comment.last_name }}
                 </p>
-                <span>
+                <span v-if="false">
                     <!-- Студент -->
                     {{ props.comment.type }}
                 </span>
             </div>
             <p class="comments__item-date">
                 <!-- 25 августа 2023 в 21:35 -->
-                {{ props.comment.date }} в {{ props.comment.time }} 
+                {{ dateComment}} в {{ timeComment }}
             </p>
         </div>
         <p class="comments__item-text">
             <!-- Всем привет, подскажите что задали. -->
-            {{ props.comment.text }} 
+            {{ props.comment.body }} 
         </p>
     </div>
 </template>

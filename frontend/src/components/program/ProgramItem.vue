@@ -64,10 +64,10 @@ onBeforeUnmount(() => {
         </div>
         <div class="program__item-header">
             <div class="program__item-header-btn">
-                {{ props.program.date }}
+                {{ props.program.period.starts_at }}
             </div>
             <div class="program__item-header-btn">
-                {{ props.program.format }}
+                {{ props.program.education_form.name }}
             </div>
         </div>
         <div class="program__item-text"
@@ -77,11 +77,11 @@ onBeforeUnmount(() => {
         >
 
             <div class="program__item-title">
-                {{ props.program.title }}
+                {{ props.program.name }}
             </div>
             <div class="hidden" ref="hiddenBlock"
             >
-                <div class="program__item-description">
+                <div class="program__item-description scroll-custom">
                     {{ props.program.description }}
                 </div>
                 <div class="program__item-btns">

@@ -1,6 +1,9 @@
 <script setup>
-import { ref, defineProps, computed } from "vue";
+import { ref, defineProps, computed, onMounted } from "vue";
 import VueApexCharts from "vue3-apexcharts";
+import { useUser } from '@/stores/user' 
+
+const userStore = useUser()
 
 const props = defineProps({
     course: {
@@ -9,16 +12,16 @@ const props = defineProps({
     },
 
 });
-
+const lectures = ref([])
+//для фоток
 const photoNumber = ref(getRandomNumberInRange(0, 3));
-
 function getRandomNumberInRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-const progress = computed(() => {
-    return Math.floor(((parseInt(props.course.lecture.passed) + parseInt(props.course.tasks.passed)) / (parseInt(props.course.lecture.total) + parseInt(props.course.tasks.total))) * 100)
-})
+// const progress = computed(() => {
+//     return Math.floor(((parseInt(props.course.lecture.passed) + parseInt(props.course.tasks.passed)) / (parseInt(props.course.lecture.total) + parseInt(props.course.tasks.total))) * 100)
+// })
 
 let colorTextInChart = ref('#FF5733')
 
@@ -48,6 +51,25 @@ const chartOptions = ref({
     colors: ['#003791'], // Здесь указывайте свои цвета
 });
 
+const getCourseInfo = async () => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${props.course.id}/lectures?user_id=${userStore.user.id}`, {
+            method: "GET",
+        })
+        
+        const data = await response.json()
+
+        lectures.value = [...data]
+        console.log(lectures.value)
+    } catch(err) {
+        console.error(err)
+    }
+}
+
+onMounted(() => {
+    getCourseInfo()
+})
+
 
 </script>
 
@@ -60,13 +82,13 @@ const chartOptions = ref({
     <img class="pic" src="@/assets/images/program-finance.png" v-if="photoNumber === 3">
         <div class="me__courses-item-body" style="display: flex; gap: 5px; flex-direction: row;">
             <div id="chart">
-                <VueApexCharts class="graph" type="radialBar" :options="chartOptions" :series="[progress]"></VueApexCharts>
+                <!-- <VueApexCharts class="graph" type="radialBar" :options="chartOptions" :series="[progress]"></VueApexCharts> -->
             </div>
             <div class="me__courses-item-inside">
                 <div class="me__courses-item-header">
                     <p>
                         <!-- Курс : Финансовая грамотность -->
-                        {{ props.course.title }}
+                        {{ props.course.name }}
                     </p>
                     <span>
                         <!-- Вы прошли половину обучения. -->
@@ -76,28 +98,29 @@ const chartOptions = ref({
                 <div class="me__courses-item-content">
                     <div class="me__courses-data">
                         <p>
-                            Просмотрено лекций :  
+                            <!-- Просмотрено лекций :   -->
+                            Количество лекций:
                         </p>
                         <span>
                             <b>
                                 <!-- 78 / -->
-                                {{ props.course.lecture.passed }} /
+                                <!-- {{ props.course.lecture.passed }} / -->
                             </b>
                             <!-- 120 -->
-                            {{ props.course.lecture.total }}
+                            {{ lectures.length }}
                         </span>
                     </div>
                     <div class="me__courses-data">
                         <p>
-                            Выполнено ДЗ :
+                            <!-- Выполнено ДЗ : -->
                         </p>
                         <span>
                             <b>
                                 <!-- 65 /  -->
-                                {{ props.course.tasks.passed }} /
+                                <!-- {{ props.course.tasks.passed }} / -->
                             </b>
                             <!-- 100 -->
-                            {{ props.course.tasks.total }}
+                            <!-- {{ props.course.tasks.total }} -->
                         </span>
                     </div>
                 </div>
@@ -120,7 +143,7 @@ const chartOptions = ref({
 #chart {
 }
 .me__courses-item-inside {
-    padding-left: 100px;
+    // padding-left: 100px;
 }
 .me {
 
@@ -207,6 +230,9 @@ const chartOptions = ref({
     }
 
     &__courses-data {
+        display: flex;
+        align-items: center;
+        gap: 5px;
         & p {
             color: var(--gray-500, #6B7280);
             font-family: Roboto;

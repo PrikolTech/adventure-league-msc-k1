@@ -3,9 +3,12 @@ import { ref } from 'vue';
 import TheButton from '@/components/layouts/TheButton.vue';
 import { useUser } from '@/stores/user'
 import EyeIcon from '../components/icons/EyeIcon.vue';
+import router from '../router';
+import { useAlerts } from '@/stores/alerts'
 const userStore = useUser()
+const alertsStore = useAlerts()
 // import Cookies from 'js-cookie';
-let email = ref('12345@mail.ru')
+let email = ref('test@mail.ru')
 let password = ref('aA$123123')
 let passwordIsHidden = ref('password')
 
@@ -22,7 +25,7 @@ const login = async () => {
             password: password.value
         });
 
-        const url = `http://localhost:3001/token?${queryParams.toString()}`;
+        const url = `${import.meta.env.VITE_SERVICE_AUTH_URL}/token?${queryParams.toString()}`;
 
         const response = await fetch(url, {
             method: 'GET',
@@ -33,12 +36,13 @@ const login = async () => {
         if (response.ok) {
             const data = await response.json();
             console.log(data)
+            userStore.user = {}
             userStore.user.access_token = data.access_token
             userStore.user.token_type = data.token_type
-            // Cookies.set('access_token', data.access_token)
-            // Cookies.set('refresh_token', data.refresh_token)
-            // Cookies.set('token_type', data.token_type)
+            userStore.getUserInfo()
+            router.push('/')
         } else {
+            alertsStore.addAlert('Неверный логин или пароль', 'error')
             console.error('Ошибка при выполнении запроса.');
         }
 

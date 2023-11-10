@@ -11,7 +11,7 @@ const props = defineProps({
     <div class="aside__lesson">
         <div class="aside__lesson-action">
             <div class="icon">
-                <svg v-if="props.lesson.format === 'video'" class="video" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg v-if="true" class="video" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 10C0 4.47715 4.47715 0 10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10Z" fill="#003791"/>
                     <path d="M12.9231 9.28695L7.92061 6.36361C7.79345 6.28977 7.64914 6.25059 7.50209 6.25001C7.35505 6.24942 7.21043 6.28745 7.08269 6.36028C6.95581 6.43151 6.85029 6.53535 6.77703 6.66106C6.70377 6.78677 6.66544 6.92978 6.66602 7.07528V12.9219C6.66544 13.0674 6.70377 13.2105 6.77703 13.3362C6.85029 13.4619 6.95581 13.5657 7.08269 13.6369C7.21038 13.7101 7.35512 13.7484 7.5023 13.7478C7.64949 13.7472 7.79391 13.7078 7.92102 13.6336L12.9239 10.7103C13.0486 10.6379 13.152 10.5341 13.2239 10.4092C13.2958 10.2843 13.3337 10.1427 13.3337 9.99861C13.3337 9.8545 13.2958 9.71291 13.2239 9.58802C13.152 9.46313 13.0486 9.35931 12.9239 9.28695H12.9231Z" fill="#F9FAFB"/>
                 </svg>
@@ -40,10 +40,10 @@ const props = defineProps({
         </div>
         <div class="aside__lesson-info">
             <p>
-                {{ props.lesson.title }}
+                {{ props.lesson.name }}
             </p>
             <span>
-                {{ props.lesson.date }}
+                {{ props.lesson.starts_at.split("T")[0] }}
             </span>
         </div>
     </div>
