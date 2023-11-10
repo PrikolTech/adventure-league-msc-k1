@@ -1,58 +1,66 @@
 package net
 
 import (
+	"auth-service/internal/entity"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"net/http"
 )
 
 type user struct {
-	url string
+	client *http.Client
+	url    string
 }
 
 func NewUser(url string) *user {
-	return &user{url}
+	client := &http.Client{}
+	return &user{client, url}
 }
 
-type Role struct {
-	ID          string
-	Title       string
-	Description string
-}
-
-type AuthenticateRequest struct {
+type AuthenticateRequestBody struct {
 	Email    string
 	Password string
 }
 
-type AuthenticateResponse struct {
+type AuthenticateResponseBody struct {
 	ID    string
-	Roles []Role
+	Roles []entity.Role
 }
 
-func (u *user) Authenticate(email string, password string) (string, error) {
+func (u *user) Authenticate(email string, password string) (string, []entity.Role, error) {
 	reqData := new(bytes.Buffer)
 	e := json.NewEncoder(reqData)
-	e.Encode(AuthenticateRequest{email, password})
+	e.Encode(AuthenticateRequestBody{email, password})
 
-	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodPost, u.url+"/user/authenticate", reqData)
 	if err != nil {
-		return "", err
+		return "", nil, ErrInternalNetwork
 	}
 
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := client.Do(req)
+	resp, err := u.client.Do(req)
 	if err != nil {
-		return "", err
+		return "", nil, ErrInternalNetwork
 	}
 
 	defer resp.Body.Close()
 
-	respData := new(AuthenticateResponse)
+	if resp.StatusCode != http.StatusOK {
+		respData := make(map[string]string)
+		d := json.NewDecoder(resp.Body)
+		err = d.Decode(&respData)
+		if err != nil {
+			return "", nil, ErrInternalNetwork
+		}
+
+		return "", nil, errors.New(respData["error"])
+	}
+
+	respData := new(AuthenticateResponseBody)
 	d := json.NewDecoder(resp.Body)
 	err = d.Decode(respData)
 
-	return respData.ID, err
+	return respData.ID, respData.Roles, err
 }

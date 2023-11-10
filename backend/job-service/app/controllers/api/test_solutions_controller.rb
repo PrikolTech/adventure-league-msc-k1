@@ -4,7 +4,7 @@ class Api::TestSolutionsController < ApplicationController
   def index
     @solutions = TestSolution.where(test_id: params[:test_id])
     @solutions = @solutions.where(user_id: params[:user_id]) if params[:user_id]
-    render json: @solutions
+    render json: @solutions, include: [:test_result]
   end
 
   def show

@@ -20,16 +20,3 @@ type User struct {
 
 	Roles []Role `json:"roles"`
 }
-
-type Role struct {
-	ID          uuid.UUID `json:"id"`
-	Title       RoleTitle `json:"title"`
-	Description string    `json:"description"`
-}
-
-type RoleTitle string
-
-const (
-	Enrollee RoleTitle = "enrollee"
-	Student  RoleTitle = "student"
-)

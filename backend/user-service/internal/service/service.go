@@ -10,6 +10,7 @@ type User interface {
 	Authenticate(email string, password string) (uuid.UUID, []entity.Role, error)
 	Create(data entity.User) (*entity.User, error)
 	Get(id uuid.UUID) (*entity.User, error)
+	List() ([]entity.User, error)
 	Exist(email string) (bool, error)
 	Update(data entity.User) (*entity.User, error)
 	Delete(id uuid.UUID) error

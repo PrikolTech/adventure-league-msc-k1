@@ -9,7 +9,11 @@ COPY . .
 RUN go build -v -o ./service ./cmd/app
 
 FROM alpine:3.18.4
-WORKDIR /service
-COPY --from=build /build/key ./key
+WORKDIR /app
+RUN mkdir -p ./keys
+RUN apk add --no-cache --update openssh-keygen && \
+    ssh-keygen -t ecdsa -f ./keys/ecdsa -b 521 -m pem && \
+    ssh-keygen -f ./keys/ecdsa -e -m pem > ./keys/ecdsa.pub
+ENV KEY_PATH=./keys/ecdsa
 COPY --from=build /build/service ./
 CMD ["./service"]

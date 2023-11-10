@@ -1,6 +1,7 @@
 package http
 
 import (
+	"user-service/internal/net"
 	"user-service/internal/service"
 	"user-service/internal/transport/http/handler"
 
@@ -10,6 +11,7 @@ import (
 type Services struct {
 	User service.User
 	Role service.Role
+	Auth net.Auth
 }
 
 func Router(services Services) *chi.Mux {
@@ -18,16 +20,20 @@ func Router(services Services) *chi.Mux {
 	user := handler.NewUser(services.User)
 	role := handler.NewRole(services.Role)
 
+	auth := handler.AuthMiddleware(services.Auth)
+
 	mux.Route("/", func(r chi.Router) {
 		r.Route("/user", func(r chi.Router) {
 			r.Get("/", user.Exist)
-			r.Get("/{id}", user.Get)
-			r.Post("/", user.Create)
-			r.Patch("/{id}", user.Update)
-			r.Delete("/{id}", user.Delete)
 			r.Post("/authenticate", user.Authenticate)
+
+			r.With(auth).Get("/{id}", user.Get)
+			r.With(auth).Get("/", user.List)
+			r.Post("/", user.Create)
+			r.With(auth).Patch("/{id}", user.Update)
+			r.With(auth).Delete("/{id}", user.Delete)
 		})
-		r.Route("/role", func(r chi.Router) {
+		r.With(auth).Route("/role", func(r chi.Router) {
 			r.Get("/", role.Get)
 			r.Post("/", role.Create)
 			r.Post("/append", role.Append)

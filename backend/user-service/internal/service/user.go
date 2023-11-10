@@ -82,6 +82,10 @@ func (u *user) Get(id uuid.UUID) (*entity.User, error) {
 	return user, nil
 }
 
+func (u *user) List() ([]entity.User, error) {
+	return u.userRepo.List(context.Background())
+}
+
 func (u *user) Exist(email string) (bool, error) {
 	_, err := u.userRepo.GetByEmail(context.Background(), email)
 	if err == nil {
