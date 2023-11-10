@@ -70,7 +70,7 @@ func (r *registration) List() ([]entity.Registration, error) {
 	return r.repo.List(context.Background())
 }
 
-func (r *registration) Update(data entity.Registration) (*entity.Registration, error) {
+func (r *registration) Update(data entity.Registration, token string) (*entity.Registration, error) {
 	registration, err := r.Get(data.ID)
 	if err != nil {
 		return nil, err
@@ -84,23 +84,23 @@ func (r *registration) Update(data entity.Registration) (*entity.Registration, e
 		status := *data.Status
 		switch status {
 		case entity.Acccepted, entity.Approved:
-			user, err := r.getOrCreateUser(registration)
+			user, err := r.getOrCreateUser(registration, token)
 			if err != nil {
 				return nil, err
 			}
 
-			err = r.appendRole(user, entity.Enrollee)
+			err = r.appendRole(user, entity.Enrollee, token)
 			if err != nil {
 				return nil, err
 			}
 
 			if *data.Status == entity.Approved {
-				err = r.net.Course.Append(*registration.UserID, *registration.CourseID)
+				err = r.net.Course.Append(*registration.UserID, *registration.CourseID, token)
 				if err != nil {
 					return nil, err
 				}
 
-				err = r.appendRole(user, entity.Enrollee)
+				err = r.appendRole(user, entity.Enrollee, token)
 				if err != nil {
 					return nil, err
 				}
@@ -145,7 +145,7 @@ func (r *registration) createUser(data *entity.Registration) (*entity.User, erro
 	return r.net.User.Create(userData)
 }
 
-func (r *registration) getOrCreateUser(data *entity.Registration) (*entity.User, error) {
+func (r *registration) getOrCreateUser(data *entity.Registration, token string) (*entity.User, error) {
 	if data.UserID == nil {
 		user, err := r.createUser(data)
 		if err != nil {
@@ -159,10 +159,10 @@ func (r *registration) getOrCreateUser(data *entity.Registration) (*entity.User,
 
 		return user, nil
 	}
-	return r.net.User.Get(*data.UserID)
+	return r.net.User.Get(*data.UserID, token)
 }
 
-func (r *registration) appendRole(user *entity.User, title entity.RoleTitle) error {
+func (r *registration) appendRole(user *entity.User, title entity.RoleTitle, token string) error {
 	hasRole := slices.ContainsFunc(user.Roles, func(role entity.Role) bool {
 		return role.Title == title
 	})
@@ -171,7 +171,7 @@ func (r *registration) appendRole(user *entity.User, title entity.RoleTitle) err
 		return nil
 	}
 
-	return r.net.Role.Append(user.ID, string(title))
+	return r.net.Role.Append(user.ID, string(title), token)
 }
 
 const (

@@ -61,13 +61,14 @@ func (u *user) Exist(email string) (bool, error) {
 	return false, ErrInternalNetwork
 }
 
-func (u *user) Get(id uuid.UUID) (*entity.User, error) {
+func (u *user) Get(id uuid.UUID, token string) (*entity.User, error) {
 	url := fmt.Sprintf("%s/user/%s", u.url, id)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
 
+	req.Header.Set("Authorization", "Bearer "+token)
 	resp, err := u.client.Do(req)
 	if err != nil {
 		return nil, err

@@ -32,4 +32,5 @@ type RoleTitle string
 const (
 	Enrollee RoleTitle = "enrollee"
 	Student  RoleTitle = "student"
+	Admin    RoleTitle = "admin"
 )

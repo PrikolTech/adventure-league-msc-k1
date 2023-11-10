@@ -1,23 +1,31 @@
 package http
 
 import (
+	"form-service/internal/net"
 	"form-service/internal/service"
 	"form-service/internal/transport/http/handler"
 
 	"github.com/go-chi/chi/v5"
 )
 
-func Router(service service.Registration) *chi.Mux {
+type Services struct {
+	Registration service.Registration
+	Auth         net.Auth
+}
+
+func Router(services Services) *chi.Mux {
 	mux := chi.NewMux()
 
-	registration := handler.NewRegistration(service)
+	registration := handler.NewRegistration(services.Registration)
+	auth := handler.AuthMiddleware(services.Auth)
 
 	mux.Route("/", func(r chi.Router) {
 		r.Route("/registration", func(r chi.Router) {
-			r.Get("/{id}", registration.Get)
-			r.Get("/", registration.List)
+			r.With(auth).Get("/{id}", registration.Get)
+			r.With(auth).Get("/", registration.List)
 			r.Post("/", registration.Create)
-			r.Patch("/{id}", registration.Update)
+			r.With(auth).Post("/append", registration.Append)
+			r.With(auth).Patch("/{id}", registration.Update)
 		})
 	})
 
