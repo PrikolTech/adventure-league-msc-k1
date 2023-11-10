@@ -435,6 +435,7 @@ onMounted(async() => {
                     <the-lesson
                         v-if="activeTab === 'lesson' && Object.keys(currentLesson).length !== 0"
                         :lesson="currentLesson"
+                        :course="course"
                     />
                     <task-lesson
                         v-if="activeTab === 'task'"

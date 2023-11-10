@@ -4,11 +4,15 @@ import TheComment from '@/components/layouts/TheComment.vue';
 import MakeComment from '@/components/layouts/MakeComment.vue';
 import TheButton from '../layouts/TheButton.vue';
 import { useUser } from '@/stores/user'
-import AddFile from '@/components/layouts/AddFile.vue'
+import UploadFile from '../layouts/UploadFile.vue';
 
 const userStore = useUser()
 const props = defineProps({
     lesson: {
+        type: Object,
+        required: true
+    },
+    course: {
         type: Object,
         required: true
     }
@@ -76,6 +80,50 @@ const postComment = async () => {
     }
 }
 
+const deleteFileFromInput = () => {
+    fileInput.value = null
+    fileName.value = ''
+}
+
+const postFile = async () => {
+    const file = fileInput.value;
+
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+        console.log('test')
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${props.course.id}/lectures/${props.lesson.id}/contents`, {
+            method: "POST",
+            body: formData
+        });
+
+        console.log('testststst',response);
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const updateLecture = async () => {
+    try {
+        console.log('test');
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${props.course.id}/lectures/${props.lesson.id}`, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                description: props.lesson.description
+            })
+        });
+
+        const data = await response.json(); // Need to await the JSON parsing
+
+        console.log('test', data);
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 
 onMounted(() => {
     getComments()
@@ -112,6 +160,7 @@ onMounted(() => {
                     :styles="['btn_red']"
                     :type="'button'"
                     class="add-file-btn"
+                    @click="updateLecture"
                 >
                     Сохранить
                 </the-button>
@@ -138,16 +187,19 @@ onMounted(() => {
                 </span>
             </label>
             <the-button
+                v-if="fileInput"
                 :styles="['btn_red']"
                 :type="'button'"
                 class="add-file-btn"
+                @click="postFile()"
             >
-                Сохранить
+                Добавить
             </the-button>
         </div>
-        <div class="text">
-            {{ fileName }}
-        </div>
+        <upload-file
+            :name="fileName"
+            @deleteFile="deleteFileFromInput()"
+        />
         <div class="lesson__comments comments">
             <div class="lesson__comments-header comments-header">
                 <p>

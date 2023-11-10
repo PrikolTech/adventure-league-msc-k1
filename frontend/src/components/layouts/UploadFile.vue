@@ -2,7 +2,7 @@
 const props = defineProps({
     name: String
 })
-const emit = defineEmits(['deleteFIle'])
+const emit = defineEmits(['deleteFile'])
 </script>
 
 <template>

@@ -99,7 +99,7 @@ onMounted(() => {
             <div class="test__content">
                 <div class="test__list">
                     <test-question
-                        v-for="(question, index) of questions.questions" :key="question.id" :question="question" :number="index"
+                        v-for="(question, index) of questions.questions" :key="question.id" :question="question" :number="index" :testID="props.test.id" :lessonID="props.lesson.id"
                     />
                 </div>
             </div>
