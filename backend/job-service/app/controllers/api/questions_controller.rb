@@ -1,7 +1,7 @@
 class Api::QuestionsController < ApplicationController
   def index
     @questions = Question.where(test_id: params[:test_id])
-    render json: @questions 
+    render json: @questions, include: :answers
   end
 
   def show

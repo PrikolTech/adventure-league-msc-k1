@@ -1,6 +1,10 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import CourseTask from "./CourseTask.vue";
+import { useUser } from '@/stores/user' 
+import router from "../../../router";
+
+const userStore = useUser()
 const props = defineProps({
     course: {
         type: Object,
@@ -8,16 +12,36 @@ const props = defineProps({
     }
 })
 
+//дял фоток
 let photoNumber = ref(getRandomNumberInRange(0,3))
-
 function getRandomNumberInRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+const lectures = ref([])
+const getCourseInfo = async () => {
+    console.log(router)
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${props.course.id}/lectures?user_id=${userStore.user.id}`, {
+            method: "GET",
+        })
+        
+        const data = await response.json()
+
+        lectures.value = [...data]
+        console.log(lectures.value)
+    } catch(err) {
+        console.error(err)
+    }
+}
+
+onMounted(() => {
+    getCourseInfo()
+})
 </script>
 
 <template>
-    <router-link :to="{ path: `/courses/${props.course.title}` }" class="me__courses-item">
+    <router-link :to="{ path: `/courses/${props.course.id}` }" class="me__courses-item">
         <img class="pic" src="@/assets/images/program-finance.png" v-if="photoNumber === 0">
         <img class="pic" src="@/assets/images/program-disain.png" v-if="photoNumber === 1">
         <img class="pic" src="@/assets/images/card-steps.png" v-if="photoNumber === 2">
@@ -26,30 +50,31 @@ function getRandomNumberInRange(min, max) {
             <div class="me__courses-item-header">
                 <div class="me__courses-item-info">
                     <p>
-                        {{ props.course.date }}
+                        {{ props.course.period.starts_at }} {{ props.course.period.ends_at }}
                     </p>
                     <p>
-                        {{ props.course.format }}
+                        {{ props.course.education_form.name }}
                     </p>
                 </div>
                 <p>
-                    {{ props.course.title }}
+                    {{ props.course.name }}
                 </p>
             </div>
             <div class="me__courses-progress-list">
                 <course-task
-                    v-for="(job, index) of props.course.jobs" :key="index" :job="job"
+                    v-for="(job, index) of lectures" :key="index" :job="job"
                 />
             </div>
             <div class="me__courses-item-content">
                 <div class="me__courses-data">
                     <span>
-                        {{ props.course.lecture.passed }} / {{ props.course.lecture.total }} лекций
+                        <!-- {{ props.course.lecture.passed }} / {{ props.course.lecture.total }} лекций -->
+                        Лекций: {{ lectures.length }} 
                     </span>
                 </div>
                 <div class="me__courses-data">
                     <span>
-                        {{ props.course.tasks.passed }} / {{ props.course.tasks.total }} парктических заданий
+                        <!-- {{ props.course.tasks.passed }} / {{ props.course.tasks.total }} парктических заданий -->
                     </span>
                 </div>
             </div>

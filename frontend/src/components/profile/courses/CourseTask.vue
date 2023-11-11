@@ -13,7 +13,7 @@ let showHiddenText = ref(false)
 
 <template>
     <div class="me__courses-progress-item"
-        :class="[{ complited: props.job.completed == 'true' }, { home: props.job.type == 'home' }]"
+        :class="[{ complited: props.job.is_viewed === true }, { home: props.job.type == 'home' }]"
         @click.stop.prevent=""
         @mouseenter="showHiddenText = true"
         @mouseleave="showHiddenText = false"
@@ -21,7 +21,8 @@ let showHiddenText = ref(false)
         <span class="hidden-info"
             :class="{active: showHiddenText}"
         >
-            Урок 2. Знакомство с компонентами.
+            <!-- Урок 2. Знакомство с компонентами. -->
+            {{ props.job.name }}
             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="8" viewBox="0 0 17 8" fill="none">
                 <path d="M9.20711 0.707107L16.2071 7.70711C16.3946 7.89464 16.649 8 16.9142 8L0.0857883 8C0.351005 8 0.605358 7.89464 0.792894 7.70711L7.79289 0.707107C8.18342 0.316583 8.81658 0.316582 9.20711 0.707107Z" fill="#1F2A37"/>
             </svg>
@@ -32,24 +33,26 @@ let showHiddenText = ref(false)
 <style lang="scss" scoped>
 
 .me__courses-progress-item {
-    width: 44px;
+    // width: 44px;
+    flex: 1;
+    max-width: 20px;
     height: 5px;
     border-radius: 30px;
-    background: var(--gray-300, #D1D5DB);
+    background: var(--gray-300, #c0c5cd);
     position: relative;
     cursor: pointer;
     @media (max-width: 1023px) {
-        width: 25px;
+        // width: 25px;
         position: static;
     }
     &.complited {
         background:#0E9F6E;
     }
-    &.home {
-        width: 5px;
-        height: 5px;
-        border-radius: 50%;
-    }
+    // &.home {
+    //     width: 5px;
+    //     height: 5px;
+    //     border-radius: 50%;
+    // }
 }
 .hidden-info {
     border-radius: var(--rounded-lg, 8px);
@@ -101,6 +104,7 @@ let showHiddenText = ref(false)
 
 [dark=true] {
     .me__courses-item-info {
+
         & p {
             color: var(--gray-200, #E5E7EB);
             background: var(--gray-500, #6B7280);
@@ -108,6 +112,9 @@ let showHiddenText = ref(false)
     }
     & .me__courses-progress-item {
         background: var(--gray-300, #6B7280);
+        &.complited {
+            background:#0E9F6E;
+        }
     }
     
     & .hidden-info {

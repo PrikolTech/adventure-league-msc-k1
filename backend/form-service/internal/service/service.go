@@ -12,5 +12,5 @@ type Registration interface {
 	GetByUser(userID uuid.UUID) ([]entity.Registration, error)
 	GetByCourse(courseID uuid.UUID) ([]entity.Registration, error)
 	List() ([]entity.Registration, error)
-	Update(data entity.Registration) (*entity.Registration, error)
+	Update(data entity.Registration, token string) (*entity.Registration, error)
 }

@@ -19,6 +19,11 @@ func NewRole(service service.Role) *Role {
 }
 
 func (h *Role) Create(w http.ResponseWriter, r *http.Request) {
+	if err := validateRoles(r.Context()); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusForbidden)
+		return
+	}
+
 	var data entity.Role
 	d := json.NewDecoder(r.Body)
 	err := d.Decode(&data)
@@ -54,6 +59,11 @@ func (h *Role) Append(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := validateRoles(r.Context(), entity.Employee); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusForbidden)
+		return
+	}
+
 	if data.RoleID != nil {
 		err = h.service.AppendByID(data.UserID, *data.RoleID)
 	} else if data.Title != "" {
@@ -76,6 +86,11 @@ func (h *Role) Remove(w http.ResponseWriter, r *http.Request) {
 	userID, err := uuid.FromString(userParam)
 	if err != nil {
 		DecodingError(w)
+		return
+	}
+
+	if err := validateRoles(r.Context(), entity.Employee); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusForbidden)
 		return
 	}
 
@@ -113,11 +128,21 @@ func (h *Role) Get(w http.ResponseWriter, r *http.Request) {
 
 	if param == "" {
 		roles, err = h.service.List()
+
+		if err := validateRoles(r.Context()); err != nil {
+			ErrorJSON(w, err.Error(), http.StatusForbidden)
+			return
+		}
 	} else {
 		var userID uuid.UUID
 		userID, err = uuid.FromString(param)
 		if err != nil {
 			DecodingError(w)
+			return
+		}
+
+		if err := validateUserID(r.Context(), userID); err != nil {
+			ErrorJSON(w, err.Error(), http.StatusForbidden)
 			return
 		}
 
@@ -136,6 +161,11 @@ func (h *Role) Get(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Role) Delete(w http.ResponseWriter, r *http.Request) {
+	if err := validateRoles(r.Context()); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusForbidden)
+		return
+	}
+
 	param := chi.URLParam(r, "id")
 	id, err := uuid.FromString(param)
 	if err != nil {

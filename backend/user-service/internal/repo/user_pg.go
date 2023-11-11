@@ -58,6 +58,17 @@ func (u *UserPG) GetByEmail(ctx context.Context, email string) (*entity.User, er
 	return u.collectRow(row)
 }
 
+func (u *UserPG) List(ctx context.Context) ([]entity.User, error) {
+	const query = `SELECT * FROM "data"`
+
+	rows, err := u.Pool.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+
+	return u.collectRows(rows)
+}
+
 func (u *UserPG) UpdatePassword(ctx context.Context, id uuid.UUID, password string) (*entity.User, error) {
 	const query = `UPDATE "data" SET password = $2 WHERE id = $1 RETURNING *`
 

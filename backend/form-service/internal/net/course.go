@@ -19,13 +19,14 @@ func NewCourse(url string) *course {
 	return &course{client, url}
 }
 
-func (c *course) Append(userID uuid.UUID, courseID uuid.UUID) error {
+func (c *course) Append(userID uuid.UUID, courseID uuid.UUID, token string) error {
 	url := fmt.Sprintf("%s/courses/%s/add_user?user_id=%s", c.url, courseID, userID)
 	req, err := http.NewRequest(http.MethodPost, url, nil)
 	if err != nil {
 		return ErrInternalNetwork
 	}
 
+	req.Header.Set("Authorization", "Bearer "+token)
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return ErrInternalNetwork

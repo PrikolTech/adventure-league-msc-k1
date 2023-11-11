@@ -8,6 +8,7 @@ type (
 		HTTP      ConfigHTTP
 		UserAPI   ConfigUserAPI
 		CourseAPI ConfigCourseAPI
+		AuthAPI   ConfigAuthAPI
 	}
 
 	ConfigPostgres struct {
@@ -26,6 +27,10 @@ type (
 
 	ConfigCourseAPI struct {
 		URL string `env:"COURSE_API" env-required:""`
+	}
+
+	ConfigAuthAPI struct {
+		URL string `env:"AUTH_API" env-required:""`
 	}
 )
 

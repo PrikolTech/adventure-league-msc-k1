@@ -25,13 +25,26 @@ type JWTAccessGenerate struct {
 	SignedKey *ecdsa.PrivateKey
 }
 
+type Claims struct {
+	generates.JWTAccessClaims
+	Roles []string `json:"roles"`
+}
+
 func (a *JWTAccessGenerate) Token(ctx context.Context, data *oauth2.GenerateBasic, isGenRefresh bool) (string, string, error) {
-	claims := &generates.JWTAccessClaims{
-		jwt.StandardClaims{
-			Audience:  data.Client.GetID(),
-			Subject:   data.UserID,
-			ExpiresAt: data.TokenInfo.GetAccessCreateAt().Add(data.TokenInfo.GetAccessExpiresIn()).Unix(),
+	scope := data.TokenInfo.GetScope()
+	roles := make([]string, 0)
+	if scope != "" {
+		roles = strings.Split(scope, ",")
+	}
+	claims := &Claims{
+		generates.JWTAccessClaims{
+			jwt.StandardClaims{
+				Audience:  data.Client.GetID(),
+				Subject:   data.UserID,
+				ExpiresAt: data.TokenInfo.GetAccessCreateAt().Add(data.TokenInfo.GetAccessExpiresIn()).Unix(),
+			},
 		},
+		roles,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodES512, claims)

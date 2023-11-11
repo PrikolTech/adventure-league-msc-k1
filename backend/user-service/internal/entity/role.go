@@ -19,3 +19,12 @@ func (e *Role) Validate() error {
 
 	return nil
 }
+
+type RoleTitle string
+
+const (
+	Admin    RoleTitle = "admin"
+	Employee RoleTitle = "employee"
+	Student  RoleTitle = "student"
+	Enrollee RoleTitle = "enrollee"
+)

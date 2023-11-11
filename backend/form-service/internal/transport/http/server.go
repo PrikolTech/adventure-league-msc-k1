@@ -1,7 +1,6 @@
 package http
 
 import (
-	"form-service/internal/service"
 	"form-service/internal/transport/http/handler"
 	"net/http"
 
@@ -16,7 +15,7 @@ type ServerOptions struct {
 	Origins []string
 }
 
-func NewServer(logger *zerolog.Logger, service service.Registration, opts ServerOptions) *http.Server {
+func NewServer(logger *zerolog.Logger, services Services, opts ServerOptions) *http.Server {
 	mux := chi.NewMux()
 	c := cors.New(cors.Options{
 		AllowedOrigins:   opts.Origins,
@@ -34,7 +33,7 @@ func NewServer(logger *zerolog.Logger, service service.Registration, opts Server
 	mux.NotFound(handler.NotFound)
 	mux.MethodNotAllowed(handler.MethodNotAllowed)
 
-	mux.Mount("/", Router(service))
+	mux.Mount("/", Router(services))
 
 	return &http.Server{
 		Addr:    opts.Addr,

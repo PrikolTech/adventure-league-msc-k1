@@ -30,6 +30,7 @@ const props = defineProps({
             <the-button
                 :styles="['btn_red']"
                 :type="'button'"
+                @click="$emit('send')"
             >
                 Отправить
             </the-button>

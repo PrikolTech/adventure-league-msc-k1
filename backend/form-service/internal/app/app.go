@@ -25,10 +25,11 @@ func Run(cfg *Config, logger *zerolog.Logger) error {
 	userNet := net.NewUser(cfg.UserAPI.URL)
 	roleNet := net.NewRole(cfg.UserAPI.URL)
 	courseNet := net.NewCourse(cfg.CourseAPI.URL)
+	authNet := net.NewAuth(cfg.AuthAPI.URL)
 
 	service := service.NewRegistration(repo, service.NetServices{userNet, roleNet, courseNet})
 
-	server := http.NewServer(logger, service, http.ServerOptions{
+	server := http.NewServer(logger, http.Services{service, authNet}, http.ServerOptions{
 		Addr:    fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port),
 		Origins: cfg.HTTP.Origins,
 	})

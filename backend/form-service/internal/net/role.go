@@ -20,7 +20,7 @@ func NewRole(url string) *role {
 	return &role{client, url}
 }
 
-func (r *role) Append(userID uuid.UUID, title string) error {
+func (r *role) Append(userID uuid.UUID, title string, token string) error {
 	reqData := new(bytes.Buffer)
 	e := json.NewEncoder(reqData)
 	e.Encode(map[string]string{
@@ -35,6 +35,7 @@ func (r *role) Append(userID uuid.UUID, title string) error {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+token)
 
 	resp, err := r.client.Do(req)
 	if err != nil {

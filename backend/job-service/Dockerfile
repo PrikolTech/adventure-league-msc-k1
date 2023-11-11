@@ -24,9 +24,9 @@ RUN bundle install && \
 
 WORKDIR /myapp
 
-COPY bin/docker-entrypoint.sh /usr/bin/
-RUN chmod +x /usr/bin/docker-entrypoint.sh
-ENTRYPOINT ["docker-entrypoint.sh"]
+# COPY bin/docker-entrypoint.sh /usr/bin/
+# RUN chmod +x /usr/bin/docker-entrypoint.sh
+# ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE 3004
 

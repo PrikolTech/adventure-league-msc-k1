@@ -130,14 +130,30 @@ let programs = ref([
 
 let filteredPrograms = ref([])
 const getPrograms = async () => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses`)
+        const data = await response.json()
+        console.log(data)
+        
+        programs.value = [...data];
+        filteredPrograms.value = [...data];
+        filterProgram.value = [
+            { text: 'Все', value: 'all' },
+            ...[...new Set(programs.value.map(program => program.course_type.name))].map(type => ({ text: type, value: type }))
+        ];
 
-    const response = programs.value;
-    filteredPrograms.value = [...programs.value];
 
-    filterProgram.value = [
-        { text: 'Все', value: 'all' },
-        ...[...new Set(response.map(program => program.type))].map(type => ({ text: type, value: type }))
-    ];
+        // const response = programs.value;
+        // filteredPrograms.value = [...programs.value];
+
+        // filterProgram.value = [
+        //     { text: 'Все', value: 'all' },
+        //     ...[...new Set(response.map(program => program.type))].map(type => ({ text: type, value: type }))
+        // ];
+    } catch (err) {
+        console.error(err)
+    }
+
 
 }
 
@@ -150,7 +166,7 @@ const filterPrograms = (value) => {
     }
 
     filteredPrograms.value = [...programs.value.filter(el => {
-        return el.type === value;
+        return el.course_type.name === value;
     })];
 }
 

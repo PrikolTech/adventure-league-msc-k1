@@ -1,17 +1,44 @@
 <script setup>
+import { onMounted, ref } from 'vue';
+
 const props = defineProps({
     question: {
         type: Object,
         required: true
-    }
+    },
+    number: Number,
+    testID: Number,
+    lessonID: Number,
 })
+
+const questionFullInfo = ref({})
+
+const getQuestionInfo = async() => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/api/jobs/${props.lessonID}/tests/${props.testID}/questions/${props.question.id}`, {
+            method: "GET",
+        })
+        
+        const data = await response.json()
+        console.log('ВОПРОС:', data)
+        questionFullInfo.value = { ...data }
+    } catch(err) {
+        console.error(err)
+    }
+}
+
+onMounted(() => {
+    getQuestionInfo()
+})
+
+
 </script>
 
 <template>
     <div class="test__item">
         <div class="test__item-aside">
             <div class="test__preview">
-                Вопрос 1
+                Вопрос {{ props.number + 1 }}
             </div>
             <div class="test__ball">
                 Балл : 1
@@ -19,34 +46,33 @@ const props = defineProps({
         </div>
         <div class="test__item-content">
             <div class="test__item-title">
-                При выборе банка необходимо в первую очередь обратить внимание на:
+                <!-- При выборе банка необходимо в первую очередь обратить внимание на: -->
+                {{ props.question.body }}
             </div>
             <div class="test__item-questions-list">
-                <div class="test__item-question">
+                <!-- <div class="test__item-question">
                     <label class="b-contain">
                         <span>Его рейтинг и отзывы в интернете</span>
                         <input name="radio" type="radio" />
                         <div class="b-input"></div>
                     </label>
-                </div>
-                <div class="test__item-question">
+                </div> -->
+                <div class="test__item-question"
+                    v-for="answer of questionFullInfo.answers" :key="answer.id"
+                >
                     <label class="b-contain">
-                        <span>Наличие лицензии, выданной Банком России</span>
-                        <input type="checkbox" />
-                        <div class="b-input"></div>
-                    </label>
-                </div>
-                <div class="test__item-question">
-                    <label class="b-contain">
-                        <span>Возраст банка</span>
-                        <input type="checkbox" />
-                        <div class="b-input"></div>
-                    </label>
-                </div>
-                <div class="test__item-question">
-                    <label class="b-contain">
-                        <span>Универсальность банка</span>
-                        <input type="checkbox" />
+                        <!-- <span>Наличие лицензии, выданной Банком России</span> -->
+                        <span>{{ answer.body }}</span>
+                        <input type="checkbox"
+                            v-if="questionFullInfo.is_multiple_answer"
+                            :name="questionFullInfo.id"
+                            :value="answer.id"
+                        />
+                        <input type="radio"
+                            v-else
+                            :name="questionFullInfo.id"
+                            :value="answer.id"
+                        />
                         <div class="b-input"></div>
                     </label>
                 </div>
@@ -130,5 +156,9 @@ const props = defineProps({
     }
 }
 
-
+[dark=true] {
+    & .test__ball {
+        color: #fff;
+    }
+}
 </style>

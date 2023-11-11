@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
+	"slices"
 	"user-service/internal/entity"
 	"user-service/internal/service"
 
@@ -114,11 +117,39 @@ func (h *User) Get(w http.ResponseWriter, r *http.Request) {
 	e.Encode(user)
 }
 
+func (h *User) List(w http.ResponseWriter, r *http.Request) {
+	if err := validateRoles(r.Context()); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusForbidden)
+		return
+	}
+
+	users, err := h.service.List()
+	if err != nil {
+		ErrorJSON(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	e := json.NewEncoder(w)
+	e.Encode(users)
+}
+
 func (h *User) Update(w http.ResponseWriter, r *http.Request) {
 	param := chi.URLParam(r, "id")
 	id, err := uuid.FromString(param)
 	if err != nil {
 		DecodingError(w)
+		return
+	}
+
+	if err := validateUserID(r.Context(), id); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusForbidden)
+		return
+	}
+
+	if err := validateRoles(r.Context(), entity.Enrollee, entity.Student); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusForbidden)
 		return
 	}
 
@@ -151,6 +182,16 @@ func (h *User) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := validateUserID(r.Context(), id); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusForbidden)
+		return
+	}
+
+	if err := validateRoles(r.Context(), entity.Enrollee, entity.Student); err != nil {
+		ErrorJSON(w, err.Error(), http.StatusForbidden)
+		return
+	}
+
 	err = h.service.Delete(id)
 	if err != nil {
 		ErrorJSON(w, err.Error(), http.StatusBadRequest)
@@ -158,4 +199,26 @@ func (h *User) Delete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func validateUserID(ctx context.Context, id uuid.UUID, roles ...entity.RoleTitle) error {
+	userID, _ := ctx.Value("userID").(uuid.UUID)
+
+	err := validateRoles(ctx, roles...)
+	if userID != id && err != nil {
+		return errors.New("you pick the wrong house")
+	}
+
+	return nil
+}
+
+func validateRoles(ctx context.Context, roles ...entity.RoleTitle) error {
+	userRoles, _ := ctx.Value("roles").([]string)
+	for _, role := range append(roles, entity.Admin) {
+		if slices.Contains(userRoles, string(role)) {
+			return nil
+		}
+	}
+
+	return errors.New("you have no power here")
 }
