@@ -35,10 +35,10 @@ const login = async () => {
 
         if (response.ok) {
             const data = await response.json();
-            console.log(data)
+            console.log('data',data)
             userStore.user = {}
             userStore.user.access = data.access
-            userStore.user.id = data.user_id
+            userStore.user.user_id = data.user_id
             userStore.getUserInfo()
             router.push('/')
         } else {

@@ -17,9 +17,7 @@ export const useUser = defineStore('user', () => {
         try {
             const response = await fetch(`${import.meta.env.VITE_SERVICE_AUTH_URL}/token`, {
                 method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                mode: 'cors',
                 credentials: 'include',
             })
 
@@ -32,11 +30,13 @@ export const useUser = defineStore('user', () => {
     }
 
     async function getUserInfo() {
-        addCustomData()
         try {
-            const response = await fetch(`${import.meta.env.VITE_SERVICE_USER_URL}/user/${user.value.id}`, {
+            const response = await fetch(`${import.meta.env.VITE_SERVICE_USER_URL}/user/${user.value.user_id}`, {
                 method: 'GET',
                 mode: 'cors',
+                headers: {
+                    'Authorization': `Bearer ${user.value.access}`
+                },
                 credentials: 'include'
             })
             const data = await response.json()
@@ -59,7 +59,7 @@ export const useUser = defineStore('user', () => {
                 credentials: 'include'
             });
             console.log('test',response)
-            if(response.status === 401 || response.status === 401) {
+            if(response.status === 401 || response.status === 400) {
                 return
             }
             user.value = {}
