@@ -36,7 +36,8 @@ export const useUser = defineStore('user', () => {
         try {
             const response = await fetch(`${import.meta.env.VITE_SERVICE_USER_URL}/user/${user.value.id}`, {
                 method: 'GET',
-                'Authorization': `Bearer ${user.value.access}`
+                mode: 'cors',
+                credentials: 'include'
             })
             const data = await response.json()
             if(data.password) {
@@ -53,10 +54,9 @@ export const useUser = defineStore('user', () => {
         try {
             const response = await fetch(`${import.meta.env.VITE_SERVICE_AUTH_URL}/token?grant_type=refresh_token&client_id=000000`, {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
+                headers: {'Content-Type': 'application/json'},
+                mode: 'cors',
+                credentials: 'include'
             });
             console.log('test',response)
             if(response.status === 401 || response.status === 401) {

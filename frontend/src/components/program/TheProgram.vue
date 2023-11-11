@@ -131,7 +131,13 @@ let programs = ref([
 let filteredPrograms = ref([])
 const getPrograms = async () => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses`)
+        const url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses`;
+
+        const response = await fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            credentials: 'include'
+        });
         const data = await response.json()
         console.log(data)
         
