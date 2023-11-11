@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"fmt"
@@ -9,7 +9,12 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type ReverseProxy struct {
+type ReverseProxy interface {
+	AddTarget(include []string, exclude []string, upstream string) error
+	Handler() http.Handler
+}
+
+type reverseProxy struct {
 	proxy   *httputil.ReverseProxy
 	targets []*Target
 }
@@ -20,14 +25,14 @@ type Target struct {
 	upstream *url.URL
 }
 
-func NewReverseProxy() *ReverseProxy {
-	return &ReverseProxy{
+func NewReverseProxy() *reverseProxy {
+	return &reverseProxy{
 		proxy:   &httputil.ReverseProxy{},
 		targets: make([]*Target, 0),
 	}
 }
 
-func (p *ReverseProxy) Rewrite() func(*httputil.ProxyRequest) {
+func (p *reverseProxy) Rewrite() func(*httputil.ProxyRequest) {
 	return func(pr *httputil.ProxyRequest) {
 		fmt.Println("accepted", pr.In.Method, pr.In.URL.Path)
 		for _, t := range p.targets {
@@ -47,7 +52,7 @@ func (p *ReverseProxy) Rewrite() func(*httputil.ProxyRequest) {
 	}
 }
 
-func (p *ReverseProxy) AddTarget(include []string, exclude []string, upstream string) error {
+func (p *reverseProxy) AddTarget(include []string, exclude []string, upstream string) error {
 	url, err := url.Parse(upstream)
 	if err != nil {
 		return err
@@ -77,17 +82,7 @@ func (p *ReverseProxy) AddTarget(include []string, exclude []string, upstream st
 	return nil
 }
 
-func (p *ReverseProxy) Start() {
+func (p *reverseProxy) Handler() http.Handler {
 	p.proxy.Rewrite = p.Rewrite()
-	http.Handle("/", p.proxy)
-}
-
-func main() {
-	proxy := NewReverseProxy()
-	proxy.AddTarget([]string{"/token"}, nil, "http://localhost:3001")
-	proxy.AddTarget([]string{"/user"}, []string{"/user/exist"}, "http://localhost:3002")
-	proxy.AddTarget([]string{"/form"}, nil, "http://localhost:3007")
-
-	proxy.Start()
-	http.ListenAndServe("localhost:3000", nil)
+	return p.proxy
 }
