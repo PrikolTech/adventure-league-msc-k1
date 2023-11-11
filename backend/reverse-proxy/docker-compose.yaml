@@ -1,5 +1,5 @@
 services:
-  server:
+  reverse-proxy-server:
     container_name: reverse-proxy-server
     build: .
     ports:

@@ -1,5 +1,5 @@
 services:
-  server:
+  auth-server:
     container_name: auth-server
     build: .
     ports:
