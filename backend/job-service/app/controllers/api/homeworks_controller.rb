@@ -27,7 +27,7 @@ class Api::HomeworksController < ApplicationController
     @homework = Homework.find(params[:id])
 
     if @homework.update(homework_params)
-      redirect_to @homework.path
+      render json: @homework, include: :homework_solutions
     else
       render json: {message: 'not updated', status: 400}
     end
