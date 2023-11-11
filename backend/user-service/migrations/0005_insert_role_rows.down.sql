@@ -1,0 +1,1 @@
+TRUNCATE TABLE "user".data_role, "user".role;

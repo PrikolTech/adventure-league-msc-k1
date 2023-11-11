@@ -34,11 +34,15 @@ func (o *oauth) GenerateToken(clientID string, email string, password string) (*
 	}
 
 	scope := builder.String()
+	if scope != "" {
+		scope = scope[:len(scope)-1]
+	}
+
 	gt := oauth2.PasswordCredentials
 	tgr := &oauth2.TokenGenerateRequest{
 		ClientID: clientID,
 		UserID:   id,
-		Scope:    scope[:len(scope)-1],
+		Scope:    scope,
 	}
 	ti, err := o.manager.GenerateAccessToken(context.Background(), gt, tgr)
 	if err != nil {
