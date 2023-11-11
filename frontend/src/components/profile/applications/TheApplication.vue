@@ -1,6 +1,10 @@
 <script setup>
-import { ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import TheStep from "./TheStep.vue";
+import { useUser } from '@/stores/user'
+
+const userStore = useUser()
+
 const props = defineProps({
     course: {
         type: Object,
@@ -10,17 +14,13 @@ const props = defineProps({
 
 const steps = ref([
     {
-        text: 'Личный кабинет',
-        active: true
-    },
-    {
         text: 'Рассмотрение',
-        active: false
+        active: true
     },
     {
         text: 'Решение',
         active: false
-    },
+    }
 ])
 
 let photoNumber = ref(getRandomNumberInRange(0,3))
@@ -29,10 +29,70 @@ function getRandomNumberInRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+
+const courseInfo = ref({})
+const getCourseInfo = async () => {
+    try {
+        const url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${props.course.course_id}`
+        const response = await fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+    });
+
+    const data = await response.json();
+    console.log('Курс с заявки', data);
+    courseInfo.value = {...data}
+    
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+const people = ref([])
+const getCourseInfoByEmployee = async () => {
+    try {
+        const url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration?course_id=${props.course.id}`
+        const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${userStore.user.access}`,
+            'Content-Type': 'application/json'
+        },
+        mode: 'cors',
+    });
+
+    const data = await response.json();
+    console.log('Информация на курс для Employee', data);
+    people.value = [...data]
+    
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+const quantityOfPeople = computed(() => {
+    console.log(people.value.length)
+    if(userStore.checkRole('employee')) {
+        return people.value.length
+    } else {
+        return ''
+    }
+})
+
+onMounted(() => {
+    if(userStore.checkRole('student')) {
+        getCourseInfo()
+    } else if(userStore.checkRole('employee')) {
+        getCourseInfoByEmployee()
+    }
+})
+
 </script>
 
 <template>
-    <router-link :to="{ path: `/courses/${props.course.title}` }" class="me__courses-item">
+    <div class="me__courses-item"
+        v-if="Object.keys(courseInfo).length > 0 && userStore.checkRole('student')"
+    >
         <img class="pic" src="@/assets/images/program-finance.png" v-if="photoNumber === 0">
         <img class="pic" src="@/assets/images/program-disain.png" v-if="photoNumber === 1">
         <img class="pic" src="@/assets/images/card-steps.png" v-if="photoNumber === 2">
@@ -41,26 +101,52 @@ function getRandomNumberInRange(min, max) {
             <div class="me__courses-item-header">
                 <div class="me__courses-item-info">
                     <p>
-                        {{ props.course.date }}
+                        {{ courseInfo.period.starts_at }} - {{ courseInfo.period.ends_at }}
                     </p>
                     <p>
-                        {{ props.course.format }}
+                        {{ courseInfo.education_form.name }}
                     </p>
                 </div>
                 <p>
-                    {{ props.course.title }}
+                    {{ courseInfo.name }}
                 </p>
                 <span class="status">
-                    {{ props.course.status }}
+                    {{ courseInfo.status }}
                 </span>
-                <div class="steps">
+                <div class="steps" v-if="userStore.checkRole('student')">
                     <the-step
                         v-for="(step, index) of steps" :key="index" :step="step"
                     />
                 </div>
             </div>
         </div>
-    </router-link>
+    </div>
+    <div class="me__courses-item"
+        v-if="userStore.checkRole('employee')"
+    >
+        <img class="pic" src="@/assets/images/program-finance.png" v-if="photoNumber === 0">
+        <img class="pic" src="@/assets/images/program-disain.png" v-if="photoNumber === 1">
+        <img class="pic" src="@/assets/images/card-steps.png" v-if="photoNumber === 2">
+        <img class="pic" src="@/assets/images/program-finance.png" v-if="photoNumber === 3">
+        <div class="me__courses-item-body">
+            <div class="me__courses-item-header">
+                <div class="me__courses-item-info">
+                    <p>
+                        {{ props.course.period.starts_at }} - {{ props.course.period.ends_at }}
+                    </p>
+                    <p>
+                        {{ props.course.education_form.name }}
+                    </p>
+                </div>
+                <p>
+                    {{ props.course.name }}
+                </p>
+                <div class="people">
+                    Заявки: {{ quantityOfPeople }}
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style lang="scss" scoped>
@@ -73,6 +159,14 @@ function getRandomNumberInRange(min, max) {
     }
     @media (max-width: 767px) {
         padding-left: 30%;
+    }
+    & .people{
+        color: var(--gray-600, #4B5563);
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 150%; /* 21px */
     }
 }
 .me__courses-item .pic {
@@ -152,5 +246,11 @@ function getRandomNumberInRange(min, max) {
     & .me__courses-progress-item {
         background: var(--gray-300, #6B7280);
     }
+    
+    .me__courses-item {
+            & .people{
+                color: var(--gray-600, #F9FAFB);
+            }
+        }
 }
 </style>

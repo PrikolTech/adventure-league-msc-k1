@@ -5,37 +5,65 @@ import TheApplication from '@/components/profile/applications/TheApplication.vue
 import { useUser } from '@/stores/user'
 
 const userStore = useUser()
-const courses = ref([
-    {
-        title: 'Финансовая грамотность',
-        date: '06.11.23 - 10.01.24',
-        format: 'Онлайн',
-        status: 'Рассмотрение заявки : 10 дней'
-    },
+const applications = ref([
+    // {
+    //     title: 'Финансовая грамотность',
+    //     date: '06.11.23 - 10.01.24',
+    //     format: 'Онлайн',
+    //     status: 'Рассмотрение заявки : 10 дней'
+    // },
 ])
 
 const getApplications = async () => {
-    try {
-        const url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration/${userStore.user.user_id}`;
+    let url = null
+    if(userStore.checkRole('student')) {
+        url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration?user_id=${userStore.user.user_id}`
+    } else if(userStore.checkRole('employee')) {
+        url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration?`
+    }
 
+    try {
         const response = await fetch(url, {
             method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`,
+                'Content-Type': 'application/json'
+            },
             mode: 'cors',
-            credentials: 'include'
         });
 
-        console.log(response);
         const data = await response.json();
-        console.log(data);
+        applications.value = [...data]
+        console.log('Заявки',data);
     } catch (err) {
         console.error(err);
     }
 }
 
+const getAllCourses = async () => {
+    try {
+        const url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses`
+
+        const response = await fetch(url, {
+            method: 'GET',
+        });
+        const data = await response.json()
+
+        console.log('Все курсы',data)
+
+        applications.value = [...data]
+    } catch (err) {
+        console.error(err)
+    }
+}
 
 
 onMounted(() => {
-    getApplications()
+    if(userStore.checkRole('employee')) {
+        getAllCourses()
+    } else if(userStore.checkRole('student')){
+        getApplications()
+    }
 })
 </script>
 
@@ -51,10 +79,17 @@ onMounted(() => {
             <div class="applications__header">
 
             </div>
-            <div class="applications__list">
+            <div class="applications__list"
+                v-if="applications.length"
+            >
                 <the-application
-                    v-for="(course, index) of courses" :key="index" :course="course"
+                    v-for="(course, index) of applications" :key="index" :course="course"
                 />
+            </div>
+            <div class="text"
+                v-else
+            >
+                Список заявок пуст
             </div>
         </div>
     </div>

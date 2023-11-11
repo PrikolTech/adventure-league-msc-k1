@@ -4,7 +4,9 @@ import TheProgram from '../components/program/TheProgram.vue';
 import ThePopup from '@/components/layouts/ThePopup.vue'
 import { onMounted, ref } from 'vue';
 import { useUser } from '@/stores/user'
+import { useAlerts } from '@/stores/alerts'
 
+const alertsStore = useAlerts()
 const userStore = useUser()
 const currentOpenCourse = ref(null)
 
@@ -112,23 +114,32 @@ const sendForm = async () => {
 
   try {
     let url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration/append`
+    let headers = {
+      'Content-Type': 'application/json'
+    };
+
     if(!userStore.user) {
       url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration`
+    } else {
+      headers['Authorization'] = `Bearer ${userStore.user.access}`;
     }
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers,
       mode: 'cors',
-      credentials: 'include',
       body: JSON.stringify(preparedFormData)
     });
 
+    if(response.ok) {
+      alertsStore.addAlert('Вы успешно зарегистрировались на курс', 'success')
+    } else {
+      alertsStore.addAlert('Произошла ошибка при запись на курс, повторите попытку', 'error')
+    }
     console.log(response);
     const data = await response.json();
     console.log(data);
   } catch (err) {
+    alertsStore.addAlert('Произошла ошибка при запись на курс, повторите попытку', 'error')
     console.error(err);
   }
 };

@@ -3,11 +3,16 @@ import TheButton from '@/components/layouts/TheButton.vue';
 import { usePopups } from '@/stores/popups';
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 
+import { useUser } from '@/stores/user'
+
+const userStore = useUser()
 const emit = defineEmits(['openCoursePopup'])
 
 const openPopup = () => {
-    popupStore.disableScroll('mainForm')
-    emit('openCoursePopup',props.program.id)
+    if(userStore.checkRole('student')) {
+        popupStore.disableScroll('mainForm')
+        emit('openCoursePopup',props.program.id)
+    }
 }
 
 const popupStore = usePopups()
