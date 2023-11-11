@@ -1,0 +1,4 @@
+include:
+  - auth-service/docker-compose.yaml
+  - reverse-proxy/docker-compose.yaml
+  - user-service/docker-compose.yaml
