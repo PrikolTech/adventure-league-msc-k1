@@ -34,11 +34,9 @@ export const useUser = defineStore('user', () => {
     async function getUserInfo() {
         addCustomData()
         try {
-            // const response = await fetch(`http://localhost:3002/user/${user.value.access_token}`, {
-            //     method: 'GET',
-            // })
             const response = await fetch(`${import.meta.env.VITE_SERVICE_USER_URL}/user/${user.value.id}`, {
                 method: 'GET',
+                'Authorization': `Bearer ${user.value.access}`
             })
             const data = await response.json()
             if(data.password) {
@@ -60,6 +58,7 @@ export const useUser = defineStore('user', () => {
                 },
                 credentials: 'include',
             });
+            console.log('test',response)
             if(response.status === 401 || response.status === 401) {
                 return
             }
@@ -80,8 +79,8 @@ export const useUser = defineStore('user', () => {
 
     //временная функция для заполнения данных
     function addCustomData() {
-        user.value.id = '35e8a1e4-c0d9-4a79-be68-192603d0205f'
-        user.value.role = 'teacher'
+        // user.value.id = '35e8a1e4-c0d9-4a79-be68-192603d0205f'
+        // user.value.role = 'teacher'
     }
 
 
