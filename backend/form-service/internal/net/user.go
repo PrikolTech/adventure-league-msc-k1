@@ -22,7 +22,7 @@ func NewUser(url string) *user {
 }
 
 func (u *user) Exist(email string) (bool, error) {
-	url := fmt.Sprintf("%s/user?email=%s", u.url, email)
+	url := fmt.Sprintf("%s/user/exist?email=%s", u.url, email)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return false, ErrInternalNetwork
