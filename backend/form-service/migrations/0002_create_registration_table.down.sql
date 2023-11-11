@@ -1,2 +1,2 @@
 DROP TABLE IF EXISTS form.registration;
-DROP TYPE status;
+DROP TYPE IF EXISTS status;

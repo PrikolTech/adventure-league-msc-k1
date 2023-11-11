@@ -24,7 +24,7 @@ func Router(services Services) *chi.Mux {
 
 	mux.Route("/", func(r chi.Router) {
 		r.Route("/user", func(r chi.Router) {
-			r.Get("/", user.Exist)
+			r.Get("/exist", user.Exist)
 			r.Post("/authenticate", user.Authenticate)
 
 			r.With(auth).Get("/{id}", user.Get)
