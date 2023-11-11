@@ -40,7 +40,7 @@ class Api::LecturesController < ApplicationController
         Content.send_and_create(@lecture, content[:file])
       end
 
-      redirect_to @lecture.path
+      render json: @lecture, include: [contents: {except: [:content_type_id], include: [:content_type]}]
     else
       render json: {message: 'bad request', status: 400}
     end
@@ -49,8 +49,8 @@ class Api::LecturesController < ApplicationController
   def update
     @lecture = Lecture.find(params[:id])
 
-    if @lecture.update(homework_params)
-      redirect_to @lecture.path
+    if @lecture.update(lecture_params)
+      render json: @lecture, include: [contents: {except: [:content_type_id], include: [:content_type]}]
     else
       render json: {message: 'not updated', status: 400}
     end
