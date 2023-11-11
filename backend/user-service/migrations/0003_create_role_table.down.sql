@@ -1,2 +1,1 @@
-DROP TABLE IF EXISTS "user".data_role;
-DROP TABLE IF EXISTS "user".role;
+DROP TABLE IF EXISTS "user".data_role, "user".role;
