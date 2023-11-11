@@ -1,11 +1,11 @@
 [
   {
-    "upstream": "http://host.docker.internal:3001",
+    "upstream": "http://auth-server:3001",
     "includes": ["/token"],
     "excludes": []
   },
   {
-    "upstream": "http://host.docker.internal:3002",
+    "upstream": "http://user-server:3002",
     "includes": ["/user"],
     "excludes": ["/user/authenticate"]
   },

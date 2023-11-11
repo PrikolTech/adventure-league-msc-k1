@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -34,7 +33,6 @@ func NewReverseProxy() *reverseProxy {
 
 func (p *reverseProxy) Rewrite() func(*httputil.ProxyRequest) {
 	return func(pr *httputil.ProxyRequest) {
-		fmt.Println("accepted", pr.In.Method, pr.In.URL.Path)
 		for _, t := range p.targets {
 			match := &mux.RouteMatch{}
 			for _, exclude := range t.excludes {
