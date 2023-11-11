@@ -27,10 +27,15 @@ type JWTAccessGenerate struct {
 
 type Claims struct {
 	generates.JWTAccessClaims
-	Roles []string `json:"roles,omitempty"`
+	Roles []string `json:"roles"`
 }
 
 func (a *JWTAccessGenerate) Token(ctx context.Context, data *oauth2.GenerateBasic, isGenRefresh bool) (string, string, error) {
+	scope := data.TokenInfo.GetScope()
+	roles := make([]string, 0)
+	if scope != "" {
+		roles = strings.Split(scope, ",")
+	}
 	claims := &Claims{
 		generates.JWTAccessClaims{
 			jwt.StandardClaims{
@@ -39,7 +44,7 @@ func (a *JWTAccessGenerate) Token(ctx context.Context, data *oauth2.GenerateBasi
 				ExpiresAt: data.TokenInfo.GetAccessCreateAt().Add(data.TokenInfo.GetAccessExpiresIn()).Unix(),
 			},
 		},
-		strings.Split(data.TokenInfo.GetScope(), ","),
+		roles,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodES512, claims)
