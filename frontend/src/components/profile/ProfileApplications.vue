@@ -1,7 +1,10 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 // import TheButton from '@/components/layouts/TheButton.vue';
 import TheApplication from '@/components/profile/applications/TheApplication.vue'
+import { useUser } from '@/stores/user'
+
+const userStore = useUser()
 const courses = ref([
     {
         title: 'Финансовая грамотность',
@@ -10,6 +13,30 @@ const courses = ref([
         status: 'Рассмотрение заявки : 10 дней'
     },
 ])
+
+const getApplications = async () => {
+    try {
+        const url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration/${userStore.user.user_id}`;
+
+        const response = await fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            credentials: 'include'
+        });
+
+        console.log(response);
+        const data = await response.json();
+        console.log(data);
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+
+
+onMounted(() => {
+    getApplications()
+})
 </script>
 
 <template>
