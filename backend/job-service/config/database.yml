@@ -1,7 +1,7 @@
 default: &default
   adapter: postgresql
-  database: job_development
   encoding: unicode
+  database: job_development
   host: <%= ENV['POSTGRES_HOST'] %>
   username: postgres
   password: <%= ENV['POSTGRES_PASSWORD'] %>

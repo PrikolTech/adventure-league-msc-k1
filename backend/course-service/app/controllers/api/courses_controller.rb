@@ -3,10 +3,17 @@ class Api::CoursesController < ApplicationController
   COURSE_STARTED_ERROR = 'course is already started'
 
   def index
+    # puts "PARAMS #{params}"
     @courses = Course.all
 
-    if params[:user_id]
-      @courses = Course.find_by_user_id(params[:user_id])
+    if has_permission? []
+      if params[:user_id]
+        @courses = Course.find_by_user_id(user_id: params[:user_id])
+      end
+    else
+      if request_allowed?
+        @courses = Course.find_by_user_id(params[:user_id])
+      end
     end
 
     render json: @courses, except: [:education_form_id, :period_id, :course_type_id], include: {
@@ -18,6 +25,7 @@ class Api::CoursesController < ApplicationController
 
   def show
     @course = Course.find(params['id'])
+    
     render json: @course, except: [:education_form_id, :period_id, :course_type_id], include: {
       period: {except: :id},
       course_type: {except: :id},
@@ -26,6 +34,8 @@ class Api::CoursesController < ApplicationController
   end
 
   def create
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE]
+
     period = Period.create(
       starts_at: params['period']['starts_at'],
       ends_at: params['period']['ends_at']
@@ -55,6 +65,8 @@ class Api::CoursesController < ApplicationController
   end
 
   def update
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE]
+
     @course = Course.find(params[:id])
     
     if @course.update(course_params)
@@ -65,11 +77,15 @@ class Api::CoursesController < ApplicationController
   end
 
   def destroy
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE]
+
     @course = Course.find(params['id'])
     redirect_to @course.path
   end
 
   def add_user
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [EMPLOYEE_ROLE]
+
     course = Course.find(params[:course_id])
     groups = Group.where(course_id: params[:course_id])
     user_id = params[:user_id]
