@@ -23,3 +23,7 @@ type Course interface {
 type Auth interface {
 	Verify(token string) (string, []string, error)
 }
+
+type SMTP interface {
+	SendPassword(password string, to string) error
+}
