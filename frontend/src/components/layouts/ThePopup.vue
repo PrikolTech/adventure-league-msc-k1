@@ -2,77 +2,34 @@
 import TheModal from "../layouts/TheModal.vue";
 import { ref } from "vue";
 
+const props = defineProps({
+    data: {
+        type: Object,
+        required: true,
+    },
+    formData: {
+        type: Object,
+        required: true,
+    }
+})
+const emit = defineEmits(['sendForm'])
+
 const namePopup = 'mainForm'
-let popupData = ref([
-    {
-        name: 'ФИО *',
-        placeHolder: 'Иванов Иван Иванович',
-        type: 'input',
-        typeValye: 'text',
-        value: '',
-    },
-    {
-        name: 'Стаж *',
-        placeHolder: '10',
-        type: 'input',
-        typeValye: 'number',
-        value: '',
-    },
-    {
-        name: 'Email *',
-        placeHolder: 'pochta@mail.ru',
-        type: 'input',
-        typeValye: 'text',
-        value: '',
-    },
-    {
-        name: 'ФИО руководителя *',
-        placeHolder: 'Иванов Иван Иванович',
-        type: 'input',
-        typeValye: 'text',
-        value: '',
-    },
-    {
-        name: 'Подразделение *',
-        placeHolder: 'Placeholder',
-        type: 'input',
-        typeValye: 'text',
-        value: '',
-    },
-    {
-        name: 'Должность *',
-        placeHolder: 'Менеджер',
-        type: 'input',
-        typeValye: 'text',
-        value: '',
-    },
-    {
-        name: 'Личные достижения в компании * (за последние 12 месяцев)',
-        placeHolder: 'Напишите ваши достижения в компании...',
-        type: 'textarea',
-        typeValye: 'text',
-        value: '',
-    },
-    {
-        name: 'Мотивационное письмо *',
-        placeHolder: 'Напишите почему Вы хотите учиться...',
-        type: 'textarea',
-        typeValye: 'text',
-        value: '',
-    },
-])
+
+
 </script>
 
 <template>
     <the-modal
         :name="namePopup"
+        @send="emit('sendForm')"
     >
         <template v-slot:title>
             Заявка на программу
         </template>
         <div class="popup__list">
             <div class="field"
-                v-for="(field, index) of popupData" :key="index"
+                v-for="(field, index) of props.data" :key="index"
             >
                 <p>
                     {{ field.name }}
@@ -80,11 +37,11 @@ let popupData = ref([
                 <div class="input-w">
                     <input
                         :placeholder="field.placeHolder"
-                        :type="field.typeValye"
-                        v-model="field.value"
+                        :type="field.typeValue"
+                        v-model="props.formData[field.nameInput]"
                         v-if="field.type === 'input'"
                     >
-                    <textarea :placeholder="field.placeHolder" :type="field.typeValye" v-model="field.value" v-if="field.type === 'textarea'"></textarea>
+                    <textarea :placeholder="field.placeHolder" :type="field.typeValue" v-model="props.formData[field.nameInput]" v-if="field.type === 'textarea'"></textarea>
                 </div>
             </div>
         </div>

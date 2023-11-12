@@ -12,233 +12,16 @@ let filterSelect = ref('Все')
 let selectorIsActive = ref(false)
 let showCompleted = ref(false)
 
-// const courses = ref([
-//     {
-//         title: 'Финансовая грамотность',
-//         date: '06.11.23 - 10.01.24',
-//         format: 'Онлайн',
-//         lecture: {
-//             passed: 0,
-//             total: 5,
-//         },
-//         tasks: {
-//             passed: 0,
-//             total: 3,
-//         },
-//         jobs: [
-//             {
-//                 type: 'lecture',
-//                 text: 'Урок 1. Знакомство с компонентами.',
-//                 completed: 'true',
-//             },
-//             {
-//                 type: 'home',
-//                 text: 'ДЗ 1. Считаем свой месячный расход.',
-//                 completed: 'true',
-//             },
-//             {
-//                 type: 'lecture',
-//                 text: 'Урок 2. Знакомство с компонентами.',
-//                 completed: 'false',
-//             },
-//             {
-//                 type: 'home',
-//                 text: 'ДЗ 2. Считаем свой месячный расход.',
-//                 completed: 'true',
-//             },
-//             {
-//                 type: 'lecture',
-//                 text: 'Урок 3. Знакомство с компонентами.',
-//                 completed: 'false',
-//             },
-//             {
-//                 type: 'home',
-//                 text: 'ДЗ 3. Считаем свой месячный расход.',
-//                 completed: 'false',
-//             },
-//             {
-//                 type: 'lecture',
-//                 text: 'Урок 4. Знакомство с компонентами.',
-//                 completed: 'false',
-//             },
-//             {
-//                 type: 'home',
-//                 text: 'ДЗ 4. Считаем свой месячный расход.',
-//                 completed: 'false',
-//             },
-//         ]
-//     },
-//     {
-//         title: 'Дизайн система как смысл жизни',
-//         date: '06.11.23 - 10.01.24',
-//         format: 'Онлайн',
-//         lecture: {
-//             passed: 3,
-//             total: 3,
-//         },
-//         tasks: {
-//             passed: 5,
-//             total: 5,
-//         },
-//         jobs: [
-//             {
-//                 type: 'lecture',
-//                 text: 'Урок 1. Знакомство с компонентами.',
-//                 completed: 'true',
-//             },
-//             {
-//                 type: 'home',
-//                 text: 'ДЗ 1. Считаем свой месячный расход.',
-//                 completed: 'true',
-//             },
-//             {
-//                 type: 'lecture',
-//                 text: 'Урок 2. Знакомство с компонентами.',
-//                 completed: 'true',
-//             },
-//             {
-//                 type: 'home',
-//                 text: 'ДЗ 2. Считаем свой месячный расход.',
-//                 completed: 'true',
-//             },
-//             {
-//                 type: 'lecture',
-//                 text: 'Урок 3. Знакомство с компонентами.',
-//                 completed: 'true',
-//             },
-//             {
-//                 type: 'home',
-//                 text: 'ДЗ 3. Считаем свой месячный расход.',
-//                 completed: 'true',
-//             },
-//             {
-//                 type: 'lecture',
-//                 text: 'Урок 4. Знакомство с компонентами.',
-//                 completed: 'true',
-//             },
-//             {
-//                 type: 'home',
-//                 text: 'ДЗ 4. Считаем свой месячный расход.',
-//                 completed: 'true',
-//             },
-//         ]
-//     },
-//     {
-//         title: 'Дизайн система как смысл жизни',
-//         date: '06.11.23 - 10.01.24',
-//         format: 'Онлайн',
-//         lecture: {
-//             passed: 4,
-//             total: 9,
-//         },
-//         tasks: {
-//             passed: 2,
-//             total: 3,
-//         },
-//         jobs: [
-//             {
-//                 type: 'lecture',
-//                 text: 'Урок 1. Знакомство с компонентами.',
-//                 completed: 'true',
-//             },
-//             {
-//                 type: 'home',
-//                 text: 'ДЗ 1. Считаем свой месячный расход.',
-//                 completed: 'true',
-//             },
-//             {
-//                 type: 'lecture',
-//                 text: 'Урок 2. Знакомство с компонентами.',
-//                 completed: 'false',
-//             },
-//             {
-//                 type: 'home',
-//                 text: 'ДЗ 2. Считаем свой месячный расход.',
-//                 completed: 'true',
-//             },
-//             {
-//                 type: 'lecture',
-//                 text: 'Урок 3. Знакомство с компонентами.',
-//                 completed: 'false',
-//             },
-//             {
-//                 type: 'home',
-//                 text: 'ДЗ 3. Считаем свой месячный расход.',
-//                 completed: 'false',
-//             },
-//             {
-//                 type: 'lecture',
-//                 text: 'Урок 4. Знакомство с компонентами.',
-//                 completed: 'false',
-//             },
-//             {
-//                 type: 'home',
-//                 text: 'ДЗ 4. Считаем свой месячный расход.',
-//                 completed: 'false',
-//             },
-//         ]
-//     },
-//     {
-//         title: 'Управление командой',
-//         date: '06.11.23 - 10.01.24',
-//         format: 'Онлайн',
-//         lecture: {
-//             passed: 4,
-//             total: 9,
-//         },
-//         tasks: {
-//             passed: 2,
-//             total: 3,
-//         },
-//         jobs: [
-//             {
-//                 type: 'lecture',
-//                 text: 'Урок 1. Знакомство с компонентами.',
-//                 completed: 'true',
-//             },
-//             {
-//                 type: 'home',
-//                 text: 'ДЗ 1. Считаем свой месячный расход.',
-//                 completed: 'true',
-//             },
-//             {
-//                 type: 'lecture',
-//                 text: 'Урок 2. Знакомство с компонентами.',
-//                 completed: 'false',
-//             },
-//             {
-//                 type: 'home',
-//                 text: 'ДЗ 2. Считаем свой месячный расход.',
-//                 completed: 'true',
-//             },
-//             {
-//                 type: 'lecture',
-//                 text: 'Урок 3. Знакомство с компонентами.',
-//                 completed: 'false',
-//             },
-//             {
-//                 type: 'home',
-//                 text: 'ДЗ 3. Считаем свой месячный расход.',
-//                 completed: 'false',
-//             },
-//             {
-//                 type: 'lecture',
-//                 text: 'Урок 4. Знакомство с компонентами.',
-//                 completed: 'false',
-//             },
-//             {
-//                 type: 'home',
-//                 text: 'ДЗ 4. Считаем свой месячный расход.',
-//                 completed: 'false',
-//             },
-//         ]
-//     },
-// ])
+
 let filteredCourses = ref([])
 let courses = ref([])
 const getUserCourse = async() => {
+    let url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses`
+    if(userStore.checkRole('student')) {
+        url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses?user_id=${userStore.user.id}`
+    }
     try {
-        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses?user_id=${userStore.user.id}`, {
+        const response = await fetch(url, {
             method: "GET",
         })
         
@@ -319,12 +102,13 @@ onMounted(() => {
                     <the-switcher
                         :name="'showCompleted'"
                         v-model="showCompleted"
+                        v-if="falss"
                     >
                         Скрыть пройденные
                     </the-switcher>
                 </div>
                 <div class="text" v-else>
-                    У вас еще нет курсов
+                    Список курсов пуст
                 </div>
                 <div class="profile__courses-header">
                     

@@ -9,6 +9,7 @@ import ProfileCourses from '@/components/profile/courses/ProfileCourses.vue'
 import ProfileTasks from '@/components/profile/ProfileTasks.vue'
 import ProfileMe from '@/components/profile/ProfileMe.vue'
 import ProfileApplications from '@/components/profile/ProfileApplications.vue'
+import ApplicationModeration from '@/components/profile/applications/ApplicationModeration.vue' 
 import ProfileSafety from '@/components/profile/ProfileSafety.vue'
 import ProfileSettings from '@/components/profile/ProfileSettings.vue'
 
@@ -17,7 +18,6 @@ import MeMarks from '@/components/profile/me/MeMarks.vue'
 import MeComments from '@/components/profile/me/MeComments.vue'
 
 import CourseView from '@/views/CourseView.vue'
-// import Cookies from 'js-cookie';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -84,9 +84,16 @@ const router = createRouter({
           component: ProfileCourses
         },
         {
-          path: 'applications',
-          name: 'profile/applications',
-          component: ProfileApplications
+          path: 'applications/',
+          name: 'profile/applications/',
+          component: ProfileApplications,
+          children: [
+            {
+              path: 'ApplicationModeration/:id',
+              name: 'profile/applications/ApplicationModeration/',
+              component: ApplicationModeration
+            },
+          ]
         },
         {
           path: 'safety',

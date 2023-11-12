@@ -20,9 +20,12 @@ function getRandomNumberInRange(min, max) {
 
 const lectures = ref([])
 const getCourseInfo = async () => {
-    console.log(router)
+    let url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${props.course.id}/lectures`
+    if(userStore.checkRole('student')) {
+        url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${props.course.id}/lectures?user_id=${userStore.user.id}`
+    }
     try {
-        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${props.course.id}/lectures?user_id=${userStore.user.id}`, {
+        const response = await fetch(url, {
             method: "GET",
         })
         

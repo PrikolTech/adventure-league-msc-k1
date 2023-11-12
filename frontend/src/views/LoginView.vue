@@ -8,7 +8,7 @@ import { useAlerts } from '@/stores/alerts'
 const userStore = useUser()
 const alertsStore = useAlerts()
 // import Cookies from 'js-cookie';
-let email = ref('test@mail.ru')
+let email = ref('student@mail.ru')
 let password = ref('aA$123123')
 let passwordIsHidden = ref('password')
 
@@ -35,10 +35,10 @@ const login = async () => {
 
         if (response.ok) {
             const data = await response.json();
-            console.log(data)
+            console.log('data',data)
             userStore.user = {}
-            userStore.user.access_token = data.access_token
-            userStore.user.token_type = data.token_type
+            userStore.user.access = data.access
+            userStore.user.user_id = data.user_id
             userStore.getUserInfo()
             router.push('/')
         } else {

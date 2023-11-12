@@ -35,7 +35,7 @@ const deleteFile = () => {
 
 // const sendFile = async () => {
 //     try {
-//         const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/api/jobs/${job_id}/homeworks/${homework_id}/homework_solutions `, {
+//         const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${job_id}/homeworks/${homework_id}/homework_solutions `, {
 //             method: "POST",
 //             headers: {
 //                 'Content-Type': 'application/json'

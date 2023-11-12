@@ -34,7 +34,7 @@ const timeComment = computed(() => {
                     :last_name="userStore.user.last_name"
                 />
                 <the-avatar
-                    v-else
+                    v-else-if="userStore.user.user_id === props.comment.user_id"
                     :first_name="props.comment.first_name"
                     :last_name="props.comment.last_name"
                 />
@@ -42,9 +42,11 @@ const timeComment = computed(() => {
                     <!-- Вера Красулина -->
                     {{ props.comment.first_name }} {{ props.comment.last_name }}
                 </p>
-                <span v-if="false">
-                    <!-- Студент -->
-                    {{ props.comment.type }}
+                <span v-if="userStore.user.user_id !== props.comment.user_id">
+                    Преподаватель
+                </span>
+                <span v-if="userStore.checkRole('student') && userStore.user.user_id === props.comment.user_id">
+                    Студент
                 </span>
             </div>
             <p class="comments__item-date">

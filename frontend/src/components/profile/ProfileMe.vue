@@ -39,7 +39,9 @@ const userStore = useUser()
                                 </svg>
                             </the-button>
                         </div>
-                        <div class="profile__me-groups">
+                        <div class="profile__me-groups"
+                            v-if="userStore.checkRole('student')"
+                        >
                             <p>
                                 Студент группы:
                             </p>
@@ -52,7 +54,9 @@ const userStore = useUser()
                         </div>
                     </div>
                 </div>
-                <div class="profile__me-tabs">
+                <div class="profile__me-tabs"
+                    v-if="userStore.checkRole('student')"
+                >
                     <div class="profile__me-tabs-header">
                         <router-link to="/profile/me/meCourses">
                             Курсы
