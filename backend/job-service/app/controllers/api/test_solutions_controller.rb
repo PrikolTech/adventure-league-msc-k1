@@ -2,25 +2,37 @@ class Api::TestSolutionsController < ApplicationController
   
   # Формируется в момент отправки всех ответов на сервер
   def index
-    @solutions = TestSolution.where(test_id: params[:test_id])
-    @solutions = @solutions.where(user_id: params[:user_id]) if params[:user_id]
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE, TEACHER_ROLE, STUDENT_ROLE]
+
+    @solutions = []
+    if has_permission? [TUTOR_ROLE, TEACHER_ROLE]
+      @solutions = TestSolution.where(test_id: params[:test_id])
+      @solutions = @solutions.where(user_id: params[:user_id]) if params[:user_id]
+    else
+      @solutions = @solutions.where(user_id: params[:sender_id]) if params[:sender_id] 
+    end
+
     render json: @solutions, include: [:test_result]
   end
 
   def show
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE, TEACHER_ROLE, STUDENT_ROLE]
+
     @solution = TestSolution.find(params[:id])
+
+    return json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE, TEACHER_ROLE] && request_allowed?
 
     render json: @solution, include: [:test_result, :solution_answers]
   end
 
   def create
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE, TEACHER_ROLE, STUDENT_ROLE]
+
     @solution = TestSolution.new(test_solution_params)
 
-    puts "AAAAAAAAAAAAAA"
     if @solution
       @solution.test_id = params[:test_id]
       @solution.save
-      puts "AAAAAAAAAAAAAA"
       params[:answers].each do |answer|
         create_answer answer
       end
@@ -29,9 +41,6 @@ class Api::TestSolutionsController < ApplicationController
       # @solution.test_result_id = TestResult.create(score: @solution.check_correctness, test_solution_id = @solution.id)
       test_result = TestResult.create(score: @solution.check_correctness, test_solution_id: @solution.id)
 
-      puts "TEST RESULT #{test_result.score}"
-      puts "TEST RESULT #{test_result.test_solution}"
-      puts "TEST RESULT #{@solution.test_result}"
       # test_result
       # redirect_to @solution.path
       render json: @solution, include: [:test_result, :solution_answers]
@@ -41,6 +50,8 @@ class Api::TestSolutionsController < ApplicationController
   end
 
   def destroy
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? []
+
     @solution = TestSolution.find(params[:id])
     @solution.solution_answers.each do |answer|
       answer.destroy

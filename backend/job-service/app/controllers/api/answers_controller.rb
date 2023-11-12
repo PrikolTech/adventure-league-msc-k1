@@ -2,16 +2,22 @@ class Api::AnswersController < ApplicationController
   CORRECT_EXIST_ERROR = 'correct answer already exist'.freeze
 
   def index
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE, TEACHER_ROLE, STUDENT_ROLE]
+
     @answers = Answer.where(question_id: params[:question_id])
     render json: @answers
   end
 
   def show
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE, TEACHER_ROLE, STUDENT_ROLE]
+
     @answer = Answer.find(params[:id])
     render json: @answer
   end
 
   def create
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TEACHER_ROLE]
+
     return render json: {message: CORRECT_EXIST_ERROR, status: 409} unless create_available?
 
     @answer = Answer.new(answer_params)
@@ -27,6 +33,8 @@ class Api::AnswersController < ApplicationController
   end
 
   def updated
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TEACHER_ROLE]
+
     @answer = Answer.find(params[:id])
 
     return render json: {message: CORRECT_EXIST_ERROR, status: 409} unless create_available?
@@ -39,6 +47,8 @@ class Api::AnswersController < ApplicationController
   end
 
   def destroy
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TEACHER_ROLE]
+
     @answer = Answer.find(params[:id])
     @answer.destroy
   end

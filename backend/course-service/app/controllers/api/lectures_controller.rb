@@ -1,7 +1,9 @@
 class Api::LecturesController < ApplicationController
   def index
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE, TEACHER_ROLE, STUDENT_ROLE]
+
     @lectures = Lecture.where(course_id: params[:course_id])
-    if params[:user_id]
+    if request_allowed?
       user_id = params[:user_id]
 
       courses = Course.find_by_user_id(user_id)
@@ -17,18 +19,22 @@ class Api::LecturesController < ApplicationController
   end
 
   def show
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE, TEACHER_ROLE, STUDENT_ROLE]
+
     @lecture = Lecture.find(params[:id])
-    if params[:user_id]
+    if request_allowed?
       user_id = params[:user_id]
-      UserViews.create(user_id: user_id, lecture_id: params[:id]) if UserViews.find_by(user_id: user_id, lecture_id: params[:id]).nil?
 
       return { status: 403 } unless @lecture.available_for?(user_id)
+      UserViews.create(user_id: user_id, lecture_id: params[:id]) if UserViews.find_by(user_id: user_id, lecture_id: params[:id]).nil?
     end
     
     render json: @lecture, include: [contents: {except: [:content_type_id], include: [:content_type]}]
   end
 
   def create
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE, TEACHER_ROLE]
+
     @lecture = Lecture.create(lecture_params)
 
     if @lecture
@@ -47,6 +53,8 @@ class Api::LecturesController < ApplicationController
   end
 
   def update
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE, TEACHER_ROLE]
+
     @lecture = Lecture.find(params[:id])
 
     if @lecture.update(lecture_params)
@@ -57,6 +65,8 @@ class Api::LecturesController < ApplicationController
   end
 
   def destroy
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE, TEACHER_ROLE]
+
     @lecture = Lecture.find(params['id'])
     @lecture.destroy
   end

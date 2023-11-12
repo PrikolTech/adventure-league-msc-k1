@@ -1,22 +1,28 @@
 class Api::JobsController < ApplicationController
   def index
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE, TEACHER_ROLE, STUDENT_ROLE]
+
     @jobs = Job.all
 
-    # Intercommunication::BaseRetriever.get('http://172.20.0.1:3003/api/courses')
+    # TODO: Check user access to job's lection!!!!!!!!!!!!!!!
     if params[:lecture_id]
-      @jobs = @jobs.where(lecture_id: params[:lecture_id])
+      @jobs = Job.where(lecture_id: params[:lecture_id])
     end
 
     render json: @jobs, include: [:tests, :homeworks]
   end
 
   def show
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE, TEACHER_ROLE, STUDENT_ROLE]
+
     @job = Job.find(params[:id])
 
-    render json: @job, include: :tests
+    render json: @job, include: [:tests, :homeworks]
   end
 
   def create
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TEACHER_ROLE]
+
     @job = Job.create(job_params)
     
     if @job
@@ -26,7 +32,9 @@ class Api::JobsController < ApplicationController
     end
   end
 
-  def update 
+  def update
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TEACHER_ROLE]
+    
     @job = Job.find(params[:id])
 
     if @job.update(job_params)
@@ -37,6 +45,8 @@ class Api::JobsController < ApplicationController
   end
 
   def destroy
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TEACHER_ROLE]
+    
     @job = Job.find(params[:id])
     @job.destroy
   end
