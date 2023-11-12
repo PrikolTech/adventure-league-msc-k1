@@ -78,6 +78,7 @@ export const useUser = defineStore('user', () => {
     }
 
     function checkRole(roleName) {
+        if(user.value)
         return user.value.roles.some(role => role.title === roleName)
     }
     //временная функция для заполнения данных

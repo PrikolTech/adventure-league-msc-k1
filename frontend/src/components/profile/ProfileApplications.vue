@@ -1,8 +1,12 @@
 <script setup>
 import { onMounted, ref } from "vue";
-// import TheButton from '@/components/layouts/TheButton.vue';
 import TheApplication from '@/components/profile/applications/TheApplication.vue'
 import { useUser } from '@/stores/user'
+
+import { useRoute, useRouter } from 'vue-router'
+const route = useRoute()
+const router = useRouter()
+
 
 const userStore = useUser()
 const applications = ref([
@@ -57,6 +61,17 @@ const getAllCourses = async () => {
     }
 }
 
+const showApplicationList = () => {
+    if(userStore.checkRole('student')) {
+        return true
+    } else if(userStore.checkRole('employee')) {
+        if(route.params.id) {
+            return false
+        } else {
+            return true
+        }
+    }
+}
 
 onMounted(() => {
     if(userStore.checkRole('employee')) {
@@ -80,17 +95,20 @@ onMounted(() => {
 
             </div>
             <div class="applications__list"
-                v-if="applications.length"
+                v-if="applications.length && showApplicationList()"
             >
                 <the-application
                     v-for="(course, index) of applications" :key="index" :course="course"
                 />
             </div>
             <div class="text"
-                v-else
+                v-else-if="showApplicationList()"
             >
                 Список заявок пуст
             </div>
+            <RouterView
+                v-if="userStore.checkRole('employee')"
+            />
         </div>
     </div>
 </template>

@@ -121,7 +121,7 @@ onMounted(() => {
             </div>
         </div>
     </div>
-    <div class="me__courses-item"
+    <router-link :to="`/profile/applications/ApplicationModeration/${props.course.id}`" class="me__courses-item"
         v-if="userStore.checkRole('employee')"
     >
         <img class="pic" src="@/assets/images/program-finance.png" v-if="photoNumber === 0">
@@ -146,7 +146,7 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-    </div>
+    </router-link>
 </template>
 
 <style lang="scss" scoped>
