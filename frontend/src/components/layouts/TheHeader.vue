@@ -66,6 +66,12 @@ const initialsUser = computed(() => {
                                 <router-link  to="/profile/me/meCourses">
                                     Профиль
                                 </router-link>
+                                <router-link  to="/profile/courses">
+                                    Курсы
+                                </router-link>
+                                <router-link  to="/profile/courses">
+                                    Задания
+                                </router-link>
                                 <router-link  to="/profile/settings">
                                     Настройки
                                 </router-link>

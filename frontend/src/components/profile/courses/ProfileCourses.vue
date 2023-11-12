@@ -17,13 +17,22 @@ let showCompleted = ref(false)
 let filteredCourses = ref([])
 let courses = ref([])
 const getUserCourse = async() => {
+    if(userStore.checkRole('enrollee')) {
+        if(!userStore.checkRole('student')) {
+            return
+        }
+    }
     let url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses`
     if(userStore.checkRole('student')) {
-        url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses?user_id=${userStore.user.id}`
+        url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses`
     }
     try {
         const response = await fetch(url, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         })
         
         const data = await response.json()

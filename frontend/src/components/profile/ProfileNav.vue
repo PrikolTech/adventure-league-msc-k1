@@ -47,7 +47,7 @@ const props = defineProps({
                 </span>
             </router-link>
             <router-link to="/profile/applications"
-                v-if="(userStore.checkRole('student') || userStore.checkRole('employee'))"
+                v-if="(userStore.checkRole('student') || userStore.checkRole('enrollee') || userStore.checkRole('employee'))"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
                     <mask id="path-1-inside-1_1902_2633" fill="white">

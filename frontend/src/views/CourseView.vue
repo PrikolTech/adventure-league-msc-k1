@@ -51,6 +51,10 @@ const getCourseInfo = async () => {
         
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${courseID}`, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         })
 
         const data = await response.json()
@@ -93,14 +97,19 @@ const getCourseLessons = async () => {
     try {
         const response = await fetch(url, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
+            // credentials: 'include',
         })
         
         const data = await response.json()
+        console.log('лекции',data)
         if(course.value.lessons) {
             course.value.lessons.length = 0
         }
         course.value.lessons = [...data]
-        console.log('лекции',data)
     } catch(err) {
         console.error(err)
     }
@@ -116,6 +125,10 @@ const getLesson = async (id) => {
     try {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${course.value.id}/lectures/${lessonID}`, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         })
         
         const data = await response.json()
@@ -141,6 +154,10 @@ const getLessonFiles = async (lessonID) => {
     try {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${course.value.id}/lectures/${lessonID}/contents`, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         })
         
         const data = await response.json()
@@ -158,6 +175,10 @@ const getTestLesson = async (lessonID) => {
     try {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${lessonID}/tests`, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         });
 
         const data = await response.json()
@@ -172,6 +193,10 @@ const getHomeLesson = async (lessonID) => {
     try {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${lessonID}/homeworks`, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         });
         console.log('homes', response)
         const data = await response.json()
@@ -304,8 +329,9 @@ const deleteFile = async(fileID) => {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${courseID}/lectures/${currentLesson.value.id}/contents/${fileID} `, {
             method: "DELETE",
             headers: {
-                mode: 'cors'
-            }
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         });
         console.log('Удален файл', response)
         if(response.ok) {
