@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	cryptoRand "crypto/rand"
-	"fmt"
 	"form-service/internal/entity"
 	"form-service/internal/net"
 	"form-service/internal/repo"
@@ -86,26 +85,22 @@ func (r *registration) Update(data entity.Registration, token string) (*entity.R
 		status := *data.Status
 		switch status {
 		case entity.Acccepted, entity.Approved:
-			fmt.Println("before getOrCreate")
 			user, err := r.getOrCreateUser(registration, token)
 			if err != nil {
 				return nil, err
 			}
 
-			fmt.Println("before appendRole")
 			err = r.appendRole(user, entity.Enrollee, token)
 			if err != nil {
 				return nil, err
 			}
 
 			if status == entity.Approved {
-				fmt.Println("before CourseAppend")
 				err = r.net.Course.Append(user.ID, *registration.CourseID, token)
 				if err != nil {
 					return nil, err
 				}
 
-				fmt.Println("before appendRole [x2]")
 				err = r.appendRole(user, entity.Student, token)
 				if err != nil {
 					return nil, err
@@ -113,7 +108,6 @@ func (r *registration) Update(data entity.Registration, token string) (*entity.R
 			}
 		}
 
-		fmt.Println("before UpdateStatus")
 		registration, err = r.repo.UpdateStatus(context.Background(), registration.ID, status)
 		if err != nil {
 			return nil, err

@@ -3,6 +3,7 @@ package entity
 import (
 	"errors"
 	"fmt"
+	"net/mail"
 	"time"
 
 	"github.com/gofrs/uuid/v5"
@@ -75,6 +76,10 @@ func (f *Registration) Validate() error {
 
 	if f.Email == nil {
 		return &RequiredError{"email"}
+	}
+
+	if _, err := mail.ParseAddress(*f.Email); err != nil {
+		return ErrEmailInvalid
 	}
 
 	if f.Birthdate == nil {
