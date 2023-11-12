@@ -1,36 +1,43 @@
 [
   {
     "upstream": "http://auth-server:3001",
+    "prefix": "",
     "includes": ["/token"],
     "excludes": []
   },
   {
     "upstream": "http://user-server:3002",
+    "prefix": "",
     "includes": ["/user"],
     "excludes": ["/user/authenticate"]
   },
   {
     "uptream": "http://host.docker.internal:3003",
+    "prefix": "",
     "includes": ["/api/courses", "/api/groups"],
     "excludes": []
   },
   {
     "uptream": "http://host.docker.internal:3004",
+    "prefix": "",
     "includes": ["/api/jobs"],
     "excludes": []
   },
   {
     "uptream": "http://host.docker.internal:3005",
+    "prefix": "",
     "includes": ["/api/comments"],
     "excludes": []
   },
   {
-    "upstream": "http://host.docker.internal:3007",
-    "includes": ["/registration"],
+    "upstream": "http://form-server:3007",
+    "prefix": "/form",
+    "includes": ["/"],
     "excludes": []
   },
   {
     "uptream": "http://host.docker.internal:3008",
+    "prefix": "",
     "includes": ["/api/files"],
     "excludes": ["/api/files/upload"]
   }

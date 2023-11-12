@@ -19,7 +19,7 @@ func main() {
 
 	proxy := internal.NewReverseProxy()
 	for _, target := range targets {
-		proxy.AddTarget(target.Includes, target.Excludes, target.Upstream)
+		proxy.AddTarget(target.Includes, target.Excludes, target.Upstream, target.Prefix)
 	}
 
 	server := internal.NewServer(proxy, internal.ServerOptions{
@@ -27,6 +27,6 @@ func main() {
 		Origins: cfg.HTTP.Origins,
 	})
 
-	log.Printf("server created with address %s", server.Addr)
+	log.Printf("server created with address %s\n", server.Addr)
 	log.Fatalf("server down: %s", server.ListenAndServe())
 }

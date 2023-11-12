@@ -32,6 +32,7 @@ func NewConfig() (*Config, error) {
 
 type TargetConfig struct {
 	Upstream string   `json:"upstream"`
+	Prefix   string   `json:"prefix"`
 	Includes []string `json:"includes"`
 	Excludes []string `json:"excludes"`
 }

@@ -4,12 +4,13 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
 
 type ReverseProxy interface {
-	AddTarget(include []string, exclude []string, upstream string) error
+	AddTarget(include []string, exclude []string, upstream string, prefix string) error
 	Handler() http.Handler
 }
 
@@ -22,6 +23,7 @@ type Target struct {
 	includes []*mux.Router
 	excludes []*mux.Router
 	upstream *url.URL
+	prefix string
 }
 
 func NewReverseProxy() *reverseProxy {
@@ -42,6 +44,7 @@ func (p *reverseProxy) Rewrite() func(*httputil.ProxyRequest) {
 			}
 			for _, include := range t.includes {
 				if include.Match(pr.In, match) {
+					pr.Out.URL.Path = strings.TrimPrefix(pr.In.URL.Path, t.prefix)
 					pr.SetURL(t.upstream)
 					return
 				}
@@ -50,7 +53,7 @@ func (p *reverseProxy) Rewrite() func(*httputil.ProxyRequest) {
 	}
 }
 
-func (p *reverseProxy) AddTarget(include []string, exclude []string, upstream string) error {
+func (p *reverseProxy) AddTarget(include []string, exclude []string, upstream string, prefix string) error {
 	url, err := url.Parse(upstream)
 	if err != nil {
 		return err
@@ -61,13 +64,13 @@ func (p *reverseProxy) AddTarget(include []string, exclude []string, upstream st
 
 	for _, pattern := range include {
 		router := mux.NewRouter()
-		router.PathPrefix(pattern)
+		router.PathPrefix(prefix + pattern)
 		includeRouters = append(includeRouters, router)
 	}
 
 	for _, pattern := range exclude {
 		router := mux.NewRouter()
-		router.PathPrefix(pattern)
+		router.PathPrefix(prefix + pattern)
 		excludeRouters = append(excludeRouters, router)
 	}
 
@@ -75,6 +78,7 @@ func (p *reverseProxy) AddTarget(include []string, exclude []string, upstream st
 		includes: includeRouters,
 		excludes: excludeRouters,
 		upstream: url,
+		prefix: prefix,
 	})
 
 	return nil

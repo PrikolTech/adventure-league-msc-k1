@@ -1,18 +1,18 @@
 services:
-  server:
+  form-server:
     container_name: form-server
     build: .
     depends_on:
-      db:
+      form-db:
         condition: service_healthy
     ports:
       - 3007:3007
     env_file:
       - ./configs/docker.dev.env
     environment:
-      POSTGRES_URI: postgres://postgres:test@db:5432/postgres?search_path=form
+      POSTGRES_URI: postgres://postgres:test@form-db:5432/postgres?search_path=form
 
-  db:
+  form-db:
     container_name: form-db
     image: postgres:alpine
     ports:
