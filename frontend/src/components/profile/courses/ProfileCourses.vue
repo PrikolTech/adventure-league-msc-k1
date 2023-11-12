@@ -5,6 +5,10 @@ import TheSort from "@/components/layouts/TheSort.vue";
 import TheSwitcher from "@/components/layouts/TheSwitcher.vue";
 import { useUser } from '@/stores/user'
 import TheButton from '@/components/layouts/TheButton.vue';
+import { usePopups } from '@/stores/popups';
+import CreateCourse from "../../course/CreateCourse.vue";
+
+const popupStore = usePopups()
 
 const userStore = useUser()
 const sortSelectors = ref(['Все'])
@@ -24,7 +28,7 @@ const getUserCourse = async() => {
     }
     let url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses`
     if(userStore.checkRole('student')) {
-        url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses`
+        url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses?user_id=${userStore.user.id}`
     }
     try {
         const response = await fetch(url, {
@@ -39,6 +43,8 @@ const getUserCourse = async() => {
 
 
         console.log(data)
+        filteredCourses.value.length = 0
+        courses.value.length = 0
         filteredCourses.value = [...data]
         courses.value = [...data]
 
@@ -84,6 +90,11 @@ const filterCourses = (filterValue) => {
 
 }
 
+const openPopupCreateCourse = () => {
+    popupStore.disableScroll('createCourse')
+
+}
+
 watch(showCompleted, () => {
     filterCourses()
 });
@@ -120,6 +131,7 @@ onMounted(() => {
                         :styles="['btn_red']"
                         :type="'button'"
                         v-if="userStore.checkRole('tutor')"
+                        @click="openPopupCreateCourse()"
                     >
                         Создать курс
                     </the-button>
@@ -138,6 +150,9 @@ onMounted(() => {
             </div>
         </div>
     </div>
+    <create-course
+        @createdCourse="getUserCourse()"
+    />
 </template>
 
 <style lang="scss" scoped>

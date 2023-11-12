@@ -2,11 +2,13 @@
 import TheModal from "../layouts/TheModal.vue";
 import { ref } from 'vue';
 import { useRoute } from 'vue-router'
+import { useUser } from '@/stores/user'
 
 import { useAlerts } from '@/stores/alerts'
 
 const emit = defineEmits(['createdLesoon'])
 
+const userStore = useUser()
 const alertsStore = useAlerts()
 const namePopup = 'createLesson'
 const route = useRoute()
@@ -24,7 +26,8 @@ const createLesson = async () => {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${route.params.id}/lectures`, {
             method: "POST",
             headers: {
-                'Content-Type': 'application/json' // Specify content type as JSON
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userStore.user.access}`,
             },
             body: JSON.stringify({
                 name: nameLesson.value,

@@ -80,12 +80,13 @@ const quantityOfPeople = computed(() => {
 })
 
 const doStatusBlockInfo = () => {
-    if(props.course.status = 'accepted') {
+    console.log(props.course.status)
+    if(props.course.status === 'accepted') {
         steps.value = [...[{text: 'Рассмотрение',active: true},{text: 'Решение',active: false}]]
-    } else if(props.course.status = 'accepted') {
+    } else if(props.course.status === 'approved') {
         steps.value = [...[{text: 'Рассмотрение',active: false},{text: 'Решение',active: false},{text: 'Принято',active: true}]]
     }
-    else if(props.course.status = 'rejected') {
+    else if(props.course.status === 'rejected') {
         steps.value = [...[{text: 'Рассмотрение',active: false},{text: 'Решение',active: false},{text: 'Отклонено',active: true}]]
     }
 }

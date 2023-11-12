@@ -13,7 +13,7 @@ const props = defineProps({
         required: true,
     }
 })
-
+const emit = defineEmits('updateStatus')
 let isHidden = ref(true)
 
 const accept = async() => {
@@ -24,6 +24,9 @@ const accept = async() => {
             status = 'accepted'
         }
         if(props.application.status === 'accepted') {
+            status = 'approved'
+        }
+        if(props.application.status === 'rejected') {
             status = 'approved'
         }
         if(props.application.status === 'approved') {
@@ -44,7 +47,41 @@ const accept = async() => {
 
     const data = await response.json();
     if(response.ok) {
-        console.log('Заявка принята!', data)
+        emit('updateStatus', data)
+        if(props.application.status === 'created') {
+            alertsStore.addAlert('Заявка принята!', 'success')
+        }
+        if(props.application.status === 'accepted') {
+            status = 'approved'
+            alertsStore.addAlert('Заявка одобрена!', 'success')
+        }
+
+    }
+    
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+const reject = async() => {
+    try {
+        const url = `${import.meta.env.VITE_SERVICE_FORM_URL}/form/registration/${props.application.id}`
+        const response = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': `Bearer ${userStore.user.access}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "status": 'rejected',
+        }),
+        mode: 'cors',
+    });
+
+    const data = await response.json();
+    if(response.ok) {
+        emit('updateStatus', data)
+        console.log('Заявка отклонена!', data)
         alertsStore.addAlert('Заявка принята!', 'success')
     }
     
@@ -52,6 +89,8 @@ const accept = async() => {
     console.error(err);
   }
 }
+
+
 </script>   
 
 <template>
@@ -173,7 +212,7 @@ const accept = async() => {
                     @click="accept()"
                     v-if="props.application.status !== 'approved'"
                 >
-                    <span v-if="props.application.status === 'created'">
+                    <span v-if="props.application.status === 'created' || props.application.status === 'rejected'">
                         Принять 
                     </span>
                     <span v-if="props.application.status === 'accepted'">
@@ -183,8 +222,8 @@ const accept = async() => {
                 <the-button
                     :styles="['btn_red-border']"
                     :type="'button'"
-
-                    @click="Refuse()"
+                    @click="reject()"
+                    v-if="props.application.status !== 'approved' && props.application.status !== 'rejected'"
                 >
                     Отказать
                 </the-button>

@@ -31,6 +31,8 @@ const getCourseApplications = async () => {
   }
 }
 
+
+
 const courseInfo = ref({})
 const getCourseInfo = async() => {
     const courseID = route.params.id 
@@ -50,8 +52,18 @@ const getCourseInfo = async() => {
   }
 }
 
+const updateStatus = (application) => {
+    console.log('test', application);
+    const index = applications.value.findIndex(element => element.id === application.id);
+    if (index !== -1) {
+        applications.value[index] = { ...applications.value[index], ...application };
+        console.log(applications.value[index]);
+    }
+}
+
+
 watch(
-    () => route.params, // Можно также использовать route.query для отслеживания изменений в query параметрах
+    () => route.params,
     (to, from) => {
         getCourseApplications()
     }
@@ -71,6 +83,7 @@ onMounted(() => {
         </p>
         <appliaction-for-moderation
             v-for="application of applications" :key="application.id" :application=application
+            @updateStatus="((appliaction) => updateStatus(appliaction))"
         />
     </div>
 </template>
