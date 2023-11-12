@@ -2,11 +2,10 @@ module Intercommunication
   class FileService < BaseRetriever
     class << self
       ENDPOINT = '/api/files'
-      HOST = '172.20.0.1'
-      PORT = 3008
+      API = ENV['FILE_SERVICE_API']
 
       def path
-        "http://#{HOST}:#{PORT}#{ENDPOINT}"
+        "#{API}#{ENDPOINT}"
       end
 
       def send_file(file)

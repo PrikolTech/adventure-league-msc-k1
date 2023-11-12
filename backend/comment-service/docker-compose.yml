@@ -10,7 +10,13 @@ services:
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rake db:prepare && bundle exec rails s -p 3005 -b '0.0.0.0'"
     volumes:
       - .:/myapp
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PASSWORD: password
     ports:
       - "3005:3005"
     depends_on:
       - db
+networks:
+  default:
+    name: backend
