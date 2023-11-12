@@ -19,7 +19,7 @@ func main() {
 
 	proxy := internal.NewReverseProxy()
 	for _, target := range targets {
-		proxy.AddTarget(target.Includes, target.Excludes, target.Upstream)
+		proxy.AddTarget(target.Includes, target.Excludes, target.Upstream, target.Prefix)
 	}
 
 	server := internal.NewServer(proxy, internal.ServerOptions{
