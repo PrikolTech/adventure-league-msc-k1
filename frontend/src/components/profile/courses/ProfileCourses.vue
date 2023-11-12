@@ -4,6 +4,7 @@ import CourseItem from "@/components/profile/courses/courseitem.vue";
 import TheSort from "@/components/layouts/TheSort.vue";
 import TheSwitcher from "@/components/layouts/TheSwitcher.vue";
 import { useUser } from '@/stores/user'
+import TheButton from '@/components/layouts/TheButton.vue';
 
 const userStore = useUser()
 const sortSelectors = ref(['Все'])
@@ -106,6 +107,13 @@ onMounted(() => {
                     >
                         Скрыть пройденные
                     </the-switcher>
+                    <the-button
+                        :styles="['btn_red']"
+                        :type="'button'"
+                        v-if="userStore.checkRole('tutor')"
+                    >
+                        Создать курс
+                    </the-button>
                 </div>
                 <div class="text" v-else>
                     Список курсов пуст

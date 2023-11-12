@@ -54,7 +54,7 @@ const getCourseInfo = async () => {
         })
 
         const data = await response.json()
-        course.value.length = 0
+        // course.value.length = 0
         course.value = {...data}
 
         if(navigationLinks.value.length === 3) {
@@ -83,6 +83,7 @@ const getCourseInfo = async () => {
 
 
 const getCourseLessons = async () => {
+    console.log('test')
     let url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${course.value.id}/lectures?user_id=${userStore.user.id}`
     if(userStore.checkRole('student')) {
         url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${course.value.id}/lectures?user_id=${userStore.user.id}`
@@ -95,6 +96,9 @@ const getCourseLessons = async () => {
         })
         
         const data = await response.json()
+        if(course.value.lessons) {
+            course.value.lessons.length = 0
+        }
         course.value.lessons = [...data]
         console.log('лекции',data)
     } catch(err) {
@@ -305,7 +309,7 @@ const deleteFile = async(fileID) => {
         });
         console.log('Удален файл', response)
         if(response.ok) {
-            files.value.forEach((el, index) => {
+            files.value.forEach((el) => {
                 if (el.id === fileID) {
                     // Находим индекс элемента с нужным id и удаляем его из массива
                     const elementIndex = files.value.findIndex(item => item.id === fileID);
@@ -457,7 +461,7 @@ onMounted(async() => {
                     </div>
                 </div>
                 <the-button
-                    v-if="userStore.user.role === 'employee'"
+                    v-if="userStore.checkRole('tutor')"
                     :styles="['btn_red']"
                     :type="'button'"
                     style="margin-top: 10px; width: 100%;"
@@ -499,7 +503,9 @@ onMounted(async() => {
                 </div>
             </div>
         </div>
-    <create-lesson-popup/>
+    <create-lesson-popup
+        @createdLesoon="getCourseLessons()"
+    />
     </main>
 </template>
 

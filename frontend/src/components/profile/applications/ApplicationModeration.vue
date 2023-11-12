@@ -12,7 +12,7 @@ const applications = ref([])
 const getCourseApplications = async () => {
     const courseID = route.params.id 
     try {
-        const url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration?course_id=${courseID}`
+        const url = `${import.meta.env.VITE_SERVICE_FORM_URL}/form/registration?course_id=${courseID}`
         const response = await fetch(url, {
         method: 'GET',
         headers: {

@@ -18,7 +18,7 @@ let isHidden = ref(true)
 
 const accept = async() => {
     try {
-        const url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration/${props.application.id}`
+        const url = `${import.meta.env.VITE_SERVICE_FORM_URL}/form/registration/${props.application.id}`
         const response = await fetch(url, {
         method: 'PATCH',
         headers: {
@@ -41,7 +41,7 @@ const accept = async() => {
     console.error(err);
   }
 }
-</script>
+</script>   
 
 <template>
     <div class="appliaction">

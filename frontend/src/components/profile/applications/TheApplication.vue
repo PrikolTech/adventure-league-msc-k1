@@ -51,7 +51,7 @@ const getCourseInfo = async () => {
 const people = ref([])
 const getCourseInfoByEmployee = async () => {
     try {
-        const url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration?course_id=${props.course.id}`
+        const url = `${import.meta.env.VITE_SERVICE_FORM_URL}/form/registration?course_id=${props.course.id}`
         const response = await fetch(url, {
         method: 'GET',
         headers: {

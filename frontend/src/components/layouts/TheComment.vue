@@ -42,10 +42,13 @@ const timeComment = computed(() => {
                     <!-- Вера Красулина -->
                     {{ props.comment.first_name }} {{ props.comment.last_name }}
                 </p>
-                <span v-if="userStore.user.user_id !== props.comment.user_id">
+                <span v-if="userStore.user.user_id === props.comment.user_id">
+                    {{ userStore.user.roles[0].description }}
+                </span>
+                <span v-else-if="userStore.checkRole('student')">
                     Преподаватель
                 </span>
-                <span v-if="userStore.checkRole('student') && userStore.user.user_id === props.comment.user_id">
+                <span v-else-if="userStore.checkRole('teacher')">
                     Студент
                 </span>
             </div>

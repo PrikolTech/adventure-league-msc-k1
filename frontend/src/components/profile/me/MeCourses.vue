@@ -75,7 +75,6 @@ onMounted(() => {
 <template>
     <div class="me__courses">
         <div class="me__courses-header">
-
         </div>
         <div class="me__courses-list" v-if="courses.length">
             <me-course-item

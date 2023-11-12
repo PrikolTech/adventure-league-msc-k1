@@ -113,13 +113,13 @@ const sendForm = async () => {
   }
 
   try {
-    let url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration/append`
+    let url = `${import.meta.env.VITE_SERVICE_FORM_URL}/form/registration/append`
     let headers = {
       'Content-Type': 'application/json'
     };
 
     if(!userStore.user) {
-      url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration`
+      url = `${import.meta.env.VITE_SERVICE_FORM_URL}/form/registration`
     } else {
       headers['Authorization'] = `Bearer ${userStore.user.access}`;
     }

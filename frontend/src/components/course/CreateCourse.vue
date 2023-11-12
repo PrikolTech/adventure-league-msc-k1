@@ -8,20 +8,24 @@ import { useAlerts } from '@/stores/alerts'
 const emit = defineEmits(['createdLesoon'])
 
 const alertsStore = useAlerts()
-const namePopup = 'createLesson'
+const namePopup = 'createCourse'
 const route = useRoute()
 
-let nameLesson = ref('Лекция по созданию фронта')
-let descLesson = ref('Лекция по созданию фронта описание')
-let dateLesson = ref('2023-08-10')
-let timeLesson = ref('12:00')
+let nameCourse = ref('Курс по адекватности')
+let descCourse = ref('Лекция по созданию фронта описание')
+let advantagesCourse = ref('Какие то преимущества')
+let priceCourse = ref(1000)
+let periodStartsAt = ref('2023-08-10')
+let periodEndAt = ref('2023-08-10')
+let courseTypeName = ref('Тип курса')
+let ceducationFormName = ref('Тип обучения на курса')
 
 const createLesson = async () => {
     const dateTime = `${dateLesson.value} - ${timeLesson.value}` 
     // const dateTime = "2023-11-17T11:11:11"
     console.log(dateTime)
     try {
-        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${route.params.id}/lectures`, {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json' // Specify content type as JSON
@@ -44,7 +48,6 @@ const createLesson = async () => {
         console.error(err)
     }
 }
-
 </script>
 
 <template>

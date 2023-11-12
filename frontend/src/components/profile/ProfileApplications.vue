@@ -21,9 +21,9 @@ const applications = ref([
 const getApplications = async () => {
     let url = null
     if(userStore.checkRole('student')) {
-        url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration?user_id=${userStore.user.user_id}`
+        url = `${import.meta.env.VITE_SERVICE_FORM_URL}/form/registration?user_id=${userStore.user.user_id}`
     } else if(userStore.checkRole('employee')) {
-        url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration?`
+        url = `${import.meta.env.VITE_SERVICE_FORM_URL}/form/registration?`
     }
 
     try {
