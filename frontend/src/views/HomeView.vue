@@ -16,7 +16,7 @@ const formData = ref({
   initiator_last_name: 'Македонский',
   supervisor_first_name: 'Петр',
   supervisor_last_name: 'Волков',
-  email: 'pochta@mail.ru',
+  email: 'sasha.lopa188@gmail.com',
   department: 'Невероятное',
   post: 'Директор',
   history: 'учился всю жизнь',
@@ -39,7 +39,7 @@ let popupData = ref([
         placeHolder: 'Иван',
         type: 'input',
         typeValue: 'text',
-        nameInput: 'email',
+        nameInput: 'supervisor_first_name',
     },
     {
         name: 'Подразделение *',
@@ -104,13 +104,15 @@ const sendForm = async () => {
   };
 
   if(userStore.user) {
+    console.log('bad')
     preparedFormData.birthdate = userStore.user.birthdate
     preparedFormData.initiator.first_name = userStore.user.first_name
     preparedFormData.initiator.last_name = userStore.user.last_name
     preparedFormData.email = userStore.user.email
     preparedFormData.user_id = userStore.user.user_id
-
   }
+
+  console.log('form', preparedFormData)
 
   try {
     let url = `${import.meta.env.VITE_SERVICE_FORM_URL}/form/registration/append`
@@ -164,7 +166,7 @@ onMounted(() => {
       },
       {
         name: 'Email *',
-        placeHolder: 'pochta@mail.ru',
+        placeHolder: 'artem.zimin02@gmail.ru',
         type: 'input',
         typeValue: 'text',
         nameInput: 'supervisor_first_name',

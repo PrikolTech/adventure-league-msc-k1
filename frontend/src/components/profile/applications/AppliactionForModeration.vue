@@ -26,7 +26,7 @@ const accept = async() => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            "status": "approved",
+            "status": "accepted",
         }),
         mode: 'cors',
     });
