@@ -12,7 +12,7 @@ const applications = ref([])
 const getCourseApplications = async () => {
     const courseID = route.params.id 
     try {
-        const url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration?course_id=${courseID}`
+        const url = `${import.meta.env.VITE_SERVICE_FORM_URL}/form/registration?course_id=${courseID}`
         const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -30,6 +30,8 @@ const getCourseApplications = async () => {
     console.error(err);
   }
 }
+
+
 
 const courseInfo = ref({})
 const getCourseInfo = async() => {
@@ -50,8 +52,18 @@ const getCourseInfo = async() => {
   }
 }
 
+const updateStatus = (application) => {
+    console.log('test', application);
+    const index = applications.value.findIndex(element => element.id === application.id);
+    if (index !== -1) {
+        applications.value[index] = { ...applications.value[index], ...application };
+        console.log(applications.value[index]);
+    }
+}
+
+
 watch(
-    () => route.params, // Можно также использовать route.query для отслеживания изменений в query параметрах
+    () => route.params,
     (to, from) => {
         getCourseApplications()
     }
@@ -71,6 +83,7 @@ onMounted(() => {
         </p>
         <appliaction-for-moderation
             v-for="application of applications" :key="application.id" :application=application
+            @updateStatus="((appliaction) => updateStatus(appliaction))"
         />
     </div>
 </template>

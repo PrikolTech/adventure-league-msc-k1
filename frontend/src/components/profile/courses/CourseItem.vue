@@ -27,6 +27,10 @@ const getCourseInfo = async () => {
     try {
         const response = await fetch(url, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         })
         
         const data = await response.json()

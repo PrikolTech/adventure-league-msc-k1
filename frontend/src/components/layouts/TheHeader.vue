@@ -66,6 +66,16 @@ const initialsUser = computed(() => {
                                 <router-link  to="/profile/me/meCourses">
                                     Профиль
                                 </router-link>
+                                <router-link  to="/profile/courses"
+                                    v-if="userStore.checkRole('student') || userStore.checkRole('teacher') || userStore.checkRole('tutor') || userStore.checkRole('enrollee')"
+                                >
+                                    Курсы
+                                </router-link>
+                                <router-link  to="/profile/courses"
+                                    v-if="userStore.checkRole('student')"
+                                >
+                                    Задания
+                                </router-link>
                                 <router-link  to="/profile/settings">
                                     Настройки
                                 </router-link>

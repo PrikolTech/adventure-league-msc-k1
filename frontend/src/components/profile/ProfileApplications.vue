@@ -20,10 +20,10 @@ const applications = ref([
 
 const getApplications = async () => {
     let url = null
-    if(userStore.checkRole('student')) {
-        url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration?user_id=${userStore.user.user_id}`
+    if(userStore.checkRole('student') || userStore.checkRole('enrollee')) {
+        url = `${import.meta.env.VITE_SERVICE_FORM_URL}/form/registration?user_id=${userStore.user.user_id}`
     } else if(userStore.checkRole('employee')) {
-        url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration?`
+        url = `${import.meta.env.VITE_SERVICE_FORM_URL}/form/registration?`
     }
 
     try {
@@ -62,7 +62,7 @@ const getAllCourses = async () => {
 }
 
 const showApplicationList = () => {
-    if(userStore.checkRole('student')) {
+    if(userStore.checkRole('student') || userStore.checkRole('enrollee')) {
         return true
     } else if(userStore.checkRole('employee')) {
         if(route.params.id) {
@@ -76,7 +76,7 @@ const showApplicationList = () => {
 onMounted(() => {
     if(userStore.checkRole('employee')) {
         getAllCourses()
-    } else if(userStore.checkRole('student')){
+    } else if(userStore.checkRole('student') || userStore.checkRole('enrollee')){
         getApplications()
     }
 })

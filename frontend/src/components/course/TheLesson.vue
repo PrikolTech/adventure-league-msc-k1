@@ -7,6 +7,9 @@ import { useUser } from '@/stores/user'
 import { useRoute } from 'vue-router';
 import UploadFile from '../layouts/UploadFile.vue';
 
+import { useAlerts } from '@/stores/alerts'
+
+const alertsStore = useAlerts()
 const route = useRoute();
 const userStore = useUser()
 const props = defineProps({
@@ -62,8 +65,11 @@ const postComment = async () => {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COMMENT_URL}/comments/lecture/`, {
             method: "POST",
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userStore.user.access}`,
+            
             },
+            mode: 'cors',
             body: JSON.stringify({
                 user_id: userStore.user.id,
                 body: commentInput.value,
@@ -95,6 +101,9 @@ const postFile = async () => {
         formData.append('file', file);
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${props.course.id}/lectures/${route.query.lesson}/contents`, {
             method: "POST",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`,
+            },
             body: formData
         });
 
@@ -102,6 +111,7 @@ const postFile = async () => {
 
         if(response.ok) {
             emit('uploadFile')
+            alertsStore.addAlert('Файл был успешно добавлен', 'success')
             deleteFileFromInput()
         }
     } catch (err) {
@@ -114,8 +124,10 @@ const updateLecture = async () => {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${props.course.id}/lectures/${route.query.lesson}`, {
             method: "PUT",
             headers: {
+                'Authorization': `Bearer ${userStore.user.access}`,
                 'Content-Type': 'application/json'
             },
+            mode: 'cors',
             body: JSON.stringify({
                 description: props.lesson.description,
                 name: props.lesson.name
@@ -124,7 +136,10 @@ const updateLecture = async () => {
 
         const data = await response.json(); // Need to await the JSON parsing
         if(response.ok) {
+            alertsStore.addAlert('Лекция была обновлена', 'success')
             emit('updateLecture')
+        } else {
+            alertsStore.addAlert('Произошло ошибка, повторите попытку', 'error')
         }
     } catch (err) {
         console.log(err);
@@ -147,7 +162,7 @@ onMounted(() => {
     <div class="lesson">
         <div class="lesson__title">
             <!-- Урок 1. Введение в финансовую грамотность. -->
-            <span v-if="userStore.checkRole('student')">
+            <span v-if="userStore.checkRole('student') || userStore.checkRole('tutor')">
                 {{ props.lesson.name }}
             </span>
             <div class="field"
@@ -178,7 +193,7 @@ onMounted(() => {
             </div>
             <p class="lesson__desc-text">
                 <!-- В этом уроке вы познакомитесь с основами и понятиями финансовой грамотности. Более подробно разберете важность изучения финансовой грамотности и многое другое. -->
-                <span v-if="userStore.checkRole('student')">
+                <span v-if="userStore.checkRole('student') || userStore.checkRole('tutor')">
                     {{ props.lesson.description }}
                 </span>
                 <textarea v-model="props.lesson.description" v-if="userStore.checkRole('teacher')"></textarea>
@@ -227,7 +242,9 @@ onMounted(() => {
             :name="fileName"
             @deleteFile="deleteFileFromInput()"
         />
-        <div class="lesson__comments comments">
+        <div class="lesson__comments comments"
+            v-if="!userStore.checkRole('tutor')"
+        >
             <div class="lesson__comments-header comments-header">
                 <p>
                     <!-- Комментарии - 3 -->

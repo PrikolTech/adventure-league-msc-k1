@@ -2,8 +2,9 @@
 import { onMounted, ref } from 'vue';
 import TheButton from '@/components/layouts/TheButton.vue';
 import ProgramItem from '@/components/program/ProgramItem.vue';
+import { useUser } from '@/stores/user'
 
-
+const userStore = useUser()
 const emit = defineEmits(['openCoursePopup'])
 
 const openPopup = (id) => {
@@ -18,10 +19,10 @@ let programs = ref([])
 let filteredPrograms = ref([])
 const getPrograms = async () => {
     try {
-        const url = `http://localhost:3003/api/courses`;
-
+        const url = `http://localhost:3000/api/courses`;
         const response = await fetch(url, {
             method: 'GET',
+            mode: 'cors',
         });
         const data = await response.json()
         console.log(data)

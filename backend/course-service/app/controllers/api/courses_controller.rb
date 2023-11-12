@@ -54,7 +54,8 @@ class Api::CoursesController < ApplicationController
         price: price,
         course_type_id: course_type.id,
         period_id: period.id,
-        education_form_id: education_form.id
+        education_form_id: education_form.id,
+        prefix: params[:prefix]
       )
       redirect_to @course.path
     else
@@ -116,6 +117,6 @@ class Api::CoursesController < ApplicationController
   private
 
   def course_params
-    params.require(:course).permit(:name, :description, :price)
+    params.require(:course).permit(:name, :description, :prefix, :price)
   end
 end
