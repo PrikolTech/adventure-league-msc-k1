@@ -8,7 +8,7 @@ class RequestRole
   def call(env)
     # Middleware method of verifying request
 
-    token = env.fetch('HTTP_AUTHORIZATION', nil)
+    token = env.fetch('HTTP_AUTHORIZATION', '')
     token_arr = token.split()
 
     if token_arr.size == 2 && token_arr[0] == 'Bearer'
