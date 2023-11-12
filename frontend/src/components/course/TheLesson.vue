@@ -150,14 +150,15 @@ onMounted(() => {
             <span v-if="userStore.checkRole('student')">
                 {{ props.lesson.name }}
             </span>
-            <div class="field">
+            <div class="field"
+                v-if="userStore.checkRole('teacher')"
+            >
                 <p>
                     Название
                 </p>
                 <div class="input-w">
                     <input
                         v-model="props.lesson.name"
-                        v-if="userStore.checkRole('teacher')"
                     />
                 </div>
             </div>
@@ -177,7 +178,7 @@ onMounted(() => {
             </div>
             <p class="lesson__desc-text">
                 <!-- В этом уроке вы познакомитесь с основами и понятиями финансовой грамотности. Более подробно разберете важность изучения финансовой грамотности и многое другое. -->
-                <span v-if="userStore.user.role === 'student'">
+                <span v-if="userStore.checkRole('student')">
                     {{ props.lesson.description }}
                 </span>
                 <textarea v-model="props.lesson.description" v-if="userStore.checkRole('teacher')"></textarea>
@@ -404,7 +405,6 @@ onMounted(() => {
         font-style: normal;
         font-weight: 400;
         line-height: 167%; /* 26.72px */
-        padding-left: 10px;
     }
 }
 .comments-header {
