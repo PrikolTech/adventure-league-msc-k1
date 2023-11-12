@@ -1,8 +1,10 @@
 <script setup>
 import TheButton from '@/components/layouts/TheButton.vue';
 import { ref } from "vue"
-
 import { useUser } from '@/stores/user'
+import { useAlerts } from '@/stores/alerts'
+
+const alertsStore = useAlerts()
 const userStore = useUser()
 
 const props = defineProps({
@@ -18,20 +20,22 @@ const accept = async() => {
     try {
         const url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration/${props.application.id}`
         const response = await fetch(url, {
-        method: 'UPDATE',
+        method: 'PATCH',
         headers: {
             'Authorization': `Bearer ${userStore.user.access}`,
             'Content-Type': 'application/json'
         },
-        body: {
+        body: JSON.stringify({
             "status": "approved",
-        },
+        }),
         mode: 'cors',
     });
 
     const data = await response.json();
-    console.log('Приняли заявку на курс', response)
-    console.log('Приняли заявку на курс', data);
+    if(response.ok) {
+        console.log('Заявка принята!', response)
+        alertsStore.addAlert('Заявка принята!', 'success')
+    }
     
   } catch (err) {
     console.error(err);

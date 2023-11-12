@@ -15,7 +15,7 @@ const questionFullInfo = ref({})
 
 const getQuestionInfo = async() => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/api/jobs/${props.lessonID}/tests/${props.testID}/questions/${props.question.id}`, {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${props.lessonID}/tests/${props.testID}/questions/${props.question.id}`, {
             method: "GET",
         })
         

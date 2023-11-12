@@ -1,11 +1,13 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import TheComment from '@/components/layouts/TheComment.vue';
 import MakeComment from '@/components/layouts/MakeComment.vue';
 import TheButton from '../layouts/TheButton.vue';
 import { useUser } from '@/stores/user'
+import { useRoute } from 'vue-router';
 import UploadFile from '../layouts/UploadFile.vue';
 
+const route = useRoute();
 const userStore = useUser()
 const props = defineProps({
     lesson: {
@@ -18,12 +20,10 @@ const props = defineProps({
     }
 })
 
+const emit = defineEmits(['uploadFile', 'updateLecture'])
+
 const quantityComments = computed(() => {
-    if(props.lesson.comments) {
-        return props.lesson.comments.length
-    } else {
-        return 0
-    }
+    return comments.value.length
 })
 
 let fileInput = ref(null)
@@ -42,13 +42,15 @@ const changeFile = (event) => {
 let commentInput = ref('')
 const comments = ref([])
 const getComments = async () => {
+    console.log(route.query.lesson)
     try {
-        const response = await fetch(`${import.meta.env.VITE_SERVICE_COMMENT_URL}/api/comments/lecture/${props.lesson.id}`, {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COMMENT_URL}/comments/lecture/${route.query.lesson}`, {
             method: "GET",
         })
 
         const data = await response.json()
         console.log('комментарии',data)
+        comments.value.length = 0
         comments.value = [...data]
     } catch (err) {
         console.log(err);
@@ -57,7 +59,7 @@ const getComments = async () => {
 
 const postComment = async () => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_SERVICE_COMMENT_URL}/api/comments/lecture/`, {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COMMENT_URL}/comments/lecture/`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -65,14 +67,14 @@ const postComment = async () => {
             body: JSON.stringify({
                 user_id: userStore.user.id,
                 body: commentInput.value,
-                target_id: props.lesson.id
+                target_id: route.query.lesson
             })
         });
-
-        const data = await response.json()
-        console.log('новый комментарий',data)
-        commentInput.value = ''
-        if(data) {
+        console.log(response.ok)
+        if(response.ok) {
+            commentInput.value = ''
+            const data = await response.json()
+            console.log('новый комментарий',data)
             comments.value.push(data)
         }
     } catch (err) {
@@ -91,13 +93,17 @@ const postFile = async () => {
     try {
         const formData = new FormData();
         formData.append('file', file);
-        console.log('test')
-        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${props.course.id}/lectures/${props.lesson.id}/contents`, {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${props.course.id}/lectures/${route.query.lesson}/contents`, {
             method: "POST",
             body: formData
         });
 
-        console.log('testststst',response);
+        console.log('отправка файла ответ', response)
+
+        if(response.ok) {
+            emit('uploadFile')
+            deleteFileFromInput()
+        }
     } catch (err) {
         console.log(err);
     }
@@ -105,25 +111,32 @@ const postFile = async () => {
 
 const updateLecture = async () => {
     try {
-        console.log('test');
-        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${props.course.id}/lectures/${props.lesson.id}`, {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${props.course.id}/lectures/${route.query.lesson}`, {
             method: "PUT",
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                description: props.lesson.description
+                description: props.lesson.description,
+                name: props.lesson.name
             })
         });
 
         const data = await response.json(); // Need to await the JSON parsing
-
-        console.log('test', data);
+        if(response.ok) {
+            emit('updateLecture')
+        }
     } catch (err) {
         console.log(err);
     }
 }
 
+watch(
+    () => route.params, // Можно также использовать route.query для отслеживания изменений в query параметрах
+    (to, from) => {
+        getComments()
+    }
+);
 
 onMounted(() => {
     getComments()
@@ -134,7 +147,20 @@ onMounted(() => {
     <div class="lesson">
         <div class="lesson__title">
             <!-- Урок 1. Введение в финансовую грамотность. -->
-            {{ props.lesson.name }}
+            <span v-if="userStore.checkRole('student')">
+                {{ props.lesson.name }}
+            </span>
+            <div class="field">
+                <p>
+                    Название
+                </p>
+                <div class="input-w">
+                    <input
+                        v-model="props.lesson.name"
+                        v-if="userStore.checkRole('teacher')"
+                    />
+                </div>
+            </div>
         </div>
         <div class="lesson__material"
             v-if="true"
@@ -154,13 +180,13 @@ onMounted(() => {
                 <span v-if="userStore.user.role === 'student'">
                     {{ props.lesson.description }}
                 </span>
-                <textarea v-model="props.lesson.description" v-if="userStore.user.role === 'teacher'"></textarea>
+                <textarea v-model="props.lesson.description" v-if="userStore.checkRole('teacher')"></textarea>
                 <the-button
-                    v-if="userStore.user.role === 'teacher'"
+                    v-if="userStore.checkRole('teacher')"
                     :styles="['btn_red']"
                     :type="'button'"
                     class="add-file-btn"
-                    @click="updateLecture"
+                    @click="updateLecture()"
                 >
                     Сохранить
                 </the-button>
@@ -169,7 +195,7 @@ onMounted(() => {
         <!-- <add-file
             :test="fileInput"
         /> -->
-        <div class="add-file-w" v-if="userStore.user.role === 'teacher'">
+        <div class="add-file-w" v-if="userStore.checkRole('teacher')">
             <label class="add-file">
                 <input
                     type="file"

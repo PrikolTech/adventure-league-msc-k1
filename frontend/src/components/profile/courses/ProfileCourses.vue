@@ -16,8 +16,12 @@ let showCompleted = ref(false)
 let filteredCourses = ref([])
 let courses = ref([])
 const getUserCourse = async() => {
+    let url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses`
+    if(userStore.checkRole('student')) {
+        url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses?user_id=${userStore.user.id}`
+    }
     try {
-        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses?user_id=${userStore.user.id}`, {
+        const response = await fetch(url, {
             method: "GET",
         })
         
@@ -98,6 +102,7 @@ onMounted(() => {
                     <the-switcher
                         :name="'showCompleted'"
                         v-model="showCompleted"
+                        v-if="falss"
                     >
                         Скрыть пройденные
                     </the-switcher>

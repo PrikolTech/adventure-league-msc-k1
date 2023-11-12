@@ -42,9 +42,11 @@ const timeComment = computed(() => {
                     <!-- Вера Красулина -->
                     {{ props.comment.first_name }} {{ props.comment.last_name }}
                 </p>
-                <span v-if="false">
-                    <!-- Студент -->
-                    {{ props.comment.type }}
+                <span v-if="userStore.checkRole('teacher')">
+                    Преподаватель
+                </span>
+                <span v-else>
+                    Студент
                 </span>
             </div>
             <p class="comments__item-date">
