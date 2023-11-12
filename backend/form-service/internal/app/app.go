@@ -26,8 +26,9 @@ func Run(cfg *Config, logger *zerolog.Logger) error {
 	roleNet := net.NewRole(cfg.UserAPI.URL)
 	courseNet := net.NewCourse(cfg.CourseAPI.URL)
 	authNet := net.NewAuth(cfg.AuthAPI.URL)
+	smtpNet := net.NewSMTP(cfg.SmtpAPI.URL)
 
-	service := service.NewRegistration(repo, service.NetServices{userNet, roleNet, courseNet})
+	service := service.NewRegistration(repo, service.NetServices{userNet, roleNet, courseNet, smtpNet})
 
 	server := http.NewServer(logger, http.Services{service, authNet}, http.ServerOptions{
 		Addr:    fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port),
