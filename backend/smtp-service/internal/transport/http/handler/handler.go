@@ -16,7 +16,7 @@ func NewPassword(sender service.Sender) *password {
 
 func (p *password) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		w.WriteHeader(http.StatusMethodNotAllowed)
+		MethodNotAllowed(w, r)
 		return
 	}
 
@@ -28,13 +28,18 @@ func (p *password) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	d := json.NewDecoder(r.Body)
 	err := d.Decode(&body)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		DecodingError(w)
+		return
+	}
+
+	if body.Password == "" || body.To == "" {
+		DecodingError(w)
 		return
 	}
 
 	err = p.sender.SendPassword(body.Password, body.To)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		InternalServerError(w)
 		return
 	}
 
