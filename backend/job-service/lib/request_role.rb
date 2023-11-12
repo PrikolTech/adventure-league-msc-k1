@@ -9,18 +9,24 @@ class RequestRole
     # Middleware method of verifying request
 
     token = env.fetch('HTTP_AUTHORIZATION', nil)
-    sender_id, roles = verify_token(token)
+    token_arr = token.split()
 
-    new_query = "" << env['QUERY_STRING']
+    if token_arr.size == 2 && token_arr[0] == 'Bearer'
+      sender_id, roles = verify_token(token_arr[1])
+      
+      new_query = "" << env['QUERY_STRING']
 
-    puts "SENDER = #{sender_id} | ROLES = #{roles}"
+      puts "SENDER = #{sender_id} | ROLES = #{roles}"
 
-    if sender_id
-      new_query << "&sender_id=#{sender_id}"
-      roles.each { |role| new_query << "&roles[]=#{role}" } if roles
+      if sender_id
+        new_query << "&sender_id=#{sender_id}"
+        roles.each { |role| new_query << "&roles[]=#{role}" } if roles
+      end
+
+      env['QUERY_STRING'] = new_query
+    else
+      puts "NO BEARER ERROR"
     end
-
-    env['QUERY_STRING'] = new_query
 
     result = @app.call(env)
     result
