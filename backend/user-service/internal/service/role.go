@@ -30,7 +30,7 @@ func (r *role) Create(data entity.Role) (*entity.Role, error) {
 	return r.repo.Create(context.Background(), data)
 }
 
-func (r *role) Append(userID uuid.UUID, roleID uuid.UUID) error {
+func (r *role) AppendByID(userID uuid.UUID, roleID uuid.UUID) error {
 	err := r.repo.CreateUserRole(context.Background(), userID, roleID)
 	if err != nil {
 		return errors.New("invalid user/role id")
@@ -38,8 +38,24 @@ func (r *role) Append(userID uuid.UUID, roleID uuid.UUID) error {
 	return nil
 }
 
-func (r *role) Remove(userID uuid.UUID, roleID uuid.UUID) error {
+func (r *role) AppendByTitle(userID uuid.UUID, title string) error {
+	role, err := r.repo.GetByTitle(context.Background(), title)
+	if err != nil {
+		return ErrRoleNotExist
+	}
+	return r.AppendByID(userID, role.ID)
+}
+
+func (r *role) RemoveByID(userID uuid.UUID, roleID uuid.UUID) error {
 	return r.repo.DeleteUserRole(context.Background(), userID, roleID)
+}
+
+func (r *role) RemoveByTitle(userID uuid.UUID, title string) error {
+	role, err := r.repo.GetByTitle(context.Background(), title)
+	if err != nil {
+		return ErrRoleNotExist
+	}
+	return r.RemoveByID(userID, role.ID)
 }
 
 func (r *role) RemoveAll(userID uuid.UUID) error {

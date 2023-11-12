@@ -5,6 +5,7 @@ class CreateJobs < ActiveRecord::Migration[7.1]
       t.string :name
       t.text :description
       t.datetime :deadline, null: true
+      t.references :job_type, null: true, foreign_key: true 
 
       t.timestamps
     end

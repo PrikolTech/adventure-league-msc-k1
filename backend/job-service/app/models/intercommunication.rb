@@ -1,0 +1,3 @@
+module Intercommunication
+  
+end

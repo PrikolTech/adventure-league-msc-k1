@@ -8,6 +8,11 @@
 
     --var-line: #E5E7EB;
 
+    --var-popup-bg: #FFF;
+
+    --var-checkbox-bg: #003791;
+
+    --var-scroll-bg: #D9D9D9;
 
     //colors
     --var-grey: #6B7280;
@@ -25,13 +30,19 @@
 
 [dark=true] {
     //body
-    --var-body: #111928;
+    --var-body: #111928 ;
 
     --var-preview-swiper: #1F2A37;
 
     --var-grey-lite: #4B5563;
 
     --var-line: #374151;
+
+    --var-popup-bg: #1F2A37;
+
+    --var-checkbox-bg: #1C64F2;
+
+    --var-scroll-bg: #6B7280;
 
     //calors
     --var-grey: #9CA3AF;

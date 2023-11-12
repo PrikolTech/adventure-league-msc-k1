@@ -1,7 +1,8 @@
 package http
 
 import (
-	"auth-service/internal/service/oauth"
+	"auth-service/internal/pkg/jwt"
+	"auth-service/internal/service"
 	"net/http"
 
 	"github.com/rs/cors"
@@ -12,7 +13,12 @@ type ServerOptions struct {
 	Origins []string
 }
 
-func NewServer(service *oauth.OAuth, opts ServerOptions) *http.Server {
+type Services struct {
+	OAuth  service.OAuth
+	Parser jwt.Parser
+}
+
+func NewServer(services Services, opts ServerOptions) *http.Server {
 	mux := http.NewServeMux()
 	c := cors.New(cors.Options{
 		AllowedOrigins:   opts.Origins,
@@ -21,7 +27,8 @@ func NewServer(service *oauth.OAuth, opts ServerOptions) *http.Server {
 		AllowCredentials: true,
 	})
 
-	mux.Handle("/token", TokenHandler{service.Server})
+	mux.Handle("/token", TokenHandler{services.OAuth})
+	mux.Handle("/verify", VerifyHandler{services.Parser})
 
 	return &http.Server{
 		Addr:    opts.Addr,

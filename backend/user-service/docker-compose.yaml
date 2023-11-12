@@ -1,22 +1,22 @@
 services:
-  server:
+  user-server:
     container_name: user-server
     build: .
     depends_on:
-      db:
+      user-db:
         condition: service_healthy
     ports:
       - 3002:3002
     env_file:
       - ./configs/docker.dev.env
     environment:
-      POSTGRES_URI: postgres://postgres:test@db:5432/postgres?search_path=user
+      POSTGRES_URI: postgres://postgres:test@user-db:5432/postgres?search_path=user
 
-  db:
+  user-db:
     container_name: user-db
     image: postgres:alpine
     ports:
-      - 5431:5432
+      - 5442:5432
     environment:
       POSTGRES_PASSWORD: test
     volumes:

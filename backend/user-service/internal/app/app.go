@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	"user-service/internal/net"
 	"user-service/internal/repo"
 	"user-service/internal/service"
 	"user-service/internal/transport/http"
@@ -25,7 +26,9 @@ func Run(cfg *Config, logger *zerolog.Logger) error {
 	userService := service.NewUser(userRepo, roleRepo)
 	roleService := service.NewRole(roleRepo)
 
-	server := http.NewServer(logger, http.Services{userService, roleService}, http.ServerOptions{
+	authNet := net.NewAuth(cfg.AuthAPI.URL)
+
+	server := http.NewServer(logger, http.Services{userService, roleService, authNet}, http.ServerOptions{
 		Addr:    fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port),
 		Origins: cfg.HTTP.Origins,
 	})
