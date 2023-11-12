@@ -27,6 +27,6 @@ func main() {
 		Origins: cfg.HTTP.Origins,
 	})
 
-	log.Printf("server created with address %s", server.Addr)
+	log.Printf("server created with address %s\n", server.Addr)
 	log.Fatalf("server down: %s", server.ListenAndServe())
 }
