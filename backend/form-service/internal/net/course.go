@@ -34,7 +34,7 @@ func (c *course) Append(userID uuid.UUID, courseID uuid.UUID, token string) erro
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusCreated {
+	if resp.StatusCode != http.StatusOK {
 		respData := make(map[string]string)
 		d := json.NewDecoder(resp.Body)
 		err = d.Decode(&respData)
