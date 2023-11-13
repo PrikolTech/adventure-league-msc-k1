@@ -8,7 +8,3 @@ include:
   - course-service/docker-compose.yml
   - file-service/docker-compose.yml
   - job-service/docker-compose.yml
-
-networks:
-  default:
-    name: backend
