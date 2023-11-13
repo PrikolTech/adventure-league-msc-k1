@@ -45,7 +45,7 @@ class Api::CoursesController < ApplicationController
     
     price = params['price'].to_f if params.include? 'price'
 
-    education_form = EducationForm.find_by(name: params['education_form'])
+    education_form = EducationForm.find_or_create_by!(name: params['education_form'])
     return render json: {message: "wrong course_type", status: 400} unless course_type
 
     if @course = Course.create(
