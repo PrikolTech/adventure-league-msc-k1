@@ -1,22 +1,26 @@
 services:
-  db:
+  comment-db:
+    container_name: comment-db
     image: postgres
-    volumes:
-      - ./tmp/db:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: password
-  api:
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -q -U postgres -d postgres"]
+      interval: 5s
+      timeout: 30s
+      retries: 10
+      start_period: 30s
+  comment-server:
+    container_name: comment-server
     build: .
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rake db:prepare && bundle exec rails s -p 3005 -b '0.0.0.0'"
     volumes:
       - .:/myapp
     environment:
-      POSTGRES_HOST: db
+      POSTGRES_HOST: comment-db
       POSTGRES_PASSWORD: password
     ports:
-      - "3005:3005"
+      - 3005:3005
     depends_on:
-      - db
-networks:
-  default:
-    name: backend
+      comment-db:
+        condition: service_healthy
