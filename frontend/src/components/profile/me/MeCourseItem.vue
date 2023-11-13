@@ -55,12 +55,15 @@ const getCourseInfo = async () => {
     try {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${props.course.id}/lectures?user_id=${userStore.user.id}`, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         })
         
         const data = await response.json()
-
+        console.log('лекции',lectures.value)
         lectures.value = [...data]
-        console.log(lectures.value)
     } catch(err) {
         console.error(err)
     }

@@ -1,4 +1,6 @@
 include:
-  - auth-service/docker-compose.yaml
   - reverse-proxy/docker-compose.yaml
+  - auth-service/docker-compose.yaml
   - user-service/docker-compose.yaml
+  - form-service/docker-compose.yaml
+  - smtp-service/docker-compose.yaml

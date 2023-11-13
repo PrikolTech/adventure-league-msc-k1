@@ -3,6 +3,18 @@ import TheButton from '@/components/layouts/TheButton.vue';
 import { usePopups } from '@/stores/popups';
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 
+import { useUser } from '@/stores/user'
+
+const userStore = useUser()
+const emit = defineEmits(['openCoursePopup'])
+
+const openPopup = () => {
+    if(!userStore.checkRole('teacher') && !userStore.checkRole('employee') && !userStore.checkRole('admin')) {
+        popupStore.disableScroll('mainForm')
+        emit('openCoursePopup',props.program.id)
+    }
+}
+
 const popupStore = usePopups()
 
 const props = defineProps({
@@ -88,7 +100,7 @@ onBeforeUnmount(() => {
                     <the-button
                         :styles="['btn btn_red']"
                         :type="'button'"
-                        @click="popupStore.disableScroll('mainForm')"
+                        @click="openPopup()"
                     >
                         Записаться
                     </the-button>

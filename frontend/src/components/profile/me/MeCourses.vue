@@ -51,14 +51,19 @@ const courses = ref([])
 
 const getUserCourse = async () => {
     try {
+        console.log('test')
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses?user_id=${userStore.user.id}`, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         })
         
         const data = await response.json()
 
         
-        console.log(data)
+        console.log('Курсы студента', data)
         courses.value = [...data]
 
     } catch(err) {
@@ -75,7 +80,6 @@ onMounted(() => {
 <template>
     <div class="me__courses">
         <div class="me__courses-header">
-
         </div>
         <div class="me__courses-list" v-if="courses.length">
             <me-course-item

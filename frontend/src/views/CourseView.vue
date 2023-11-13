@@ -18,115 +18,9 @@ const route = useRoute()
 const course = ref({})
 const popupStore = usePopups()
 
-// const course = ref({
-//     name: 'Финансовая грамотность',
-//     teacher: 'Кураева Анна',
-//     curator: 'Зайцев Денис',
-//     lessons: [
-//         {
-//             title: 'Урок 1. Основы и понятия',
-//             date: '08.11.23 в 20:00',
-//             format: 'video',
-//             completed: true,
-//         },
-//         {
-//             title: 'Урок 2. Основы и понятия',
-//             date: '08.11.23 в 20:00',
-//             format: 'file',
-//             completed: true,
-//         },
-//         {
-//             title: 'Урок 3. Основы и понятия',
-//             date: '08.11.23 в 20:00',
-//             format: 'video',
-//             completed: false,
-//         },
-//         {
-//             title: 'Урок 4. Основы и понятия',
-//             date: '08.11.23 в 20:00',
-//             format: 'file',
-//             completed: false,
-//         },
-//         {
-//             title: 'Урок 5. Основы и понятия',
-//             date: '08.11.23 в 20:00',
-//             format: 'video',
-//             completed: false,
-//         },
-//         {
-//             title: 'Урок 6. Основы и понятия',
-//             date: '08.11.23 в 20:00',
-//             format: 'file',
-//             completed: false,
-//         },
-//         {
-//             title: 'Урок 7. Основы и понятия',
-//             date: '08.11.23 в 20:00',
-//             format: 'video',
-//             completed: false,
-//         },
-//         {
-//             title: 'Урок 8. Основы и понятия',
-//             date: '08.11.23 в 20:00',
-//             format: 'file',
-//             completed: false,
-//         },
-//         {
-//             title: 'Урок 9. Основы и понятия',
-//             date: '08.11.23 в 20:00',
-//             format: 'video',
-//             completed: false,
-//         },
-//         {
-//             title: 'Урок 10. Основы и понятия',
-//             date: '08.11.23 в 20:00',
-//             format: 'file',
-//             completed: false,
-//         },
-//     ]
-// })
-
 
 const currentLesson = ref({})
-// const test_currentLesson = ref({
-//     name: 'Урок 1. Введение в финансовую грамотность.',
-//     video: 'https://www.youtube.com/embed/__-vp0g_BhA?si=ou5xfV8arD_ccw6Q',
-//     desc: 'В этом уроке вы познакомитесь с основами и понятиями финансовой грамотности. Более подробно разберете важность изучения финансовой грамотности и многое другое.',
-//     links: {
-//         presentation: 'Ссылка на презентацю',
-//         abstract: 'Ссылка на конспект',
-//     },
-//     job: {
-//         test: 'Ссылка на тест',
-//         task: 'Ссылка на задание'
-//     },
-//     comments: [
-//         {
-//             first_name: 'Вера',
-//             last_name: 'Красулина',
-//             type: 'Студент',
-//             text: 'Всем привет, подскажите что задали.',
-//             date: '25 августа 2023',
-//             time: '21:35',
-//         },
-//         {
-//             first_name: 'Анатолий',
-//             last_name: 'Видин',
-//             type: 'Учитель',
-//             text: 'Всем привет, подскажите что задали.',
-//             date: '25 августа 2023',
-//             time: '21:35',
-//         },
-//         {
-//             first_name: 'Максим',
-//             last_name: 'Трушин',
-//             type: 'Студент',
-//             text: 'Всем привет, подскажите что задали.',
-//             date: '25 августа 2023',
-//             time: '21:35',
-//         }
-//     ],
-// })
+
 
 let files = ref({})
 let tests = ref({})
@@ -153,14 +47,18 @@ const navigationLinks = ref([
 
 const getCourseInfo = async () => {
     const courseID = route.params.id
-    console.log('test', courseID)
     try {
         
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${courseID}`, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         })
 
         const data = await response.json()
+        // course.value.length = 0
         course.value = {...data}
 
         if(navigationLinks.value.length === 3) {
@@ -189,14 +87,29 @@ const getCourseInfo = async () => {
 
 
 const getCourseLessons = async () => {
+    console.log('test')
+    let url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${course.value.id}/lectures?user_id=${userStore.user.id}`
+    if(userStore.checkRole('student')) {
+        url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${course.value.id}/lectures?user_id=${userStore.user.id}`
+    } else {
+        url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${course.value.id}/lectures`
+    }
     try {
-        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${course.value.id}/lectures?user_id=${userStore.user.id}`, {
+        const response = await fetch(url, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
+            // credentials: 'include',
         })
         
         const data = await response.json()
-        course.value.lessons = [...data]
         console.log('лекции',data)
+        if(course.value.lessons) {
+            course.value.lessons.length = 0
+        }
+        course.value.lessons = [...data]
     } catch(err) {
         console.error(err)
     }
@@ -212,6 +125,10 @@ const getLesson = async (id) => {
     try {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${course.value.id}/lectures/${lessonID}`, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         })
         
         const data = await response.json()
@@ -237,10 +154,15 @@ const getLessonFiles = async (lessonID) => {
     try {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${course.value.id}/lectures/${lessonID}/contents`, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         })
         
         const data = await response.json()
-        files.value = {...data}
+        files.value.length = 0
+        files.value = [...data]
 
         console.log('файлы лекции',data)
     } catch(err) {
@@ -251,8 +173,12 @@ const getLessonFiles = async (lessonID) => {
 
 const getTestLesson = async (lessonID) => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/api/jobs/${lessonID}/tests`, {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${lessonID}/tests`, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         });
 
         const data = await response.json()
@@ -265,8 +191,12 @@ const getTestLesson = async (lessonID) => {
 
 const getHomeLesson = async (lessonID) => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/api/jobs/${lessonID}/homeworks`, {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${lessonID}/homeworks`, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         });
         console.log('homes', response)
         const data = await response.json()
@@ -390,7 +320,40 @@ const openLesson = (lessonID) => {
 
 
 const makeUrlFordownloadFile = (fileName) => {
-    return `${import.meta.env.VITE_FILE_COURSE_URL}/api/files/${fileName}`;
+    return `${import.meta.env.VITE_SERVICE_FILE_URL}/files/${fileName}`;
+}
+
+const deleteFile = async(fileID) => {
+    const courseID = route.params.id
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${courseID}/lectures/${currentLesson.value.id}/contents/${fileID} `, {
+            method: "DELETE",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
+        });
+        console.log('Удален файл', response)
+        if(response.ok) {
+            files.value.forEach((el) => {
+                if (el.id === fileID) {
+                    // Находим индекс элемента с нужным id и удаляем его из массива
+                    const elementIndex = files.value.findIndex(item => item.id === fileID);
+                    if (elementIndex !== -1) {
+                        files.value.splice(elementIndex, 1);
+                        // Можно также обновить исходный объект files.value, если требуется
+                        files.value = files.value.reduce((acc, curr) => {
+                            acc[curr.id] = curr;
+                            return acc;
+                        }, {});
+                        console.log(files.value);
+                    }
+                }
+            });
+        }
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 onBeforeUnmount(() => {
@@ -436,6 +399,8 @@ onMounted(async() => {
                         v-if="activeTab === 'lesson' && Object.keys(currentLesson).length !== 0"
                         :lesson="currentLesson"
                         :course="course"
+                        @uploadFile="getLessonFiles(route.query.lesson)"
+                        @updateLecture="getCourseInfo()"
                     />
                     <task-lesson
                         v-if="activeTab === 'task'"
@@ -464,8 +429,18 @@ onMounted(async() => {
                             :href="makeUrlFordownloadFile(file.url)"
                         >
                             {{file.url.split('/')[1]}}
+                            <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                v-if="userStore.checkRole('teacher')"
+                                @click.stop.prevent="deleteFile(file.id)"
+                            >
+                                <path d="M16.6667 5.67546H13.3333V3.92107C13.3333 3.45578 13.1577 3.00955 12.8452 2.68053C12.5326 2.35152 12.1087 2.16669 11.6667 2.16669H8.33333C7.89131 2.16669 7.46738 2.35152 7.15482 2.68053C6.84226 3.00955 6.66667 3.45578 6.66667 3.92107V5.67546H3.33333C3.11232 5.67546 2.90036 5.76788 2.74408 5.93238C2.5878 6.09689 2.5 6.32001 2.5 6.55265C2.5 6.7853 2.5878 7.00842 2.74408 7.17292C2.90036 7.33743 3.11232 7.42985 3.33333 7.42985H4.16667V17.079C4.16667 17.5443 4.34226 17.9905 4.65482 18.3195C4.96738 18.6485 5.39131 18.8334 5.83333 18.8334H14.1667C14.6087 18.8334 15.0326 18.6485 15.3452 18.3195C15.6577 17.9905 15.8333 17.5443 15.8333 17.079V7.42985H16.6667C16.8877 7.42985 17.0996 7.33743 17.2559 7.17292C17.4122 7.00842 17.5 6.7853 17.5 6.55265C17.5 6.32001 17.4122 6.09689 17.2559 5.93238C17.0996 5.76788 16.8877 5.67546 16.6667 5.67546ZM8.33333 3.92107H11.6667V5.67546H8.33333V3.92107ZM14.1667 17.079H5.83333V7.42985H14.1667V17.079Z" fill="#9CA3AF"/>
+                                <path d="M8.33333 8.30704C8.11232 8.30704 7.90036 8.39946 7.74408 8.56396C7.5878 8.72847 7.5 8.95159 7.5 9.18423V15.3246C7.5 15.5572 7.5878 15.7803 7.74408 15.9449C7.90036 16.1094 8.11232 16.2018 8.33333 16.2018C8.55435 16.2018 8.76631 16.1094 8.92259 15.9449C9.07887 15.7803 9.16667 15.5572 9.16667 15.3246V9.18423C9.16667 8.95159 9.07887 8.72847 8.92259 8.56396C8.76631 8.39946 8.55435 8.30704 8.33333 8.30704Z" fill="#9CA3AF"/>
+                                <path d="M11.6667 8.30704C11.4457 8.30704 11.2337 8.39946 11.0774 8.56396C10.9211 8.72847 10.8333 8.95159 10.8333 9.18423V15.3246C10.8333 15.5572 10.9211 15.7803 11.0774 15.9449C11.2337 16.1094 11.4457 16.2018 11.6667 16.2018C11.8877 16.2018 12.0996 16.1094 12.2559 15.9449C12.4122 15.7803 12.5 15.5572 12.5 15.3246V9.18423C12.5 8.95159 12.4122 8.72847 12.2559 8.56396C12.0996 8.39946 11.8877 8.30704 11.6667 8.30704Z" fill="#9CA3AF"/>
+                            </svg>
                         </a>
-
+                        <div class="text" style="font-size: 15px;" v-if="!Object.keys(files).length > 0">
+                            Материалов нет
+                        </div>
                     </div>
                 </div>
                 <div class="course__aside-item materials"
@@ -512,7 +487,7 @@ onMounted(async() => {
                     </div>
                 </div>
                 <the-button
-                    v-if="userStore.user.role === 'employee'"
+                    v-if="userStore.checkRole('tutor')"
                     :styles="['btn_red']"
                     :type="'button'"
                     style="margin-top: 10px; width: 100%;"
@@ -554,7 +529,9 @@ onMounted(async() => {
                 </div>
             </div>
         </div>
-    <create-lesson-popup/>
+    <create-lesson-popup
+        @createdLesoon="getCourseLessons()"
+    />
     </main>
 </template>
 
@@ -641,6 +618,15 @@ onMounted(async() => {
         display: block;
         cursor: pointer;
         font-weight: 400;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: space-between;
+        & svg {
+            & path {
+
+            }
+        }
     }
 }
 
@@ -745,6 +731,11 @@ onMounted(async() => {
 
     & .course__aside-link {
         color: var(--primary-400, #76A9FA);
+        & svg {
+            & path {
+                fill: #6B7280;
+            }
+        }
     }
 
     & .aside__lesson-info {

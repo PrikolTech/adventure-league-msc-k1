@@ -32,7 +32,7 @@ const getTestInfo = async() => {
         testID = route.query.test
     }
     try {
-        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/api/jobs/${props.lesson.id}/tests/${testID}`, {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${props.lesson.id}/tests/${testID}`, {
             method: "GET",
         })
         

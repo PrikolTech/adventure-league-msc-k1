@@ -19,6 +19,7 @@ type NetServices struct {
 	User   net.User
 	Role   net.Role
 	Course net.Course
+	SMTP   net.SMTP
 }
 
 type registration struct {
@@ -94,20 +95,20 @@ func (r *registration) Update(data entity.Registration, token string) (*entity.R
 				return nil, err
 			}
 
-			if *data.Status == entity.Approved {
-				err = r.net.Course.Append(*registration.UserID, *registration.CourseID, token)
+			if status == entity.Approved {
+				err = r.net.Course.Append(user.ID, *registration.CourseID, token)
 				if err != nil {
 					return nil, err
 				}
 
-				err = r.appendRole(user, entity.Enrollee, token)
+				err = r.appendRole(user, entity.Student, token)
 				if err != nil {
 					return nil, err
 				}
 			}
 		}
 
-		registration, err = r.repo.UpdateStatus(context.Background(), registration.ID, *data.Status)
+		registration, err = r.repo.UpdateStatus(context.Background(), registration.ID, status)
 		if err != nil {
 			return nil, err
 		}
@@ -140,6 +141,11 @@ func (r *registration) createUser(data *entity.Registration) (*entity.User, erro
 
 	if data.Telegram != nil {
 		userData.Telegram = *data.Telegram
+	}
+
+	err = r.net.SMTP.SendPassword(userData.Password, userData.Email)
+	if err != nil {
+		return nil, err
 	}
 
 	return r.net.User.Create(userData)
