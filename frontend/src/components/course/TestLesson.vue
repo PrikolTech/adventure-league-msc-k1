@@ -1,8 +1,11 @@
 <script setup>
-import TestQuestion from '@/components/course/TestQuestion.vue'
+import TestQuestion from '@/components/course/TestQuestion.vue';
 import TheButton from '@/components/layouts/TheButton.vue';
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router'
+import { useRoute } from 'vue-router';
+import { useUser } from '@/stores/user';
+
+const userStore = useUser()
 const route = useRoute()
 const props = defineProps({
     showTest: {
@@ -34,6 +37,10 @@ const getTestInfo = async() => {
     try {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${props.lesson.id}/tests/${testID}`, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         })
         
         const data = await response.json()
@@ -44,9 +51,48 @@ const getTestInfo = async() => {
         console.error(err)
     }
 }
+let form = ref(null)
+const completeTest = async(e) => {
+    const formData = new FormData(e.target);
+
+    let testID = null
+    if(Object.keys(props.test).length > 0) {
+        testID = props.test.id
+    } else {
+        testID = route.query.test
+    }
+    const answers = []
+    for (let [key] of formData.entries()) {
+        answers.push(
+            {
+                'answer_id': key
+            }
+        )
+    }
+    console.log(answers)
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${props.lesson.id}/tests/${testID}/test_solutions`, {
+            method: "POST",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            body: JSON.stringify({
+                user_id: userStore.user.id,
+                answers
+            }),
+            mode: 'cors',
+        })
+        console.log(response)
+        const data = await response.json()
+        console.log(data)
+        
+    } catch(err) {
+        console.error(err)
+    }
+}
 
 onMounted(() => {
-    getTestInfo()
+    // getTestInfo()
 })
 
 </script>
@@ -58,9 +104,9 @@ onMounted(() => {
         >
             <div class="test__before-title">
                 <!-- Тест к уроку 1. Введение в финансовую грамотность.  -->
-                {{ questions.name }}
+                {{ test.name }}
             </div>
-            <div class="test__before-text">
+            <div class="test__before-text" v-if="false">
                 <p>
                     Тест к уроку 1 содержит в себе весь пройденный материал, обсуждённый в уроке “Введение в финансовую грамотность”. Все вопросы читайте вниматель и не торопитесь. 
                 </p>
@@ -71,9 +117,9 @@ onMounted(() => {
                 </p>
             </div>
             <div class="test__before-footer">
-                <b>
+                <!-- <b>
                     Попытка 0/3
-                </b>
+                </b> -->
                 <the-button class=""
                     :styles="['btn_red']"
                     :type="'button'"
@@ -83,7 +129,9 @@ onMounted(() => {
                 </the-button>
             </div>
         </div>
-        <div class="test"
+        <form class="test"
+            ref="form"
+            @submit.prevent="(event) => completeTest(event)"
             v-else
         >
             <div class="test__header">
@@ -109,7 +157,7 @@ onMounted(() => {
             >
                 Завершить попытку
             </the-button>
-        </div>
+        </form>
     </div>
 </template>
 

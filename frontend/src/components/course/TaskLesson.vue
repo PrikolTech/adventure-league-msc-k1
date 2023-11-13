@@ -3,9 +3,17 @@ import MakeComment from '@/components/layouts/MakeComment.vue';
 import TheButton from '../layouts/TheButton.vue';
 import UploadFile from "../layouts/UploadFile.vue";
 import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import { useUser } from '@/stores/user';
+import TheComment from '@/components/layouts/TheComment.vue';
 
+const userStore = useUser()
+const route = useRoute()
 const props = defineProps({
     lesson: {
+        type: Object,
+    },
+    task: {
         type: Object,
     }
 })
@@ -30,7 +38,76 @@ const deleteFile = () => {
     fileInput.value = null
     fileName.value = ''
 }
+const taskInfo = ref({})
+const getTaskInfo = async() => {
+    let homeWorkID = null
+    if(props.task) {
+        if(Object.keys(props.task).length > 0) {
+            homeWorkID = props.task.id
+        }
+    } 
+    if(!homeWorkID) homeWorkID = route.query.task
 
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${props.lesson.id}/homeworks/${homeWorkID}`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
+        })
+        
+        const data = await response.json()
+        console.log('Домашка:', data)
+        taskInfo.value = { ...data }
+    } catch(err) {
+        console.error(err)
+    }
+}
+
+const comments = ref([])
+const getComments = async () => {
+    console.log(route.query.lesson)
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COMMENT_URL}/comments/homeworks/${route.query.task}`, {
+            method: "GET",
+        })
+
+        const data = await response.json()
+        console.log('комментарии',data)
+        comments.value.length = 0
+        comments.value = [...data]
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const postComment = async () => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COMMENT_URL}/comments/homeworks/`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userStore.user.access}`,
+            },
+            mode: 'cors',
+            body: JSON.stringify({
+                user_id: userStore.user.id,
+                body: commentInput.value,
+                target_id: route.query.task
+            })
+        });
+        console.log(response.ok)
+        if(response.ok) {
+            commentInput.value = ''
+            const data = await response.json()
+            console.log('новый комментарий',data)
+            comments.value.push(data)
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 
 // const sendFile = async () => {
@@ -59,56 +136,23 @@ const deleteFile = () => {
 // }
 
 onMounted(() => {
-    getTaskLesson()
+    getTaskInfo()
+    getComments()
 })
 </script>
 
 <template>
     <div class="lesson__task">
         <div class="lesson__task-title">
-            Задание к уроку 1. Введение в финансовую грамотность. 
+            <!-- Задание к уроку 1. Введение в финансовую грамотность.  -->
+            {{ taskInfo.name }}
         </div>
         <div class="lesson__task-text">
-            <ul class="numbers">
-                <li>
-                    Создайте проект в Excel и назовите его “ ДЗ 1. Создание личного бюджета.”
-                </li>
-                <li>
-                    Начните с создания двух колонок: "Доходы" и "Расходы".
-                </li>
-                <li>
-                    В столбце "Доходы" укажите все источники дохода, которые у вас есть на месяц. Это могут быть заработная плата, стипендия, дополнительный доход и другие источники.
-                </li>
-                <li>
-                    В столбце "Расходы" перечислите все обязательные расходы, такие как аренда жилья, коммунальные платежи, продукты питания, транспорт, страховки, кредиты и другие. Важно включить все расходы, даже небольшие.
-                </li>
-                <li>
-                    Разделите расходы на две категории: фиксированные (неизменные) и переменные (которые могут меняться).
-                </li>
-                <li>
-                    После того как вы заполнили обе колонки, вычислите сумму доходов и сумму расходов на месяц.
-                </li>
-                <li>
-                    Сделайте скриншот и вставьте его в созданный файл в Word.
-                </li>
-                <li>
-                    Попробуйте ответить на следующие вопросы:
-                </li>
-                <li>
-                    Сколько денег у вас остается после покрытия всех обязательных расходов?
-                </li>
-                <li>
-                    Как можно сэкономить или оптимизировать расходы?
-                </li>
-                <li>
-                    Есть ли возможность увеличить доходы?
-                </li>
-                <li>
-                    Запишите свои ответы на вопросы в Word и прикрепите файл на данную страницу.
-                </li>
-            </ul>
+            {{ taskInfo.description }}
         </div>
-        <div class="add-file-w">
+        <div class="add-file-w"
+            v-if="userStore.checkRole('student')"
+        >
             <label class="add-file">
                 <input
                     type="file"
@@ -142,7 +186,14 @@ onMounted(() => {
         <make-comment
             v-model="commentInput"
             @update:modelValue="(modelValue) => commentInput=modelValue"
+            @send="postComment()"
         />
+        <div class="comments__list">
+            <the-comment
+                v-for="(comment, index) of comments" :key="index"
+                :comment="comment"
+            />
+        </div>
     </div>
 </template>
 

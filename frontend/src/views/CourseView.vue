@@ -26,6 +26,7 @@ let files = ref({})
 let tests = ref({})
 let homes = ref({})
 let currentTest = ref({})
+let currentTask = ref({})
 let showTest = ref(false)
 let activeTab = ref(null)
 const navigationLinks = ref([
@@ -222,7 +223,7 @@ const getTaskOfLesson = async (taskInfo) => {
     }
 
     if(taskInfo) {
-        currentParams.test = taskInfo.id;
+        currentParams.task = taskInfo.id;
     }
 
     router.push({ query: currentParams });
@@ -235,6 +236,7 @@ const getTaskOfLesson = async (taskInfo) => {
     )
 
     activeTab.value = 'task'
+    currentTask.value = { ...taskInfo }
 
 }
 
@@ -404,6 +406,7 @@ onMounted(async() => {
                     />
                     <task-lesson
                         v-if="activeTab === 'task'"
+                        :task="currentTask"
                         :lesson="currentLesson"
                     />
                     <test-lesson
@@ -444,7 +447,7 @@ onMounted(async() => {
                     </div>
                 </div>
                 <div class="course__aside-item materials"
-                    v-if="activeTab && activeTab !=='task' && activeTab !=='test'"
+                    v-if="activeTab && activeTab !=='task' && activeTab !=='test' && ( userStore.checkRole('teacher') || userStore.checkRole('student') )"
                 >
                     <div class="course__aside-title">
                         Практическое задание:
@@ -459,13 +462,15 @@ onMounted(async() => {
                             v-for="home of homes" :key="home.id"
                             @click="getTaskOfLesson(home)"
                         >
-                            Задание по материалу
+                            <!-- Задание по материалу -->
+                            {{ home.name }}
                         </p>
                         <p class="course__aside-link"
                             v-for="test of tests" :key="test.id"
                             @click="getTestOfLesson(test)"
                         >
-                            Тест
+                            {{ test.name }}
+                            <!-- Тест -->
                         </p>
                         <!-- <p class="course__aside-link"
                             v-if="currentLesson"
@@ -622,6 +627,10 @@ onMounted(async() => {
         align-items: center;
         gap: 10px;
         justify-content: space-between;
+        transition: .2s;
+        &:hover {
+            text-decoration: underline;
+        }
         & svg {
             & path {
 
