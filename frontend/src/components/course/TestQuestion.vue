@@ -26,7 +26,6 @@ const getQuestionInfo = async() => {
         })
         
         const data = await response.json()
-        console.log('ВОПРОС:', data)
         questionFullInfo.value = { ...data }
     } catch(err) {
         console.error(err)

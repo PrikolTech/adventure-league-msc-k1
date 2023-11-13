@@ -38,7 +38,6 @@ const getApplications = async () => {
 
         const data = await response.json();
         applications.value = [...data]
-        console.log('Заявки',data);
     } catch (err) {
         console.error(err);
     }
@@ -52,8 +51,6 @@ const getAllCourses = async () => {
             method: 'GET',
         });
         const data = await response.json()
-
-        console.log('Все курсы',data)
 
         applications.value = [...data]
     } catch (err) {

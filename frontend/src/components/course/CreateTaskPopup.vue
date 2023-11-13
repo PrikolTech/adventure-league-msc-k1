@@ -34,7 +34,6 @@ const createTask = async () => {
             }),
         })
 
-        console.log(response)
         emit('createdTask')
         if(response.ok) {
             alertsStore.addAlert('Задание создано!', 'success')

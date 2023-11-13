@@ -40,7 +40,6 @@ const getCourseInfo = async () => {
     });
 
     const data = await response.json();
-    console.log('Курс с заявки', data);
     courseInfo.value = {...data}
     
   } catch (err) {
@@ -62,7 +61,6 @@ const getCourseInfoByEmployee = async () => {
     });
 
     const data = await response.json();
-    console.log('Информация на курс для Employee', data);
     people.value = [...data]
     
   } catch (err) {
@@ -71,7 +69,6 @@ const getCourseInfoByEmployee = async () => {
 }
 
 const quantityOfPeople = computed(() => {
-    console.log(people.value.length)
     if(userStore.checkRole('employee')) {
         return people.value.length
     } else {
@@ -80,7 +77,6 @@ const quantityOfPeople = computed(() => {
 })
 
 const doStatusBlockInfo = () => {
-    console.log(props.course.status)
     if(props.course.status === 'accepted') {
         steps.value = [...[{text: 'Рассмотрение',active: true},{text: 'Решение',active: false}]]
     } else if(props.course.status === 'approved') {

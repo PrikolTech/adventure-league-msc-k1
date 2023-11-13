@@ -25,7 +25,6 @@ const getPrograms = async () => {
             mode: 'cors',
         });
         const data = await response.json()
-        console.log(data)
         
         programs.value = [...data];
         filteredPrograms.value = [...data];
