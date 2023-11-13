@@ -12,7 +12,7 @@ class Api::GroupsController < ApplicationController
     @group = Group.find(params[:id])
 
     if UserGroup.where(user_id: params[:sender_id], group_id: @group_id).empty?
-      return json: {status: 403, message: NO_PERMISSION_ERROR}
+      return render json: {status: 403, message: NO_PERMISSION_ERROR}
     end
 
     render json: @group, include: {user_groups: {except: :id}}
