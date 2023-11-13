@@ -63,24 +63,24 @@ const initialsUser = computed(() => {
                                 </div>
                             </div>
                             <div class="header__me-item">
-                                <router-link  to="/profile/me/meCourses">
+                                <router-link class="item" to="/profile/me/meCourses">
                                     Профиль
                                 </router-link>
-                                <router-link  to="/profile/courses"
+                                <router-link class="item" to="/profile/courses"
                                     v-if="userStore.checkRole('student') || userStore.checkRole('teacher') || userStore.checkRole('tutor') || userStore.checkRole('enrollee')"
                                 >
                                     Курсы
                                 </router-link>
-                                <router-link  to="/profile/courses"
+                                <router-link class="item" to="/profile/courses"
                                     v-if="userStore.checkRole('student')"
                                 >
                                     Задания
                                 </router-link>
-                                <router-link  to="/profile/settings">
+                                <router-link class="item" to="/profile/settings">
                                     Настройки
                                 </router-link>
                             </div>
-                            <div class="header__me-item"
+                            <div class="header__me-item button"
                                 @click="userStore.logOut()"
                             >
                                 Выйти
@@ -484,16 +484,28 @@ const initialsUser = computed(() => {
         display: block;
         font-size: 14px ;
         line-height: 100%;
-        padding: 12px 12px;
+        // padding: 12px 12px;
         cursor: pointer;
         text-align: start;
         & .name {
             margin-bottom: 5px;
+            padding: 12px 12px 0px;
         }
         & .email {
-            
+            padding: 0px 12px 12px;
         }
-
+        & .item {
+            padding: 0 12px 0px;
+            &:first-child {
+                padding: 12px 12px 0px;
+            }
+            &:last-child {
+                padding: 0px 12px 12px;
+            }
+        }
+        &.button {
+            padding: 12px 12px 12px;
+        }
         & a {
             display: block;
             font-size: 14px;

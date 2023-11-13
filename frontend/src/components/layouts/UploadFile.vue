@@ -42,6 +42,12 @@ const emit = defineEmits(['deleteFile'])
         & svg {
             cursor: pointer;
         }
+        &.withOutDelete {
+        & svg {
+            display: none;
+        }
     }
+    }
+
 }
 </style>

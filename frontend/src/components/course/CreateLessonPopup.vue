@@ -19,6 +19,10 @@ let dateLesson = ref('2023-08-10')
 let timeLesson = ref('12:00')
 
 const createLesson = async () => {
+    if(!nameLesson.value || !descLesson.value || !dateLesson.value || !timeLesson.value ) {
+        alertsStore.addAlert('Все поля должны быть заполнены!', 'error')
+        return
+    }
     const dateTime = `${dateLesson.value} - ${timeLesson.value}` 
     // const dateTime = "2023-11-17T11:11:11"
     console.log(dateTime)

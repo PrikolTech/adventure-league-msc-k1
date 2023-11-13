@@ -5,16 +5,17 @@ class Api::HomeworkSolutionsController < ApplicationController
     return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TEACHER_ROLE, STUDENT_ROLE]
     
     @solutions = []
+    @homework = Homework.find(params[:homework_id])
     if has_permission? [TEACHER_ROLE]
-      @solutions = HomeworkSolution.where(homework_id: params[:homework_id])
+      @solutions = HomeworkSolution.where(homework_id: @homework.id)
       if params.include? :user_id
         @solutions = @solutions.where(user_id: params[:user_id])
       end
     else
-      @solutions = HomeworkSolution.where(user_id: params[:sender_id])
+      @solutions = HomeworkSolution.where(homework_id: @homework.id, user_id: params[:sender_id])
     end
 
-    render json: @solutions, include: :homework_result
+    render json: {solutions: @solutions, include: :homework_result, homework: @homework}
   end
   
   def show

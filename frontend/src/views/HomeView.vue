@@ -79,6 +79,8 @@ let popupData = ref([
 ])
 
 const sendForm = async () => {
+  let fieldsAreValid = true; // Флаг для проверки пустых полей
+
   const dateString = formData.value.birthdate
   const date = new Date(dateString + "T00:00:00Z")
 
@@ -112,8 +114,15 @@ const sendForm = async () => {
     preparedFormData.user_id = userStore.user.user_id
   }
 
-  console.log('form', preparedFormData)
+  Object.values(formData.value).forEach(value => {
+    if (!value) {
+      alertsStore.addAlert('Все поля должны быть заполнены', 'error');
+      fieldsAreValid = false;
+      return
+    }
+  });
 
+  if(!fieldsAreValid) return
   try {
     let url = `${import.meta.env.VITE_SERVICE_FORM_URL}/form/registration/append`
     let headers = {

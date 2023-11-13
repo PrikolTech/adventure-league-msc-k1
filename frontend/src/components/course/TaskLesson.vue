@@ -18,6 +18,7 @@ const props = defineProps({
     }
 })
 
+let homeWorkID = ref(null)
 let commentInput = ref('')
 // let input = ref(null)
 let fileInput = ref(null)
@@ -39,17 +40,31 @@ const deleteFile = () => {
     fileName.value = ''
 }
 const taskInfo = ref({})
-const getTaskInfo = async() => {
-    let homeWorkID = null
-    if(props.task) {
-        if(Object.keys(props.task).length > 0) {
-            homeWorkID = props.task.id
-        }
-    } 
-    if(!homeWorkID) homeWorkID = route.query.task
 
+const getHomeLesson = async () => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${props.lesson.id}/homeworks/${homeWorkID}`, {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${props.lesson.id}/homeworks`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
+        });
+
+        const data = await response.json()
+        console.log('Домашка к уроку',data)
+        data.forEach(el => {
+            if(el.job_id === homeWorkID.value)
+            taskInfo.value = { ...el }
+        });
+    } catch (err) {
+        console.log(err);
+    }
+}
+const solutionStudent = ref([])
+const getStudentSolution = async() => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${props.lesson.id}/homeworks/${homeWorkID.value}/homework_solutions`, {
             method: "GET",
             headers: {
                 'Authorization': `Bearer ${userStore.user.access}`
@@ -58,8 +73,9 @@ const getTaskInfo = async() => {
         })
         
         const data = await response.json()
-        console.log('Домашка:', data)
-        taskInfo.value = { ...data }
+        console.log('Домашка Студента:', data)
+        taskInfo.value = { ...data.homework }
+        solutionStudent.value = [ ...data.solutions]
     } catch(err) {
         console.error(err)
     }
@@ -109,34 +125,38 @@ const postComment = async () => {
     }
 }
 
+const sendFile = async () => {
+    try {
+        const file = fileInput.value;
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${props.lesson.id}/homeworks/${homeWorkID.value}/homework_solutions `, {
+            method: "POST",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`,
+            },
+            body: formData
+        });
 
-// const sendFile = async () => {
-//     try {
-//         const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${job_id}/homeworks/${homework_id}/homework_solutions `, {
-//             method: "POST",
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify({
-//                 user_id: userStore.user.id,
-//                 body: commentInput.value,
-//                 target_id: props.lesson.id
-//             })
-//         });
-
-//         const data = await response.json()
-//         console.log('новый комментарий',data)
-//         commentInput.value = ''
-//         if(data) {
-//             comments.value.push(data)
-//         }
-//     } catch (err) {
-//         console.log(err);
-//     }
-// }
+        const data = await response.json()
+        console.log('отправленная домашка',data)
+        commentInput.value = ''
+        if(data) {
+            comments.value.push(data)
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 onMounted(() => {
-    getTaskInfo()
+    if(props.task) {
+        if(Object.keys(props.task).length > 0) {
+            homeWorkID.value = props.task.id
+        }
+    } 
+    if(!homeWorkID.value) homeWorkID.value = route.query.task
+    getStudentSolution()
     getComments()
 })
 </script>
@@ -150,8 +170,13 @@ onMounted(() => {
         <div class="lesson__task-text">
             {{ taskInfo.description }}
         </div>
+        <div class="text"
+            v-if="userStore.checkRole('student') && !solutionStudent.length"
+        >
+            Прикрепить домашнюю работу
+        </div>
         <div class="add-file-w"
-            v-if="userStore.checkRole('student')"
+            v-if="userStore.checkRole('student') && !solutionStudent.length"
         >
             <label class="add-file">
                 <input
@@ -174,6 +199,7 @@ onMounted(() => {
                 :type="'button'"
                 class="add-file-btn"
                 @click="sendFile()"
+                v-if="fileInput"
             >
                 Отправить
             </the-button>
@@ -183,6 +209,17 @@ onMounted(() => {
             @deleteFile="deleteFile()"
             v-if="fileName"
         />
+        <div class="text"
+            v-if="userStore.checkRole('student')"
+        >
+            Ваши прикрепленные решения
+        </div>
+        <upload-file
+            :class="'withOutDelete'"
+            v-for="file of solutionStudent" :key="file.id"
+            :name="file.file_url.split('/')[1] + ' ' + file.created_at.split('T')[0] + ' в ' + file.created_at.split('T')[1].split('.')[0]"
+        />
+        
         <make-comment
             v-model="commentInput"
             @update:modelValue="(modelValue) => commentInput=modelValue"
