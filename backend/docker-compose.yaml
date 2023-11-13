@@ -4,3 +4,7 @@ include:
   - user-service/docker-compose.yaml
   - form-service/docker-compose.yaml
   - smtp-service/docker-compose.yaml
+  - comment-service/docker-compose.yml
+  - course-service/docker-compose.yml
+  - file-service/docker-compose.yml
+  - job-service/docker-compose.yml

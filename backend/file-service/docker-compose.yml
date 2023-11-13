@@ -1,12 +1,9 @@
-version: "3"
 services:
-  api:
+  file-server:
+    container_name: file-server
     build: .
     command: bash -c "bundle exec ruby main.rb -p 3008"
     volumes:
       - .:/app
     ports:
-      - "3008:3008"
-networks:
-  default:
-    name: backend
+      - 3008:3008

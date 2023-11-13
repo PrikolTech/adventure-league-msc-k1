@@ -12,19 +12,19 @@
     "excludes": ["/user/authenticate"]
   },
   {
-    "upstream": "http://host.docker.internal:3003",
+    "upstream": "http://course-server:3003",
     "prefix": "",
     "includes": ["/api/courses", "/api/groups"],
     "excludes": []
   },
   {
-    "upstream": "http://host.docker.internal:3004",
+    "upstream": "http://job-server:3004",
     "prefix": "",
     "includes": ["/api/jobs"],
     "excludes": []
   },
   {
-    "upstream": "http://host.docker.internal:3005",
+    "upstream": "http://comment-server:3005",
     "prefix": "",
     "includes": ["/api/comments"],
     "excludes": []
@@ -36,7 +36,7 @@
     "excludes": []
   },
   {
-    "upstream": "http://host.docker.internal:3008",
+    "upstream": "http://file-server:3008",
     "prefix": "",
     "includes": ["/api/files"],
     "excludes": ["/api/files/upload"]
