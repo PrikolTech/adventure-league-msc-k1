@@ -24,7 +24,7 @@ let courseTypeName = ref('')
 let educationFormName = ref('')
 
 const createCourse = async () => {
-    if(!nameCourse.value || !descCourse.value || !advantagesCourse.value || !priceCourse.value || !tgCourse.value || !prefixCourse.value || !periodStartsAt.value || !periodEndsAt.value || !courseTypeName.value) {
+    if(!nameCourse.value || !descCourse.value || !advantagesCourse.value || !priceCourse.value || !tgCourse.value || !prefixCourse.value || !periodStartsAt.value || !periodEndsAt.value || !courseTypeName.value || !educationFormName.value) {
         alertsStore.addAlert('Необходимо заполнить все поля', 'error')
         return
     }
@@ -166,9 +166,17 @@ const createCourse = async () => {
                 Тип курса
             </p>
             <div class="input-w">
-                <select style="width: 100%; padding: 10px 5px;" v-model="courseTypeName">
-                    <option value="Очноы">Очно</option>
-                    <option>Онлайн + Очно</option>
+                <input v-model="courseTypeName">
+            </div>
+        </div>
+        <div class="field">
+            <p>
+                Форма обучения
+            </p>
+            <div class="input-w">
+                <select style="width: 100%; padding: 10px 5px;" v-model="educationFormName">
+                    <option value="Очно">Очно</option>
+                    <option value="Онлайн + Очно">Онлайн + Очно</option>
                 </select>
             </div>
         </div>
