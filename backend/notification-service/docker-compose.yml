@@ -1,0 +1,18 @@
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: password
+  api:
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3006 -b '0.0.0.0'"
+    volumes:
+      - .:/myapp
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PASSWORD: password
+      AUTH_SERVICE_API: http://host.docker.internal:3001
+    ports:
+      - "3006:3006"
+    depends_on:
+      - db
