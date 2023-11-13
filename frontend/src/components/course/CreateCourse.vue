@@ -1,6 +1,6 @@
 <script setup>
 import TheModal from "../layouts/TheModal.vue";
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useAlerts } from '@/stores/alerts'
 import { useUser } from '@/stores/user'
 import { usePopups } from '@/stores/popups'
@@ -73,6 +73,15 @@ const createCourse = async () => {
         console.error(err)
     }
 }
+
+const currentDate = computed(() => {
+    const today = new Date();
+    today.setDate(today.getDate() + 1); // Добавляем один день
+    const year = today.getFullYear();
+    const month = `${today.getMonth() + 1}`.padStart(2, '0');
+    const day = `${today.getDate()}`.padStart(2, '0');
+    return `${year}-${month}-${day}`;
+});
 </script>
 
 <template>
@@ -147,6 +156,7 @@ const createCourse = async () => {
                 <input
                     type="date"
                     v-model="periodStartsAt"
+                    :min="currentDate"
                 >
             </div>
         </div>
