@@ -114,16 +114,22 @@ onMounted(() => {
                     </div>
                     <div class="profile__header-line line"></div>
                 </div>
-                <div class="profile__courses-filter" v-if="courses.length">
+                <div class="profile__courses-filter" v-if="courses.length" style="align-items: center; column-gap: 50px;">
                     <the-sort
                         :selectors="sortSelectors"
                         v-model="selectorIsActive"
                         @select="(modelValue) => filterCourses(modelValue)"
+                        v-if="false"
                     />
+                    <div class="field" style="flex: 1; margin-bottom: 0px;">
+                        <div class="input-w">
+                            <input placeholder="Поиск"/>
+                        </div>
+                    </div>
                     <the-switcher
                         :name="'showCompleted'"
                         v-model="showCompleted"
-                        v-if="falss"
+                        v-if="userStore.checkRole('student')"
                     >
                         Скрыть пройденные
                     </the-switcher>
