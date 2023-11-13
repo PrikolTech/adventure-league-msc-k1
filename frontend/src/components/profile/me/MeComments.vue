@@ -36,7 +36,7 @@ let comments = ref([
         <div class="me__marks-header">
 
         </div>
-        <div class="me__marks-list">
+        <div class="me__marks-list scroll-custom">
             <div class="me__marks-item"
                 v-for="(comment, index) of comments" :key="index"
             >
