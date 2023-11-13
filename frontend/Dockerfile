@@ -1,22 +1,12 @@
-# FROM node:lts-alpine
+FROM node:lts-alpine AS build
+WORKDIR /build
+COPY package*.json .
+RUN npm install
+COPY . .
+RUN npm run build
 
-# # set the working direction
-# WORKDIR /app
-
-# # install app dependencies
-# COPY package.json ./
-# COPY package-lock.json ./
-
-# # Fix permissions for packages
-# # RUN npm config set unsafe-perm true
-
-# RUN npm install
-# RUN npm install -g serve
-
-# # Bundle app source
-# COPY . ./
-
-# RUN chown -R node:node /app/node_modules
-
-# # start app
-# CMD ["npm", "run", "dev"]
+FROM node:lts-alpine AS production
+WORKDIR /app
+COPY --from=build /build/dist ./dist
+RUN npm install -g vite
+CMD ["vite", "preview", "--host"]

@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref, watch } from "vue";
-import CourseItem from "@/components/profile/courses/courseitem.vue";
+import CourseItem from "@/components/profile/courses/CourseItem.vue";
 import TheSort from "@/components/layouts/TheSort.vue";
 import TheSwitcher from "@/components/layouts/TheSwitcher.vue";
 import { useUser } from '@/stores/user'
