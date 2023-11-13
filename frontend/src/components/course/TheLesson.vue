@@ -478,6 +478,12 @@ onMounted(() => {
     & .comments__item-text {
         color: var(--gray-100, #F3F4F6);
     }
+
+    & textarea {
+        border: 1px solid var(--gray-700, #374151);
+        color: var(--gray-100, #F3F4F6);
+        background: var(--gray-700, #374151);
+    }
 }
 
 

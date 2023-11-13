@@ -75,6 +75,7 @@ const getStudentSolution = async() => {
         const data = await response.json()
         console.log('Домашка Студента:', data)
         taskInfo.value = { ...data.homework }
+        solutionStudent.value.length = 0
         solutionStudent.value = [ ...data.solutions]
     } catch(err) {
         console.error(err)
@@ -138,12 +139,11 @@ const sendFile = async () => {
             body: formData
         });
 
-        const data = await response.json()
-        console.log('отправленная домашка',data)
-        commentInput.value = ''
-        if(data) {
-            comments.value.push(data)
+        if(response.ok) {
+            getStudentSolution()
+            deleteFile()
         }
+
     } catch (err) {
         console.log(err);
     }

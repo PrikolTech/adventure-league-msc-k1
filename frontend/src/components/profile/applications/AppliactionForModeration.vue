@@ -19,7 +19,6 @@ let isHidden = ref(true)
 const accept = async() => {
     try {
         let status = null
-        console.log(props.application.status)
         if(props.application.status === 'created') {
             status = 'accepted'
         }
@@ -81,7 +80,6 @@ const reject = async() => {
     const data = await response.json();
     if(response.ok) {
         emit('updateStatus', data)
-        console.log('Заявка отклонена!', data)
         alertsStore.addAlert('Заявка принята!', 'success')
     }
     
@@ -271,5 +269,17 @@ const reject = async() => {
 }
 .fade-enter, .fade-leave-to {
   opacity: 0;
+}
+
+[dark=true] {
+    & .appliaction {
+        border-radius: 20px;
+        background: #1A2537;
+    }
+    & .appliaction__preview {
+        & p {
+            color: var(--gray-50, #F9FAFB);
+        }
+    }
 }
 </style>

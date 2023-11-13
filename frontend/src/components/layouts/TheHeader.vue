@@ -4,11 +4,14 @@ import switcherTheme from '@/components/layouts/SwitcherTheme.vue'
 import TheButton from './TheButton.vue';
 import { computed, ref } from 'vue';
 import { useUser } from '@/stores/user'
+import TheNotifications from './TheNotifications.vue';
 
 const userStore = useUser()
-
 let headerMobileIsActive = ref(false)
 let headerMeHiddenListIsActive = ref(false)
+let notificationIsActive = ref(false)
+
+
 const initialsUser = computed(() => {
     if(!userStore.user) return
     if(userStore.user.first_name && userStore.user.last_name) {
@@ -36,6 +39,10 @@ const initialsUser = computed(() => {
                     <switcher-theme/>
                 </div>
                 <div class="header__auth">
+                    <the-notifications
+                        :notificationIsActive="notificationIsActive"
+                        @toggleNotification="notificationIsActive = !notificationIsActive"
+                    />
                     <the-button
                         :styles="['btn_red-border']"
                         :type="'link'"
@@ -63,13 +70,13 @@ const initialsUser = computed(() => {
                                 </div>
                             </div>
                             <div class="header__me-item">
-                                <router-link class="item" to="/profile/me/meCourses">
-                                    Профиль
-                                </router-link>
                                 <router-link class="item" to="/profile/courses"
                                     v-if="userStore.checkRole('student') || userStore.checkRole('teacher') || userStore.checkRole('tutor') || userStore.checkRole('enrollee')"
                                 >
                                     Курсы
+                                </router-link>
+                                <router-link class="item" to="/profile/me/meCourses">
+                                    Профиль
                                 </router-link>
                                 <router-link class="item" to="/profile/courses"
                                     v-if="userStore.checkRole('student')"
@@ -306,6 +313,9 @@ const initialsUser = computed(() => {
     &__auth {
         padding-left: 23px;
         position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
         &::after {
             content: "";
             position: absolute;

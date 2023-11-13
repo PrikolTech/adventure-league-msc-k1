@@ -274,6 +274,16 @@ onMounted(() => {
     & .test__preview {
 
     }
+    & .test__before-title {
+        color: var(--gray-300, #D1D5DB);
+    }
+    & .test__title {
+        color: var(--gray-300, #D1D5DB);
+    }
+
+    & .test__item-title {
+        color: var(--gray-300, #D1D5DB);
+    }
 }
 
 </style>

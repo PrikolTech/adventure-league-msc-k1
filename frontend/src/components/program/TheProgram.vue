@@ -19,7 +19,7 @@ let programs = ref([])
 let filteredPrograms = ref([])
 const getPrograms = async () => {
     try {
-        const url = `http://localhost:3000/api/courses`;
+        const url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses`;
         const response = await fetch(url, {
             method: 'GET',
             mode: 'cors',

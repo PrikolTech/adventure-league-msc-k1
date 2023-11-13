@@ -3,20 +3,21 @@ import TheModal from "../layouts/TheModal.vue";
 import { ref } from 'vue';
 import { useRoute } from 'vue-router'
 import { useUser } from '@/stores/user'
-
 import { useAlerts } from '@/stores/alerts'
+import { usePopups } from '@/stores/popups'
 
 const emit = defineEmits(['createdLesoon'])
 
+const popupStore = usePopups()
 const userStore = useUser()
 const alertsStore = useAlerts()
 const namePopup = 'createLesson'
 const route = useRoute()
 
-let nameLesson = ref('Лекция по созданию фронта')
-let descLesson = ref('Лекция по созданию фронта описание')
-let dateLesson = ref('2023-08-10')
-let timeLesson = ref('12:00')
+let nameLesson = ref('')
+let descLesson = ref('')
+let dateLesson = ref('')
+let timeLesson = ref('')
 
 const createLesson = async () => {
     if(!nameLesson.value || !descLesson.value || !dateLesson.value || !timeLesson.value ) {
@@ -24,8 +25,6 @@ const createLesson = async () => {
         return
     }
     const dateTime = `${dateLesson.value} - ${timeLesson.value}` 
-    // const dateTime = "2023-11-17T11:11:11"
-    console.log(dateTime)
     try {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${route.params.id}/lectures`, {
             method: "POST",
@@ -40,10 +39,14 @@ const createLesson = async () => {
             }),
         })
 
-        console.log(response)
         if(response.ok) {
             alertsStore.addAlert('Лекция создана!', 'success')
             emit('createdLesoon')
+            popupStore.enableScroll(namePopup)
+            nameLesson.value = ''
+            descLesson.value = ''
+            dateLesson.value = ''
+            timeLesson.value = ''
         }
 
 

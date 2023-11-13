@@ -50,4 +50,13 @@ const emit = defineEmits(['deleteFile'])
     }
 
 }
+
+[dark=true] {
+.file-info {
+    &__item {
+        background: #1A2537;
+        color: var(--gray-300, #D1D5DB);
+    }
+}
+}
 </style>

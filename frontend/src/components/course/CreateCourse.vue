@@ -3,25 +3,31 @@ import TheModal from "../layouts/TheModal.vue";
 import { ref } from 'vue';
 import { useAlerts } from '@/stores/alerts'
 import { useUser } from '@/stores/user'
+import { usePopups } from '@/stores/popups'
 
 const emit = defineEmits(['createdLesoon'])
 
+const popupStore = usePopups()
 const userStore = useUser()
 const alertsStore = useAlerts()
 const namePopup = 'createCourse'
 
-let nameCourse = ref('Курс по адекватности')
-let descCourse = ref('Лекция по созданию фронта описание')
-let advantagesCourse = ref('Какие то преимущества')
-let priceCourse = ref(1000)
-let tgCourse = ref('link.com')
-let prefixCourse = ref('ИДБ-20-09')
-let periodStartsAt = ref('2023-08-10')
-let periodEndsAt = ref('2023-08-10')
-let courseTypeName = ref('Тип курса')
-let educationFormName = ref('Test Form')
+let nameCourse = ref('')
+let descCourse = ref('')
+let advantagesCourse = ref('')
+let priceCourse = ref()
+let tgCourse = ref('')
+let prefixCourse = ref('')
+let periodStartsAt = ref('')
+let periodEndsAt = ref('')
+let courseTypeName = ref('')
+let educationFormName = ref('')
 
 const createCourse = async () => {
+    if(!nameCourse.value || !descCourse.value || !advantagesCourse.value || !priceCourse.value || !tgCourse.value || !prefixCourse.value || !periodStartsAt.value || !periodEndsAt.value || !courseTypeName.value || !educationFormName.value) {
+        alertsStore.addAlert('Необходимо заполнить все поля', 'error')
+        return
+    }
     try {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/`, {
             method: "POST",
@@ -45,10 +51,20 @@ const createCourse = async () => {
             }),
         })
 
-        console.log(response)
         if(response.ok) {
             alertsStore.addAlert('Курс создан', 'success')
             emit('createdCourse')
+            popupStore.enableScroll(namePopup)
+            nameCourse.value = ''
+            descCourse.value = ''
+            advantagesCourse.value = ''
+            priceCourse.value = ''
+            tgCourse.value = ''
+            prefixCourse.value = ''
+            periodStartsAt.value = ''
+            periodEndsAt.value = ''
+            courseTypeName.value = ''
+            educationFormName.value = ''
         }
 
 
@@ -64,7 +80,7 @@ const createCourse = async () => {
         @send="createCourse()"
     >
         <template v-slot:title>
-            Создание занятия
+            Создание курса
         </template>
         <div class="field">
             <p>
