@@ -47,8 +47,6 @@ const getTestInfo = async() => {
         
         const data = await response.json()
         questions.value = { ...data }
-        console.log('Тест:', data)
-        
     } catch(err) {
         console.error(err)
     }
@@ -86,7 +84,6 @@ const completeTest = async(e) => {
         })
         const data = await response.json()
         if(response.ok) {
-            console.log(data)
             let score = null
             if(data.test_result.score <= 2) {
                 score = 2

@@ -24,7 +24,6 @@ const getCourseApplications = async () => {
 
     const data = await response.json();
     applications.value = [...data]
-    console.log('Информация на курс для модерации Employee', data);
     
   } catch (err) {
     console.error(err);
@@ -44,7 +43,6 @@ const getCourseInfo = async() => {
     });
 
     const data = await response.json();
-    console.log('Курс с заявки', data);
     courseInfo.value = {...data}
     
   } catch (err) {
@@ -53,11 +51,9 @@ const getCourseInfo = async() => {
 }
 
 const updateStatus = (application) => {
-    console.log('test', application);
     const index = applications.value.findIndex(element => element.id === application.id);
     if (index !== -1) {
         applications.value[index] = { ...applications.value[index], ...application };
-        console.log(applications.value[index]);
     }
 }
 

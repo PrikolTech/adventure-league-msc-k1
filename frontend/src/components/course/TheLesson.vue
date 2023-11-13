@@ -36,7 +36,6 @@ const changeFile = (event) => {
         const selectedFile = event.target.files[0];
         fileInput.value = selectedFile
         fileName.value = selectedFile.name;
-        console.log("Selected file name: " + fileName.value);
     } catch (err) {
         console.log(err);
     }
@@ -45,14 +44,12 @@ const changeFile = (event) => {
 let commentInput = ref('')
 const comments = ref([])
 const getComments = async () => {
-    console.log(route.query.lesson)
     try {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COMMENT_URL}/comments/lecture/${route.query.lesson}`, {
             method: "GET",
         })
 
         const data = await response.json()
-        console.log('комментарии',data)
         comments.value.length = 0
         comments.value = [...data]
     } catch (err) {
@@ -76,7 +73,6 @@ const postComment = async () => {
                 target_id: route.query.lesson
             })
         });
-        console.log(response.ok)
         if(response.ok) {
             commentInput.value = ''
             const data = await response.json()
@@ -106,8 +102,6 @@ const postFile = async () => {
             },
             body: formData
         });
-
-        console.log('отправка файла ответ', response)
 
         if(response.ok) {
             emit('uploadFile')

@@ -42,7 +42,6 @@ const getUserCourse = async() => {
         const data = await response.json()
 
 
-        console.log(data)
         filteredCourses.value.length = 0
         courses.value.length = 0
         filteredCourses.value = [...data]

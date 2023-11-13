@@ -35,7 +35,6 @@ const login = async () => {
 
         if (response.ok) {
             const data = await response.json();
-            console.log('data',data)
             userStore.user = {}
             userStore.user.access = data.access
             userStore.user.user_id = data.user_id
@@ -43,7 +42,6 @@ const login = async () => {
             router.push('/')
         } else {
             alertsStore.addAlert('Неверный логин или пароль', 'error')
-            console.error('Ошибка при выполнении запроса.');
         }
 
     } catch (err) {

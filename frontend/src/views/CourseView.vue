@@ -78,7 +78,6 @@ const getCourseInfo = async () => {
         }
 
 
-        console.log('курс:',data)
 
         await getCourseLessons()
 
@@ -89,7 +88,6 @@ const getCourseInfo = async () => {
 
 
 const getCourseLessons = async () => {
-    console.log('test')
     let url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${course.value.id}/lectures?user_id=${userStore.user.id}`
     if(userStore.checkRole('student')) {
         url = `${import.meta.env.VITE_SERVICE_COURSE_URL}/courses/${course.value.id}/lectures?user_id=${userStore.user.id}`
@@ -107,7 +105,6 @@ const getCourseLessons = async () => {
         })
         
         const data = await response.json()
-        console.log('лекции',data)
         if(course.value.lessons) {
             course.value.lessons.length = 0
         }
@@ -136,7 +133,6 @@ const getLesson = async (id) => {
         const data = await response.json()
         currentLesson.value = {...data}
 
-        console.log('лекция',data)
     } catch(err) {
         console.error(err)
     }
@@ -166,7 +162,6 @@ const getLessonFiles = async (lessonID) => {
         files.value.length = 0
         files.value = [...data]
 
-        console.log('файлы лекции',data)
     } catch(err) {
         console.error(err)
     }
@@ -184,7 +179,6 @@ const getTestLesson = async (lessonID) => {
         });
 
         const data = await response.json()
-        console.log('Тесты к уроку',data)
         tests.value = { ...data }
     } catch (err) {
         console.log(err);
@@ -192,7 +186,6 @@ const getTestLesson = async (lessonID) => {
 }
 
 const getHomeLesson = async (lessonID) => {
-    console.log('teeeest',lessonID)
     try {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${lessonID}/homeworks`, {
             method: "GET",
@@ -201,9 +194,7 @@ const getHomeLesson = async (lessonID) => {
             },
             mode: 'cors',
         });
-        console.log('homes', response)
         const data = await response.json()
-        console.log('Домашка к уроку',data)
         homes.value.length = 0
         homes.value = { ...data }
     } catch (err) {
@@ -341,7 +332,6 @@ const deleteFile = async(fileID) => {
             },
             mode: 'cors',
         });
-        console.log('Удален файл', response)
         if(response.ok) {
             files.value.forEach((el) => {
                 if (el.id === fileID) {
@@ -354,7 +344,6 @@ const deleteFile = async(fileID) => {
                             acc[curr.id] = curr;
                             return acc;
                         }, {});
-                        console.log(files.value);
                     }
                 }
             });

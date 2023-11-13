@@ -118,7 +118,7 @@ onMounted(() => {
                 Только экзамены
             </the-switcher>
         </div>
-        <div class="me__marks-list">
+        <div class="me__marks-list scroll-custom">
             <div class="me__marks-item"
                 v-for="(event, index) of filteredMarks" :key="index"
             >

@@ -21,7 +21,6 @@ const getNotifications = async () => {
             },
             mode: 'cors',
         })
-        console.log(response,'уведомления')
     } catch(err) {
         console.error(err)
     }

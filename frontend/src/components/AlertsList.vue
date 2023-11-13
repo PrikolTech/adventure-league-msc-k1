@@ -41,6 +41,7 @@ const alertsStore = useAlerts()
     right: 5px;
     bottom: 20px;
     gap: 5px;
+    z-index: 100000;
 }
 .alert {
     padding: 10px;

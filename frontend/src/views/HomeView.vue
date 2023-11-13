@@ -117,9 +117,7 @@ const sendForm = async () => {
     preparedFormData.user_id = userStore.user.user_id
   }
 
-  console.log(preparedFormData)
   for (const value of Object.values(preparedFormData)) {
-    console.log(value)
     if (!value) {
       alertsStore.addAlert('Все поля должны быть заполнены', 'error');
       fieldsAreValid = false;

@@ -29,7 +29,6 @@ const changeFile = (event) => {
         const selectedFile = event.target.files[0];
         fileInput.value = selectedFile
         fileName.value = selectedFile.name;
-        console.log("Selected file name: " + fileName.value);
     } catch (err) {
         console.log(err);
     }
@@ -52,7 +51,6 @@ const getHomeLesson = async () => {
         });
 
         const data = await response.json()
-        console.log('Домашка к уроку',data)
         data.forEach(el => {
             if(el.job_id === homeWorkID.value)
             taskInfo.value = { ...el }
@@ -73,7 +71,6 @@ const getStudentSolution = async() => {
         })
         
         const data = await response.json()
-        console.log('Домашка Студента:', data)
         taskInfo.value = { ...data.homework }
         solutionStudent.value.length = 0
         solutionStudent.value = [ ...data.solutions]
@@ -87,14 +84,12 @@ const getStudentSolution = async() => {
 
 const comments = ref([])
 const getComments = async () => {
-    console.log(route.query.lesson)
     try {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_COMMENT_URL}/comments/homework_result/${solutionStudent.value[0].id}`, {
             method: "GET",
         })
 
         const data = await response.json()
-        console.log('комментарии',data)
         comments.value.length = 0
         comments.value = [...data]
     } catch (err) {
@@ -117,11 +112,9 @@ const postComment = async () => {
                 target_id: solutionStudent.value[0].id
             })
         });
-        console.log(response.ok)
         if(response.ok) {
             commentInput.value = ''
             const data = await response.json()
-            console.log('новый комментарий',data)
             comments.value.push(data)
         }
     } catch (err) {

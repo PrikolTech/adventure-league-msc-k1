@@ -37,7 +37,6 @@ const getCommnetInfo = async() => {
         userInitials.value = {
             ...data
         }
-        console.log('comment',userInitials.value)
     } catch(err) {
         console.error(err)
     }

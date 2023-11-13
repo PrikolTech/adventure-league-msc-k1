@@ -62,7 +62,6 @@ const getCourseInfo = async () => {
         })
         
         const data = await response.json()
-        console.log('лекции',lectures.value)
         lectures.value = [...data]
     } catch(err) {
         console.error(err)
