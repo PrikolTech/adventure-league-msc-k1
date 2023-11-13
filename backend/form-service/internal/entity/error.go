@@ -1,6 +1,9 @@
 package entity
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 type RequiredError struct {
 	Field string
@@ -9,3 +12,7 @@ type RequiredError struct {
 func (e *RequiredError) Error() string {
 	return fmt.Sprintf("%s is required", e.Field)
 }
+
+var (
+	ErrEmailInvalid = errors.New("email is invalid")
+)

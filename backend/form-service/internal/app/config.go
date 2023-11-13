@@ -9,6 +9,7 @@ type (
 		UserAPI   ConfigUserAPI
 		CourseAPI ConfigCourseAPI
 		AuthAPI   ConfigAuthAPI
+		SmtpAPI   ConfigSmtpAPI
 	}
 
 	ConfigPostgres struct {
@@ -31,6 +32,10 @@ type (
 
 	ConfigAuthAPI struct {
 		URL string `env:"AUTH_API" env-required:""`
+	}
+
+	ConfigSmtpAPI struct {
+		URL string `env:"SMTP_API" env-required:""`
 	}
 )
 

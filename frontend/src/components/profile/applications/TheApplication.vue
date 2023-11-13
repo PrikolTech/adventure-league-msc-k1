@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import TheStep from "./TheStep.vue";
 import { useUser } from '@/stores/user'
 
@@ -51,7 +51,7 @@ const getCourseInfo = async () => {
 const people = ref([])
 const getCourseInfoByEmployee = async () => {
     try {
-        const url = `${import.meta.env.VITE_SERVICE_FORM_URL}/registration?course_id=${props.course.id}`
+        const url = `${import.meta.env.VITE_SERVICE_FORM_URL}/form/registration?course_id=${props.course.id}`
         const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -79,9 +79,22 @@ const quantityOfPeople = computed(() => {
     }
 })
 
+const doStatusBlockInfo = () => {
+    console.log(props.course.status)
+    if(props.course.status === 'accepted') {
+        steps.value = [...[{text: 'Рассмотрение',active: true},{text: 'Решение',active: false}]]
+    } else if(props.course.status === 'approved') {
+        steps.value = [...[{text: 'Рассмотрение',active: false},{text: 'Решение',active: false},{text: 'Принято',active: true}]]
+    }
+    else if(props.course.status === 'rejected') {
+        steps.value = [...[{text: 'Рассмотрение',active: false},{text: 'Решение',active: false},{text: 'Отклонено',active: true}]]
+    }
+}
+
 onMounted(() => {
-    if(userStore.checkRole('student')) {
+    if(userStore.checkRole('student') || userStore.checkRole('enrollee')) {
         getCourseInfo()
+        doStatusBlockInfo()
     } else if(userStore.checkRole('employee')) {
         getCourseInfoByEmployee()
     }
@@ -91,7 +104,7 @@ onMounted(() => {
 
 <template>
     <div class="me__courses-item"
-        v-if="Object.keys(courseInfo).length > 0 && userStore.checkRole('student')"
+        v-if="Object.keys(courseInfo).length > 0 && (userStore.checkRole('student') || userStore.checkRole('enrollee'))"
     >
         <img class="pic" src="@/assets/images/program-finance.png" v-if="photoNumber === 0">
         <img class="pic" src="@/assets/images/program-disain.png" v-if="photoNumber === 1">
@@ -111,9 +124,8 @@ onMounted(() => {
                     {{ courseInfo.name }}
                 </p>
                 <span class="status">
-                    {{ courseInfo.status }}
                 </span>
-                <div class="steps" v-if="userStore.checkRole('student')">
+                <div class="steps" v-if="userStore.checkRole('student') || userStore.checkRole('enrollee')">
                     <the-step
                         v-for="(step, index) of steps" :key="index" :step="step"
                     />

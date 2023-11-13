@@ -58,7 +58,6 @@ export const useUser = defineStore('user', () => {
                 mode: 'cors',
                 credentials: 'include'
             });
-            console.log('test',response)
             if(response.status === 401 || response.status === 400) {
                 return
             }
