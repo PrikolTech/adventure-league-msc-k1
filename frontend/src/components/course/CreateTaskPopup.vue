@@ -76,6 +76,9 @@ const createTask = async () => {
                 <textarea v-model="descTask" required></textarea>
             </div>
         </div>
+        <template v-slot:btnSend>
+            Создать задание
+        </template>
     </the-modal>
 </template>
 
