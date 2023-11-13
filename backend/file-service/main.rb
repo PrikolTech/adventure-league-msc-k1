@@ -36,7 +36,7 @@ end
 
 get '/api/files/*/*' do
   # Returns file by path and name
-  headers 'Access-Control-Allow-Origin' => '*',
+  headers 'Access-Control-Allow-Origin' => 'http://localhost:5173',
           'Access-Control-Allow-Methods' => ['GET']  
 
   file_path, filename = params['splat']
@@ -49,7 +49,7 @@ end
 
 post '/api/files' do
   # Saves file and returns a file url
-  headers 'Access-Control-Allow-Origin' => '*', 
+  headers 'Access-Control-Allow-Origin' => 'http://localhost:5173', 
           'Access-Control-Allow-Methods' => ['POST']
 
   tempfile = params[:file][:tempfile]
