@@ -9,4 +9,4 @@ FROM node:lts-alpine AS production
 WORKDIR /app
 COPY --from=build /build/dist ./dist
 RUN npm install -g vite
-CMD ["vite", "preview", "--host"]
+CMD ["vite", "preview", "--host", "--port", "5173"]

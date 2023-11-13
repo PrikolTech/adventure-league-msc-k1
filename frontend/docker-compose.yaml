@@ -3,4 +3,4 @@ services:
     container_name: client
     build: .
     ports:
-      - 4173:4173
+      - 5173:5173
