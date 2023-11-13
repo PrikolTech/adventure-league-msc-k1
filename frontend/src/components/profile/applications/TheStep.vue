@@ -58,4 +58,21 @@ const props = defineProps({
         flex: 1;
     }
 }
+
+[dark=true] {
+    & .steps__item {
+        color: var(--gray-400, #9CA3AF);
+        &.active {
+            color: var(--primary-400, #76A9FA);
+            &::after {
+                background: #76A9FA;
+            }
+            & svg {
+                & path {
+                    fill: #76A9FA;
+                }
+            }
+        }
+    }
+}
 </style>

@@ -5,24 +5,26 @@ import ThePopup from '@/components/layouts/ThePopup.vue'
 import { onMounted, ref } from 'vue';
 import { useUser } from '@/stores/user'
 import { useAlerts } from '@/stores/alerts'
+import { usePopups } from '@/stores/popups'
 
+const popupStore = usePopups()
 const alertsStore = useAlerts()
 const userStore = useUser()
 const currentOpenCourse = ref(null)
 
 
 const formData = ref({
-  initiator_first_name: 'Сергей',
-  initiator_last_name: 'Македонский',
-  supervisor_first_name: 'Петр',
-  supervisor_last_name: 'Волков',
-  email: 'marketingdirect24@gmail.com',
-  department: 'Невероятное',
-  post: 'Директор',
-  history: 'учился всю жизнь',
-  achievements: 'Поднял компанию с коле',
-  motivation: 'я готов пройти курс и стать еще круче',
-  birthdate: '2002-11-11',
+  initiator_first_name: '',
+  initiator_last_name: '',
+  supervisor_first_name: '',
+  supervisor_last_name: '',
+  email: '',
+  department: '',
+  post: '',
+  history: '',
+  achievements: '',
+  motivation: '',
+  birthdate: '',
 })
 
 
@@ -79,10 +81,14 @@ let popupData = ref([
 ])
 
 const sendForm = async () => {
-  const dateString = formData.value.birthdate
-  const date = new Date(dateString + "T00:00:00Z")
+  let fieldsAreValid = true; // Флаг для проверки пустых полей
 
-  const formattedDate = date.toISOString()
+  let formattedDate
+  if(formData.value.birthdate) {
+    const dateString = formData.value.birthdate
+    const date = new Date(dateString + "T00:00:00Z")
+    formattedDate = date.toISOString()
+  }
 
   const preparedFormData = {
     initiator: {
@@ -104,7 +110,6 @@ const sendForm = async () => {
   };
 
   if(userStore.user) {
-    console.log('bad')
     preparedFormData.birthdate = userStore.user.birthdate
     preparedFormData.initiator.first_name = userStore.user.first_name
     preparedFormData.initiator.last_name = userStore.user.last_name
@@ -112,8 +117,25 @@ const sendForm = async () => {
     preparedFormData.user_id = userStore.user.user_id
   }
 
-  console.log('form', preparedFormData)
+  console.log(preparedFormData)
+  for (const value of Object.values(preparedFormData)) {
+    console.log(value)
+    if (!value) {
+      alertsStore.addAlert('Все поля должны быть заполнены', 'error');
+      fieldsAreValid = false;
+      break; // Выход из цикла
+    }
+  }
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  // Проверка введенной строки с использованием регулярного выражения
+  if (!emailRegex.test(preparedFormData.email)) {
+    alertsStore.addAlert('Укажите действительную почту', 'error');
+    fieldsAreValid = false;
+  }
+
+  if(!fieldsAreValid) return
   try {
     let url = `${import.meta.env.VITE_SERVICE_FORM_URL}/form/registration/append`
     let headers = {
@@ -134,12 +156,22 @@ const sendForm = async () => {
 
     if(response.ok) {
       alertsStore.addAlert('Вы успешно зарегистрировались на курс', 'success')
+      formData.value.initiator_first_name = ''
+      formData.value.initiator_last_name = ''
+      formData.value.supervisor_first_name = ''
+      formData.value.supervisor_last_name = ''
+      formData.value.email = ''
+      formData.value.department = ''
+      formData.value.post = ''
+      formData.value.history = ''
+      formData.value.achievements = ''
+      formData.value.motivation = ''
+      formData.value.birthdate = ''
+      popupStore.enableScroll('mainForm')
+
     } else {
       alertsStore.addAlert('Произошла ошибка при запись на курс, повторите попытку', 'error')
     }
-    console.log(response);
-    const data = await response.json();
-    console.log(data);
   } catch (err) {
     alertsStore.addAlert('Произошла ошибка при запись на курс, повторите попытку', 'error')
     console.error(err);

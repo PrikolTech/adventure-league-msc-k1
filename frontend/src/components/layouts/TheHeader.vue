@@ -4,11 +4,14 @@ import switcherTheme from '@/components/layouts/SwitcherTheme.vue'
 import TheButton from './TheButton.vue';
 import { computed, ref } from 'vue';
 import { useUser } from '@/stores/user'
+import TheNotifications from './TheNotifications.vue';
 
 const userStore = useUser()
-
 let headerMobileIsActive = ref(false)
 let headerMeHiddenListIsActive = ref(false)
+let notificationIsActive = ref(false)
+
+
 const initialsUser = computed(() => {
     if(!userStore.user) return
     if(userStore.user.first_name && userStore.user.last_name) {
@@ -36,6 +39,10 @@ const initialsUser = computed(() => {
                     <switcher-theme/>
                 </div>
                 <div class="header__auth">
+                    <the-notifications
+                        :notificationIsActive="notificationIsActive"
+                        @toggleNotification="notificationIsActive = !notificationIsActive"
+                    />
                     <the-button
                         :styles="['btn_red-border']"
                         :type="'link'"
@@ -63,24 +70,29 @@ const initialsUser = computed(() => {
                                 </div>
                             </div>
                             <div class="header__me-item">
-                                <router-link  to="/profile/me/meCourses">
-                                    Профиль
-                                </router-link>
-                                <router-link  to="/profile/courses"
+                                <router-link class="item" to="/profile/courses"
                                     v-if="userStore.checkRole('student') || userStore.checkRole('teacher') || userStore.checkRole('tutor') || userStore.checkRole('enrollee')"
                                 >
                                     Курсы
                                 </router-link>
-                                <router-link  to="/profile/courses"
+                                <router-link class="item" to="/profile/me/meCourses">
+                                    Профиль
+                                </router-link>
+                                <router-link class="item" to="/profile/applications"
+                                    v-if="userStore.checkRole('student') || userStore.checkRole('employee') || userStore.checkRole('enrollee')"
+                                >
+                                    Заявки
+                                </router-link>
+                                <router-link class="item" to="/profile/courses"
                                     v-if="userStore.checkRole('student')"
                                 >
                                     Задания
                                 </router-link>
-                                <router-link  to="/profile/settings">
+                                <router-link class="item" to="/profile/settings">
                                     Настройки
                                 </router-link>
                             </div>
-                            <div class="header__me-item"
+                            <div class="header__me-item button"
                                 @click="userStore.logOut()"
                             >
                                 Выйти
@@ -306,6 +318,9 @@ const initialsUser = computed(() => {
     &__auth {
         padding-left: 23px;
         position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
         &::after {
             content: "";
             position: absolute;
@@ -484,16 +499,28 @@ const initialsUser = computed(() => {
         display: block;
         font-size: 14px ;
         line-height: 100%;
-        padding: 12px 12px;
+        // padding: 12px 12px;
         cursor: pointer;
         text-align: start;
         & .name {
             margin-bottom: 5px;
+            padding: 12px 12px 0px;
         }
         & .email {
-            
+            padding: 0px 12px 12px;
         }
-
+        & .item {
+            padding: 0 12px 0px;
+            &:first-child {
+                padding: 12px 12px 0px;
+            }
+            &:last-child {
+                padding: 0px 12px 12px;
+            }
+        }
+        &.button {
+            padding: 12px 12px 12px;
+        }
         & a {
             display: block;
             font-size: 14px;

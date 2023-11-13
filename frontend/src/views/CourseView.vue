@@ -11,6 +11,7 @@ import { useUser } from '@/stores/user'
 import TheButton from '@/components/layouts/TheButton.vue';
 import { usePopups } from '@/stores/popups';
 import CreateLessonPopup from '@/components/course/CreateLessonPopup.vue';
+import CreateTaskPopup from '@/components/course/CreateTaskPopup.vue';
 
 const userStore = useUser()
 const router = useRouter()
@@ -26,6 +27,7 @@ let files = ref({})
 let tests = ref({})
 let homes = ref({})
 let currentTest = ref({})
+let currentTask = ref({})
 let showTest = ref(false)
 let activeTab = ref(null)
 const navigationLinks = ref([
@@ -190,6 +192,7 @@ const getTestLesson = async (lessonID) => {
 }
 
 const getHomeLesson = async (lessonID) => {
+    console.log('teeeest',lessonID)
     try {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${lessonID}/homeworks`, {
             method: "GET",
@@ -201,6 +204,7 @@ const getHomeLesson = async (lessonID) => {
         console.log('homes', response)
         const data = await response.json()
         console.log('Домашка к уроку',data)
+        homes.value.length = 0
         homes.value = { ...data }
     } catch (err) {
         console.log(err);
@@ -222,7 +226,7 @@ const getTaskOfLesson = async (taskInfo) => {
     }
 
     if(taskInfo) {
-        currentParams.test = taskInfo.id;
+        currentParams.task = taskInfo.id;
     }
 
     router.push({ query: currentParams });
@@ -235,6 +239,7 @@ const getTaskOfLesson = async (taskInfo) => {
     )
 
     activeTab.value = 'task'
+    currentTask.value = { ...taskInfo }
 
 }
 
@@ -312,6 +317,9 @@ const openCreateLessonPopup = () => {
     popupStore.disableScroll('createLesson')
 }
 
+const openCreateHomeWorkPopup = () => {
+    popupStore.disableScroll('createTask')
+}
 
 const openLesson = (lessonID) => {
     router.push({ query: { lesson: lessonID } })
@@ -404,6 +412,7 @@ onMounted(async() => {
                     />
                     <task-lesson
                         v-if="activeTab === 'task'"
+                        :task="currentTask"
                         :lesson="currentLesson"
                     />
                     <test-lesson
@@ -418,7 +427,7 @@ onMounted(async() => {
                 v-if="!showTest"
             >
                 <div class="course__aside-item materials"
-                    v-if="files && activeTab"
+                    v-if="files && activeTab === 'lesson'"
                 >
                     <div class="course__aside-title">
                         Материалы :
@@ -444,10 +453,15 @@ onMounted(async() => {
                     </div>
                 </div>
                 <div class="course__aside-item materials"
-                    v-if="activeTab && activeTab !=='task' && activeTab !=='test'"
+                    v-if="activeTab && activeTab !=='task' && activeTab !=='test' && ( userStore.checkRole('teacher') || userStore.checkRole('student') )"
                 >
                     <div class="course__aside-title">
                         Практическое задание:
+                    </div>
+                    <div class="text"
+                        v-if="!Object.keys(homes).length > 0 || !Object.keys(tests).length > 0"
+                    >
+                        Заданий еще нет
                     </div>
                     <div class="course__aside-item-list">
                         <!-- <p class="course__aside-link"
@@ -455,17 +469,29 @@ onMounted(async() => {
                         >
                             Задание по материалу
                         </p> -->
+                        <span class="text"
+                            v-if="Object.keys(homes).length > 0"
+                        >
+                            Домашняя работа
+                        </span>
                         <p class="course__aside-link"
                             v-for="home of homes" :key="home.id"
                             @click="getTaskOfLesson(home)"
                         >
-                            Задание по материалу
+                            <!-- Задание по материалу -->
+                            {{ home.name }}
                         </p>
+                        <span class="text"
+                            v-if="Object.keys(tests).length > 0"
+                        >
+                            Тестирование
+                        </span>
                         <p class="course__aside-link"
                             v-for="test of tests" :key="test.id"
                             @click="getTestOfLesson(test)"
                         >
-                            Тест
+                            {{ test.name }}
+                            <!-- Тест -->
                         </p>
                         <!-- <p class="course__aside-link"
                             v-if="currentLesson"
@@ -475,6 +501,15 @@ onMounted(async() => {
                         </p> -->
                     </div>
                 </div>
+                <the-button
+                    v-if="userStore.checkRole('teacher') && activeTab === 'lesson'"
+                    :styles="['btn_red']"
+                    :type="'button'"
+                    style="margin-top: 10px; margin-bottom: 25px; width: 100%;"
+                    @click="openCreateHomeWorkPopup()"
+                >
+                    Добавить задание
+                </the-button>
                 <div class="course__aside-item content">
                     <div class="course__aside-title">
                         Содержание программы :
@@ -531,6 +566,9 @@ onMounted(async() => {
         </div>
     <create-lesson-popup
         @createdLesoon="getCourseLessons()"
+    />
+    <create-task-popup
+        @createdTask="getHomeLesson(route.query.lesson)"
     />
     </main>
 </template>
@@ -622,6 +660,10 @@ onMounted(async() => {
         align-items: center;
         gap: 10px;
         justify-content: space-between;
+        transition: .2s;
+        &:hover {
+            text-decoration: underline;
+        }
         & svg {
             & path {
 

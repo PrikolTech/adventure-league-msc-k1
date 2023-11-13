@@ -42,6 +42,21 @@ const emit = defineEmits(['deleteFile'])
         & svg {
             cursor: pointer;
         }
+        &.withOutDelete {
+        & svg {
+            display: none;
+        }
     }
+    }
+
+}
+
+[dark=true] {
+.file-info {
+    &__item {
+        background: #1A2537;
+        color: var(--gray-300, #D1D5DB);
+    }
+}
 }
 </style>

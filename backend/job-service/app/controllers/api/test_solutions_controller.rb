@@ -28,8 +28,7 @@ class Api::TestSolutionsController < ApplicationController
   def create
     return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE, TEACHER_ROLE, STUDENT_ROLE]
 
-    @solution = TestSolution.new(test_solution_params)
-
+    @solution = TestSolution.new(user_id: params[:user_id])
     if @solution
       @solution.test_id = params[:test_id]
       @solution.save

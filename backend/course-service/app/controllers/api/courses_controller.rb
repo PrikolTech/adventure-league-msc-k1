@@ -57,7 +57,11 @@ class Api::CoursesController < ApplicationController
         education_form_id: education_form.id,
         prefix: params[:prefix]
       )
-      redirect_to @course.path
+      render json: @course, except: [:education_form_id, :period_id, :course_type_id], include: {
+        period: {except: :id},
+        course_type: {except: :id},
+        education_form: {except: :id},
+      }
     else
       unless course_type
         render json: {message: "bad request", status: 400}

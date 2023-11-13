@@ -1,6 +1,5 @@
 <script setup>
 import TheModal from "../layouts/TheModal.vue";
-import { ref } from "vue";
 
 const props = defineProps({
     data: {
@@ -45,7 +44,7 @@ const namePopup = 'mainForm'
                 </div>
             </div>
         </div>
-        <div class="popup__agree agree">
+        <div class="popup__agree agree" v-if="false">
             <label class="b-contain">
                 <span>Я согласен(а) на обработку персональных данных и с политикой обработки персональных данных</span>
                 <input type="checkbox" />

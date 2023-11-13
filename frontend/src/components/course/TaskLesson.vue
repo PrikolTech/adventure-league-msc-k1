@@ -3,13 +3,22 @@ import MakeComment from '@/components/layouts/MakeComment.vue';
 import TheButton from '../layouts/TheButton.vue';
 import UploadFile from "../layouts/UploadFile.vue";
 import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import { useUser } from '@/stores/user';
+import TheComment from '@/components/layouts/TheComment.vue';
 
+const userStore = useUser()
+const route = useRoute()
 const props = defineProps({
     lesson: {
+        type: Object,
+    },
+    task: {
         type: Object,
     }
 })
 
+let homeWorkID = ref(null)
 let commentInput = ref('')
 // let input = ref(null)
 let fileInput = ref(null)
@@ -30,85 +39,148 @@ const deleteFile = () => {
     fileInput.value = null
     fileName.value = ''
 }
+const taskInfo = ref({})
 
+const getHomeLesson = async () => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${props.lesson.id}/homeworks`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
+        });
 
+        const data = await response.json()
+        console.log('Домашка к уроку',data)
+        data.forEach(el => {
+            if(el.job_id === homeWorkID.value)
+            taskInfo.value = { ...el }
+        });
+    } catch (err) {
+        console.log(err);
+    }
+}
+const solutionStudent = ref([])
+const getStudentSolution = async() => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${props.lesson.id}/homeworks/${homeWorkID.value}/homework_solutions`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
+        })
+        
+        const data = await response.json()
+        console.log('Домашка Студента:', data)
+        taskInfo.value = { ...data.homework }
+        solutionStudent.value.length = 0
+        solutionStudent.value = [ ...data.solutions]
+        if(solutionStudent.value.length) {
+            getComments()
+        }
+    } catch(err) {
+        console.error(err)
+    }
+}
 
-// const sendFile = async () => {
-//     try {
-//         const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${job_id}/homeworks/${homework_id}/homework_solutions `, {
-//             method: "POST",
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify({
-//                 user_id: userStore.user.id,
-//                 body: commentInput.value,
-//                 target_id: props.lesson.id
-//             })
-//         });
+const comments = ref([])
+const getComments = async () => {
+    console.log(route.query.lesson)
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COMMENT_URL}/comments/homework_result/${solutionStudent.value[0].id}`, {
+            method: "GET",
+        })
 
-//         const data = await response.json()
-//         console.log('новый комментарий',data)
-//         commentInput.value = ''
-//         if(data) {
-//             comments.value.push(data)
-//         }
-//     } catch (err) {
-//         console.log(err);
-//     }
-// }
+        const data = await response.json()
+        console.log('комментарии',data)
+        comments.value.length = 0
+        comments.value = [...data]
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const postComment = async () => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COMMENT_URL}/comments/homework_result/`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userStore.user.access}`,
+            },
+            mode: 'cors',
+            body: JSON.stringify({
+                user_id: userStore.user.id,
+                body: commentInput.value,
+                target_id: solutionStudent.value[0].id
+            })
+        });
+        console.log(response.ok)
+        if(response.ok) {
+            commentInput.value = ''
+            const data = await response.json()
+            console.log('новый комментарий',data)
+            comments.value.push(data)
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const sendFile = async () => {
+    try {
+        const file = fileInput.value;
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${props.lesson.id}/homeworks/${homeWorkID.value}/homework_solutions `, {
+            method: "POST",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`,
+            },
+            body: formData
+        });
+
+        if(response.ok) {
+            getStudentSolution()
+            deleteFile()
+        }
+
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 onMounted(() => {
-    getTaskLesson()
+    if(props.task) {
+        if(Object.keys(props.task).length > 0) {
+            homeWorkID.value = props.task.id
+        }
+    } 
+    if(!homeWorkID.value) homeWorkID.value = route.query.task
+    getStudentSolution()
+
 })
 </script>
 
 <template>
     <div class="lesson__task">
         <div class="lesson__task-title">
-            Задание к уроку 1. Введение в финансовую грамотность. 
+            <!-- Задание к уроку 1. Введение в финансовую грамотность.  -->
+            {{ taskInfo.name }}
         </div>
         <div class="lesson__task-text">
-            <ul class="numbers">
-                <li>
-                    Создайте проект в Excel и назовите его “ ДЗ 1. Создание личного бюджета.”
-                </li>
-                <li>
-                    Начните с создания двух колонок: "Доходы" и "Расходы".
-                </li>
-                <li>
-                    В столбце "Доходы" укажите все источники дохода, которые у вас есть на месяц. Это могут быть заработная плата, стипендия, дополнительный доход и другие источники.
-                </li>
-                <li>
-                    В столбце "Расходы" перечислите все обязательные расходы, такие как аренда жилья, коммунальные платежи, продукты питания, транспорт, страховки, кредиты и другие. Важно включить все расходы, даже небольшие.
-                </li>
-                <li>
-                    Разделите расходы на две категории: фиксированные (неизменные) и переменные (которые могут меняться).
-                </li>
-                <li>
-                    После того как вы заполнили обе колонки, вычислите сумму доходов и сумму расходов на месяц.
-                </li>
-                <li>
-                    Сделайте скриншот и вставьте его в созданный файл в Word.
-                </li>
-                <li>
-                    Попробуйте ответить на следующие вопросы:
-                </li>
-                <li>
-                    Сколько денег у вас остается после покрытия всех обязательных расходов?
-                </li>
-                <li>
-                    Как можно сэкономить или оптимизировать расходы?
-                </li>
-                <li>
-                    Есть ли возможность увеличить доходы?
-                </li>
-                <li>
-                    Запишите свои ответы на вопросы в Word и прикрепите файл на данную страницу.
-                </li>
-            </ul>
+            {{ taskInfo.description }}
         </div>
-        <div class="add-file-w">
+        <div class="text"
+            v-if="userStore.checkRole('student') && !solutionStudent.length"
+        >
+            Прикрепить домашнюю работу
+        </div>
+        <div class="add-file-w"
+            v-if="userStore.checkRole('student') && !solutionStudent.length"
+        >
             <label class="add-file">
                 <input
                     type="file"
@@ -130,6 +202,7 @@ onMounted(() => {
                 :type="'button'"
                 class="add-file-btn"
                 @click="sendFile()"
+                v-if="fileInput"
             >
                 Отправить
             </the-button>
@@ -139,10 +212,31 @@ onMounted(() => {
             @deleteFile="deleteFile()"
             v-if="fileName"
         />
+        <div class="text"
+            v-if="userStore.checkRole('student') && solutionStudent.length"
+        >
+            Ваши прикрепленные решения
+        </div>
+        <upload-file
+            :class="'withOutDelete'"
+            v-for="file of solutionStudent" :key="file.id"
+            :name="file.file_url.split('/')[1] + ' ' + file.created_at.split('T')[0] + ' в ' + file.created_at.split('T')[1].split('.')[0]"
+        />
+        
         <make-comment
+            v-if="solutionStudent[0] && !userStore.checkRole('teacher')"
             v-model="commentInput"
             @update:modelValue="(modelValue) => commentInput=modelValue"
+            @send="postComment()"
         />
+        <div class="comments__list"
+            v-if="solutionStudent[0] && !userStore.checkRole('teacher')"
+        >
+            <the-comment
+                v-for="(comment, index) of comments" :key="index"
+                :comment="comment"
+            />
+        </div>
     </div>
 </template>
 

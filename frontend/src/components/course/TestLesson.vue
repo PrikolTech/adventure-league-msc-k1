@@ -1,8 +1,13 @@
 <script setup>
-import TestQuestion from '@/components/course/TestQuestion.vue'
+import TestQuestion from '@/components/course/TestQuestion.vue';
 import TheButton from '@/components/layouts/TheButton.vue';
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router'
+import { useRoute } from 'vue-router';
+import { useUser } from '@/stores/user';
+import { useAlerts } from '@/stores/alerts'
+
+const alertsStore = useAlerts()
+const userStore = useUser()
 const route = useRoute()
 const props = defineProps({
     showTest: {
@@ -34,6 +39,10 @@ const getTestInfo = async() => {
     try {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${props.lesson.id}/tests/${testID}`, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         })
         
         const data = await response.json()
@@ -44,9 +53,55 @@ const getTestInfo = async() => {
         console.error(err)
     }
 }
+let form = ref(null)
+const completeTest = async(e) => {
+    const formData = new FormData(e.target);
+
+    let testID = null
+    if(Object.keys(props.test).length > 0) {
+        testID = props.test.id
+    } else {
+        testID = route.query.test
+    }
+    const answers = []
+    for (let [key, value] of formData.entries()) {
+        answers.push(
+            {
+                'answer_id': value
+            }
+        )
+    }
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${props.lesson.id}/tests/${testID}/test_solutions`, {
+            method: "POST",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user_id: userStore.user.id,
+                answers: answers
+            }),
+            mode: 'cors',
+        })
+        const data = await response.json()
+        if(response.ok) {
+            console.log(data)
+            let score = null
+            if(data.test_result.score <= 2) {
+                score = 2
+            } else {
+                score = data.test_result.score
+            }
+            alertsStore.addAlert(`Вы прошли тест, ваша оценка ${score}`, 'success')
+        }        
+    } catch(err) {
+        console.error(err)
+    }
+}
 
 onMounted(() => {
-    getTestInfo()
+    // getTestInfo()
 })
 
 </script>
@@ -58,9 +113,9 @@ onMounted(() => {
         >
             <div class="test__before-title">
                 <!-- Тест к уроку 1. Введение в финансовую грамотность.  -->
-                {{ questions.name }}
+                {{ test.name }}
             </div>
-            <div class="test__before-text">
+            <div class="test__before-text" v-if="false">
                 <p>
                     Тест к уроку 1 содержит в себе весь пройденный материал, обсуждённый в уроке “Введение в финансовую грамотность”. Все вопросы читайте вниматель и не торопитесь. 
                 </p>
@@ -71,9 +126,9 @@ onMounted(() => {
                 </p>
             </div>
             <div class="test__before-footer">
-                <b>
+                <!-- <b>
                     Попытка 0/3
-                </b>
+                </b> -->
                 <the-button class=""
                     :styles="['btn_red']"
                     :type="'button'"
@@ -83,7 +138,9 @@ onMounted(() => {
                 </the-button>
             </div>
         </div>
-        <div class="test"
+        <form class="test"
+            ref="form"
+            @submit.prevent="(event) => completeTest(event)"
             v-else
         >
             <div class="test__header">
@@ -109,7 +166,7 @@ onMounted(() => {
             >
                 Завершить попытку
             </the-button>
-        </div>
+        </form>
     </div>
 </template>
 
@@ -225,6 +282,16 @@ onMounted(() => {
 [dark=true] {
     & .test__preview {
 
+    }
+    & .test__before-title {
+        color: var(--gray-300, #D1D5DB);
+    }
+    & .test__title {
+        color: var(--gray-300, #D1D5DB);
+    }
+
+    & .test__item-title {
+        color: var(--gray-300, #D1D5DB);
     }
 }
 

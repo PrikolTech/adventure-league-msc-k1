@@ -9,7 +9,7 @@ const userStore = useUser()
 const emit = defineEmits(['openCoursePopup'])
 
 const openPopup = () => {
-    if(!userStore.checkRole('teacher') && !userStore.checkRole('employee') && !userStore.checkRole('admin')) {
+    if(!userStore.checkRole('teacher') && !userStore.checkRole('employee') && !userStore.checkRole('admin') && !userStore.checkRole('tutor')) {
         popupStore.disableScroll('mainForm')
         emit('openCoursePopup',props.program.id)
     }

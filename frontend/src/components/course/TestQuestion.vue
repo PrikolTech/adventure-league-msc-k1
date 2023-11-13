@@ -1,6 +1,8 @@
 <script setup>
 import { onMounted, ref } from 'vue';
+import { useUser } from '@/stores/user';
 
+const userStore = useUser()
 const props = defineProps({
     question: {
         type: Object,
@@ -17,6 +19,10 @@ const getQuestionInfo = async() => {
     try {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${props.lessonID}/tests/${props.testID}/questions/${props.question.id}`, {
             method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
         })
         
         const data = await response.json()
