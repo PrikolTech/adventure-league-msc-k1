@@ -4,7 +4,9 @@ import TheButton from '@/components/layouts/TheButton.vue';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useUser } from '@/stores/user';
+import { useAlerts } from '@/stores/alerts'
 
+const alertsStore = useAlerts()
 const userStore = useUser()
 const route = useRoute()
 const props = defineProps({
@@ -69,7 +71,6 @@ const completeTest = async(e) => {
             }
         )
     }
-    console.log(answers)
     try {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${props.lesson.id}/tests/${testID}/test_solutions`, {
             method: "POST",
@@ -83,10 +84,17 @@ const completeTest = async(e) => {
             }),
             mode: 'cors',
         })
-        console.log(response)
         const data = await response.json()
-        console.log(data)
-        
+        if(response.ok) {
+            console.log(data)
+            let score = null
+            if(data.test_result.score <= 2) {
+                score = 2
+            } else {
+                score = data.test_result.score
+            }
+            alertsStore.addAlert(`Вы прошли тест, ваша оценка ${score}`, 'success')
+        }        
     } catch(err) {
         console.error(err)
     }

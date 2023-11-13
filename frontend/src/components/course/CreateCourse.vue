@@ -50,8 +50,7 @@ const createCourse = async () => {
                 education_form: educationFormName.value
             }),
         })
-
-        if(response.ok) {
+        if(!response.ok) {
             alertsStore.addAlert('Курс создан', 'success')
             emit('createdCourse')
             popupStore.enableScroll(namePopup)
@@ -65,6 +64,8 @@ const createCourse = async () => {
             periodEndsAt.value = ''
             courseTypeName.value = ''
             educationFormName.value = ''
+        } else {
+            alertsStore.addAlert('Курс создан', 'success')
         }
 
 
@@ -180,10 +181,10 @@ const createCourse = async () => {
                 >
             </div>
         </div>
-        <select style="width: 100%;">
+        <!-- <select style="width: 100%;">
             <option>Очная</option>
             <option>Онлайн</option>
-        </select>
+        </select> -->
         <template v-slot:btnSend>
             Создать
         </template>
