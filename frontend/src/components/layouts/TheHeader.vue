@@ -78,6 +78,11 @@ const initialsUser = computed(() => {
                                 <router-link class="item" to="/profile/me/meCourses">
                                     Профиль
                                 </router-link>
+                                <router-link class="item" to="/profile/applications"
+                                    v-if="userStore.checkRole('student') || userStore.checkRole('employee') || userStore.checkRole('enrollee')"
+                                >
+                                    Заявки
+                                </router-link>
                                 <router-link class="item" to="/profile/courses"
                                     v-if="userStore.checkRole('student')"
                                 >

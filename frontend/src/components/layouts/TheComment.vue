@@ -1,6 +1,6 @@
 <script setup>
 import TheAvatar from '@/components/layouts/TheAvatar.vue';
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useUser } from '@/stores/user'
 const userStore = useUser()
 
@@ -22,6 +22,30 @@ const timeComment = computed(() => {
     const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
     return dateObj.toLocaleTimeString('ru', options);
 });
+const userInitials = ref({})
+const getCommnetInfo = async() => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_USER_URL}/user/${props.comment.user_id}`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`,
+            },
+            mode: 'cors',
+            credentials: 'include'
+        });
+        const data = await response.json()
+        userInitials.value = {
+            ...data
+        }
+        console.log('comment',userInitials.value)
+    } catch(err) {
+        console.error(err)
+    }
+}
+
+onMounted(() => {
+    getCommnetInfo()
+})
 </script>
 
 <template>
@@ -29,15 +53,14 @@ const timeComment = computed(() => {
         <div class="comments__item-header">
             <div class="comments__item-info">
                 <the-avatar
-                    v-if="userStore.user.id === props.comment.user_id"
-                    :first_name="userStore.user.first_name"
-                    :last_name="userStore.user.last_name"
+                    :first_name="userInitials.first_name"
+                    :last_name="userInitials.last_name"
                 />
-                <the-avatar
+                <!-- <the-avatar
                     v-else-if="userStore.user.user_id === props.comment.user_id"
                     :first_name="props.comment.first_name"
                     :last_name="props.comment.last_name"
-                />
+                /> -->
                 <p>
                     <!-- Вера Красулина -->
                     {{ props.comment.first_name }} {{ props.comment.last_name }}

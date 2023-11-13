@@ -8,8 +8,8 @@ import { useAlerts } from '@/stores/alerts'
 const userStore = useUser()
 const alertsStore = useAlerts()
 // import Cookies from 'js-cookie';
-let email = ref('student@mail.ru')
-let password = ref('aA$123123')
+let email = ref('')
+let password = ref('')
 let passwordIsHidden = ref('password')
 
 

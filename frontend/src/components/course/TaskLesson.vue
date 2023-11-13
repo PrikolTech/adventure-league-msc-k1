@@ -213,7 +213,7 @@ onMounted(() => {
             v-if="fileName"
         />
         <div class="text"
-            v-if="userStore.checkRole('student')"
+            v-if="userStore.checkRole('student') && solutionStudent.length"
         >
             Ваши прикрепленные решения
         </div>
