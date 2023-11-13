@@ -30,6 +30,12 @@
     "excludes": []
   },
   {
+    "upstream": "http://notification-server:3006",
+    "prefix": "",
+    "includes": ["/api/notifications"],
+    "excludes": ["/api/notifications/create"]
+  },
+  {
     "upstream": "http://form-server:3007",
     "prefix": "/form",
     "includes": ["/"],
