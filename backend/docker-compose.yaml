@@ -8,3 +8,4 @@ include:
   - course-service/docker-compose.yml
   - file-service/docker-compose.yml
   - job-service/docker-compose.yml
+  - notification-service/docker-compose.yml
