@@ -77,6 +77,9 @@ const getStudentSolution = async() => {
         taskInfo.value = { ...data.homework }
         solutionStudent.value.length = 0
         solutionStudent.value = [ ...data.solutions]
+        if(solutionStudent.value.length) {
+            getComments()
+        }
     } catch(err) {
         console.error(err)
     }
@@ -86,7 +89,7 @@ const comments = ref([])
 const getComments = async () => {
     console.log(route.query.lesson)
     try {
-        const response = await fetch(`${import.meta.env.VITE_SERVICE_COMMENT_URL}/comments/homeworks/${route.query.task}`, {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COMMENT_URL}/comments/homework_result/${solutionStudent.value[0].id}`, {
             method: "GET",
         })
 
@@ -101,7 +104,7 @@ const getComments = async () => {
 
 const postComment = async () => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_SERVICE_COMMENT_URL}/comments/homeworks/`, {
+        const response = await fetch(`${import.meta.env.VITE_SERVICE_COMMENT_URL}/comments/homework_result/`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -111,7 +114,7 @@ const postComment = async () => {
             body: JSON.stringify({
                 user_id: userStore.user.id,
                 body: commentInput.value,
-                target_id: route.query.task
+                target_id: solutionStudent.value[0].id
             })
         });
         console.log(response.ok)
@@ -157,7 +160,7 @@ onMounted(() => {
     } 
     if(!homeWorkID.value) homeWorkID.value = route.query.task
     getStudentSolution()
-    getComments()
+
 })
 </script>
 
@@ -221,11 +224,14 @@ onMounted(() => {
         />
         
         <make-comment
+            v-if="solutionStudent[0]"
             v-model="commentInput"
             @update:modelValue="(modelValue) => commentInput=modelValue"
             @send="postComment()"
         />
-        <div class="comments__list">
+        <div class="comments__list"
+            v-if="solutionStudent[0]"
+        >
             <the-comment
                 v-for="(comment, index) of comments" :key="index"
                 :comment="comment"

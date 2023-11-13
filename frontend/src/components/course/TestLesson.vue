@@ -62,10 +62,10 @@ const completeTest = async(e) => {
         testID = route.query.test
     }
     const answers = []
-    for (let [key] of formData.entries()) {
+    for (let [key, value] of formData.entries()) {
         answers.push(
             {
-                'answer_id': key
+                'answer_id': value
             }
         )
     }
@@ -74,11 +74,12 @@ const completeTest = async(e) => {
         const response = await fetch(`${import.meta.env.VITE_SERVICE_JOB_URL}/jobs/${props.lesson.id}/tests/${testID}/test_solutions`, {
             method: "POST",
             headers: {
-                'Authorization': `Bearer ${userStore.user.access}`
+                'Authorization': `Bearer ${userStore.user.access}`,
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 user_id: userStore.user.id,
-                answers
+                answers: answers
             }),
             mode: 'cors',
         })

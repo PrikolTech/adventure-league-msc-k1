@@ -17,6 +17,7 @@ class RequestRole
       new_query = "" << env['QUERY_STRING']
 
       puts "SENDER = #{sender_id} | ROLES = #{roles}"
+      puts "#{env}"
 
       if sender_id
         new_query << "&sender_id=#{sender_id}"

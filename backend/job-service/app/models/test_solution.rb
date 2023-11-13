@@ -9,8 +9,6 @@ class TestSolution < ApplicationRecord
 
   def check_correctness
     # Returns mark in 0..5
-    check_hash = {} # question_id: {correct: [], given: []}
-    question_num = check_hash.keys.size
 
     answers_questions = {}
     solution_answers.each do |solution_answer|
@@ -19,10 +17,12 @@ class TestSolution < ApplicationRecord
     end
     
     t_score = 0
+
+    question_num = answers_questions.keys.size
+
     test.questions.each do |question|
       t_score += 1 if answers_questions[question.id].sort == question.correct_answers.sort
     end 
-    
     (t_score.to_f / question_num * 5).round
   end
 end

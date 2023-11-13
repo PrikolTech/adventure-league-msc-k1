@@ -172,7 +172,7 @@ const createCourse = async () => {
         </div>
         <div class="field">
             <p>
-                Тип обучения
+                Форма обучения (Очная, Онлайн)
             </p>
             <div class="input-w">
                 <input
@@ -180,6 +180,10 @@ const createCourse = async () => {
                 >
             </div>
         </div>
+        <select style="width: 100%;">
+            <option>Очная</option>
+            <option>Онлайн</option>
+        </select>
         <template v-slot:btnSend>
             Создать
         </template>
