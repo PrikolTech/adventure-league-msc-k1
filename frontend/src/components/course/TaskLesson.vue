@@ -224,13 +224,13 @@ onMounted(() => {
         />
         
         <make-comment
-            v-if="solutionStudent[0]"
+            v-if="solutionStudent[0] && !userStore.checkRole('teacher')"
             v-model="commentInput"
             @update:modelValue="(modelValue) => commentInput=modelValue"
             @send="postComment()"
         />
         <div class="comments__list"
-            v-if="solutionStudent[0]"
+            v-if="solutionStudent[0] && !userStore.checkRole('teacher')"
         >
             <the-comment
                 v-for="(comment, index) of comments" :key="index"

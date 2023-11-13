@@ -1,4 +1,8 @@
 <script setup>
+import { onMounted } from "vue"
+import { useUser } from '@/stores/user'
+
+const userStore = useUser()
 const props = defineProps({
     notificationIsActive: {
         type: Boolean,
@@ -7,6 +11,25 @@ const props = defineProps({
 })
 
 const emit = defineEmits('update:modelValue')
+
+const getNotifications = async () => {
+    try {
+        const response = await fetch(`http://localhost:3006/api/notifications/`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${userStore.user.access}`
+            },
+            mode: 'cors',
+        })
+        console.log(response,'уведомления')
+    } catch(err) {
+        console.error(err)
+    }
+}
+
+onMounted(() => {
+    // getNotifications()
+})
 </script>
 
 <template>
@@ -47,7 +70,7 @@ const emit = defineEmits('update:modelValue')
             </div>
             <div class="notification__list">
                 <div class="notification__item"
-                    v-for="(notification, index) of [1,2,3,4,5,7,6,6,6,6,6,7,8]" :key="index"
+                    v-for="(notification, index) of [1]" :key="index"
                 >
                     <p>
                         Ваше практическое задание по курсу “Финансовая грамотность” к уроку 2 проверено
