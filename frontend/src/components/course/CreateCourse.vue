@@ -82,6 +82,28 @@ const currentDate = computed(() => {
     const day = `${today.getDate()}`.padStart(2, '0');
     return `${year}-${month}-${day}`;
 });
+
+const minEndDate = computed(() => {
+      return periodStartsAt.value ? calculateMinEndDate(periodStartsAt.value) : '';
+});
+
+function calculateMinEndDate(startDate) {
+    const start = new Date(startDate);
+    start.setDate(start.getDate() + 1); // Добавляем один день
+
+    const year = start.getFullYear();
+    const month = `${start.getMonth() + 1}`.padStart(2, '0');
+    const day = `${start.getDate()}`.padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
+
+function updateEndDateMin() {
+    if (periodStartsAt.value) {
+    periodEndsAt.value = ''; // Сбросить дату окончания при изменении даты начала
+    minEndDate.value = calculateMinEndDate(periodStartsAt.value);
+    }
+}
 </script>
 
 <template>
@@ -157,6 +179,7 @@ const currentDate = computed(() => {
                     type="date"
                     v-model="periodStartsAt"
                     :min="currentDate"
+                    @input="updateEndDateMin"
                 >
             </div>
         </div>
@@ -168,6 +191,7 @@ const currentDate = computed(() => {
                 <input
                     type="date"
                     v-model="periodEndsAt"
+                    :min="minEndDate"
                 >
             </div>
         </div>
