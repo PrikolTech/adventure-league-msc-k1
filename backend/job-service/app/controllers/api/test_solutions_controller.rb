@@ -20,7 +20,7 @@ class Api::TestSolutionsController < ApplicationController
 
     @solution = TestSolution.find(params[:id])
 
-    return json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE, TEACHER_ROLE] && request_allowed?
+    return render json: {status: 403, message: NO_PERMISSION_ERROR} unless has_permission? [TUTOR_ROLE, TEACHER_ROLE] && request_allowed?
 
     render json: @solution, include: [:test_result, :solution_answers]
   end
