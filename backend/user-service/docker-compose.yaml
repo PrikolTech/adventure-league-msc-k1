@@ -15,8 +15,6 @@ services:
   user-db:
     container_name: user-db
     image: postgres:alpine
-    ports:
-      - 5442:5432
     environment:
       POSTGRES_PASSWORD: test
     volumes:

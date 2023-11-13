@@ -1,25 +1,30 @@
-version: "3"
 services:
-  db:
+  course-db:
+    container_name: course-db
     image: postgres
     volumes:
       - ./tmp/db:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: password
-  api:
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -q -U postgres -d postgres"]
+      interval: 5s
+      timeout: 30s
+      retries: 10
+      start_period: 30s
+  course-server:
+    container_name: course-server
     build: .
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rake db:prepare && bundle exec rails s -p 3003 -b '0.0.0.0'"
     volumes:
       - .:/myapp
     environment:
-      POSTGRES_HOST: db
+      POSTGRES_HOST: course-db
       POSTGRES_PASSWORD: password
-      FILE_SERVICE_API: http://file-service-api-1:3008
-      AUTH_SERVICE_API: http://host.docker.internal:3001
+      FILE_SERVICE_API: http://file-server:3008
+      AUTH_SERVICE_API: http://auth-server:3001
     ports:
-      - "3003:3003"
+      - 3003:3003
     depends_on:
-      - db
-networks:
-  default:
-    name: backend
+      course-db:
+        condition: service_healthy
