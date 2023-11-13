@@ -7,13 +7,15 @@ class Api::NotificationsController < ApplicationController
   }
   
   def index
+    return [] unless params.include? :sender_id
+
     @notifications = Notification.where(recipient_id: params[:sender_id])
 
     now = DateTime.now
     @notifications.where("display_to < ?", now).destroy_all
     @notifications = @notifications.where("display_from < ? AND display_to > ?", now, now)
   
-    render json: {display: @notifications, all: Notification.all}
+    render json: @notifications
   end
   
   def create
