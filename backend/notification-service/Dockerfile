@@ -27,7 +27,7 @@ WORKDIR /myapp
 # COPY bin/docker-entrypoint.sh /usr/bin/
 # RUN chmod +x /usr/bin/docker-entrypoint.sh
 # ENTRYPOINT ["docker-entrypoint.sh"]
-ENTRYPOINT ["/myapp/bin/docker-entrypoint"]
+# ENTRYPOINT ["/myapp/bin/docker-entrypoint"]
 
 EXPOSE 3004
 

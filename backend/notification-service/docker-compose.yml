@@ -13,7 +13,7 @@ services:
   notification-server:
     container_name: notification-server
     build: .
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3006 -b '0.0.0.0'"
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rake db:prepare && bundle exec rails s -p 3006 -b '0.0.0.0'"
     volumes:
       - .:/myapp
     environment:
