@@ -2,8 +2,6 @@ services:
   course-db:
     container_name: course-db
     image: postgres
-    volumes:
-      - ./tmp/db:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: password
     healthcheck:

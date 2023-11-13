@@ -2,8 +2,6 @@ services:
   job-db:
     container_name: job-db
     image: postgres
-    volumes:
-      - ./tmp/db:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: password
     healthcheck:

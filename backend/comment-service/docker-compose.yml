@@ -2,8 +2,6 @@ services:
   comment-db:
     container_name: comment-db
     image: postgres
-    volumes:
-      - ./tmp/db:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: password
     healthcheck:
