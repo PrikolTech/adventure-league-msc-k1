@@ -5,8 +5,6 @@ services:
     depends_on:
       user-db:
         condition: service_healthy
-    ports:
-      - 3002:3002
     env_file:
       - ./configs/docker.dev.env
     environment:

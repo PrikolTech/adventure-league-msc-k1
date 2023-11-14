@@ -19,8 +19,6 @@ services:
     environment:
       POSTGRES_HOST: comment-db
       POSTGRES_PASSWORD: password
-    ports:
-      - 3005:3005
     depends_on:
       comment-db:
         condition: service_healthy

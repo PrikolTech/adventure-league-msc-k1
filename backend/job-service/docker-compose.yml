@@ -21,8 +21,6 @@ services:
       POSTGRES_PASSWORD: password
       FILE_SERVICE_API: http://file-server:3008
       AUTH_SERVICE_API: http://auth-server:3001
-    ports:
-      - 3004:3004
     depends_on:
       job-db:
         condition: service_healthy

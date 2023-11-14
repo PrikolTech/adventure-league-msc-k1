@@ -2,7 +2,5 @@ services:
   smtp-server:
     container_name: smtp-server
     build: .
-    ports:
-      - 3009:3009
     env_file:
       - ./configs/docker.dev.env

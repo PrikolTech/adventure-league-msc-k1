@@ -20,8 +20,6 @@ services:
       POSTGRES_HOST: notification-db
       POSTGRES_PASSWORD: password
       AUTH_SERVICE_API: http://auth-server:3001
-    ports:
-      - 3006:3006
     depends_on:
       notification-db:
         condition: service_healthy
