@@ -71,6 +71,7 @@ const login = async () => {
                     <input
                         placeholder=""
                         v-model="email"
+                        @keydown.enter="login()"
                     >
                 </div>
             </div>
@@ -83,6 +84,7 @@ const login = async () => {
                         placeholder=""
                         v-model="password"
                         :type="passwordIsHidden"
+                        @keydown.enter="login()"
                     >
                     <eye-icon
                         :type="passwordIsHidden"
