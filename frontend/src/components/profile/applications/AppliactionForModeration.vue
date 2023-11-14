@@ -11,14 +11,20 @@ const props = defineProps({
     application: {
         type: Object,
         required: true,
+    },
+    filterStatus: {
+        type: Boolean,
+        required: true,
     }
 })
 const emit = defineEmits('updateStatus')
 let isHidden = ref(true)
+let btsIsDisabled = ref(false)
 
 const accept = async() => {
     try {
         let status = null
+        btsIsDisabled.value = true
         if(props.application.status === 'created') {
             status = 'accepted'
         }
@@ -45,6 +51,8 @@ const accept = async() => {
     });
 
     const data = await response.json();
+    btsIsDisabled.value = false
+
     if(response.ok) {
         emit('updateStatus', data)
         if(props.application.status === 'created') {
@@ -56,14 +64,16 @@ const accept = async() => {
         }
 
     }
-    
+    btsIsDisabled.value = false
   } catch (err) {
     console.error(err);
+    btsIsDisabled.value = false
   }
 }
 
 const reject = async() => {
     try {
+        btsIsDisabled.value = false
         const url = `${import.meta.env.VITE_SERVICE_FORM_URL}/form/registration/${props.application.id}`
         const response = await fetch(url, {
         method: 'PATCH',
@@ -78,6 +88,7 @@ const reject = async() => {
     });
 
     const data = await response.json();
+    btsIsDisabled.value = false
     if(response.ok) {
         emit('updateStatus', data)
         alertsStore.addAlert('Заявка принята!', 'success')
@@ -85,6 +96,7 @@ const reject = async() => {
     
   } catch (err) {
     console.error(err);
+    btsIsDisabled.value = false
   }
 }
 
@@ -92,7 +104,9 @@ const reject = async() => {
 </script>   
 
 <template>
-    <div class="appliaction">
+    <div class="appliaction"
+        :class="{hidden: (filterStatus !== props.application.status && filterStatus !== 'Все')}"
+    >
         <div class="appliaction__preview"
             @click="isHidden = !isHidden"
         >
@@ -205,6 +219,7 @@ const reject = async() => {
                 </div>
                 <div class="btns">
                 <the-button btn_blue
+                    :disabled="btsIsDisabled"
                     :styles="['btn_blue']"
                     :type="'button'"
                     @click="accept()"
@@ -218,6 +233,7 @@ const reject = async() => {
                     </span>
                 </the-button>
                 <the-button
+                    :disabled="btsIsDisabled"
                     :styles="['btn_red-border']"
                     :type="'button'"
                     @click="reject()"
@@ -238,10 +254,19 @@ const reject = async() => {
     & .btn_blue {
         flex: 1;
     }
+    & .btn {
+        &:disabled {
+            opacity: 0.7;
+            pointer-events: none
+        }
+    }
 }
 .appliaction {
     border-radius: 20px;
     background: var(--gray-50, #F9FAFB);
+    &.hidden {
+        display: none;
+    }
     & span {
         display: flex;
         gap: 15px;
